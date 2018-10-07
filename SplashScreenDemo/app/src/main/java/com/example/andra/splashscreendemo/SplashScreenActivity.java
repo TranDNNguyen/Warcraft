@@ -1,12 +1,16 @@
 package com.example.andra.splashscreendemo;
 
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    private MediaPlayer m = new MediaPlayer();
+
     //currently shows for 3 seconds
     private int SLEEP_TIMER = 3;
     @Override
@@ -21,7 +25,27 @@ public class SplashScreenActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         LogoLauncher logoLauncher = new LogoLauncher();
         logoLauncher.start();
+        playSound();
 
+    }
+
+    protected void playSound() {
+        try {
+            if (m.isPlaying()) {
+                m.stop();
+                m.release();
+                m = new MediaPlayer();
+            }
+
+            AssetFileDescriptor descriptor = getAssets().openFd("load.mp3");
+            m.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+            descriptor.close();
+            m.prepare();
+            m.setLooping(true);
+            m.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class LogoLauncher extends Thread{
