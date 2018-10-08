@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends AppCompatActivity
+{
+    //mediaplayer for sound
     private MediaPlayer m = new MediaPlayer();
 
     //currently shows for 3 seconds
     private int SLEEP_TIMER = 3;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
 
@@ -29,13 +32,14 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     }
 
-    protected void playSound() {
+    protected void playSound()
+    {
         try {
             if (m.isPlaying()) {
                 m.stop();
                 m.release();
                 m = new MediaPlayer();
-            }
+            } // delete any MediaPlayer objects if open and create new
 
             AssetFileDescriptor descriptor = getAssets().openFd("load.mp3");
             m.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
@@ -48,8 +52,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private class LogoLauncher extends Thread{
-        public void run(){
+    private class LogoLauncher extends Thread
+    {
+        public void run()
+        {
             try{
                 sleep(1000 * SLEEP_TIMER);
             }catch(InterruptedException e){
