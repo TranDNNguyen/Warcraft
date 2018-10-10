@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">SplashScreenDemo</string>
+    <string name="button_text">Hey! Click me! I\'m a test button!</string>
+    <string name="button_text_2">Click me for a toast</string>
+    <string name="display_text">Hey! It works!</string>
 </resources>
