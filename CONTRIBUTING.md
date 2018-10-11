@@ -16,7 +16,7 @@ In order to push to `dev` you must first push a new branch with your changes to 
     - `git checkout dev`
     - `git pull origin dev`
   2. In order to branch off of the `dev` branch and create a new feature
-   - `git checkout -b myFeature dev`
+   - `git checkout -b <myFeature-name> dev`
   3. Make your changes and commits (There are many commands/options to accomplish this, these are just a few)
      - See what changes you made:
       - `git status`  - Shows the modified files
