@@ -36,4 +36,13 @@ In order to push to `dev` you must first push a new branch with your changes to 
     - `git push origin <branch-name>`
   7. Make sure to create a pull request on GitHub.
     - `GitHub` > `Pull requests` >  `New pull request` > `compare: <branch-name>` > `Create pull request` > Fill in the description > `Create pull request`
-    
+  
+ ## Android Studio Formatting
+ 
+ To keep the code easy to read we will be using Android Studio's built in formatting tool. Make sure to format your code before pushing to GitHub, To format your code you will need to use the following commands in Android Studio:
+ 
+ *  For Windows users use:
+    * <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd>
+
+ *  For Mac users use:
+    * <kbd>⌘ Command</kbd> + <kbd>⌥ Option</kbd> + <kbd>L</kbd>
