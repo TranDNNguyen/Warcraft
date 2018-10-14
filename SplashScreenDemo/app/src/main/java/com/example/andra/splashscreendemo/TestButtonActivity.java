@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
+
 public class TestButtonActivity extends AppCompatActivity {
 
     TextView txt;
@@ -31,6 +33,9 @@ public class TestButtonActivity extends AppCompatActivity {
         txt.setOnDragListener(dragListener);
 
         txt.setText("Drag an image here");
+
+        ImageView imageView = (ImageView) findViewById(R.id.img2);
+        imageView.setOnTouchListener(new ImageMatrixTouchHandler(imageView.getContext()));
     }
 
     View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
