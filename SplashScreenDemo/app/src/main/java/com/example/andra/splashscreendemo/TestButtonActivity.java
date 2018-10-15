@@ -3,6 +3,8 @@ package com.example.andra.splashscreendemo;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -36,6 +38,21 @@ public class TestButtonActivity extends AppCompatActivity {
 
         ImageView imageView = (ImageView) findViewById(R.id.img2);
         imageView.setOnTouchListener(new ImageMatrixTouchHandler(imageView.getContext()));
+
+
+
+        ImageView mapTileView = (ImageView) findViewById(R.id.mapTileView);
+        Bitmap bitmapTerrain =  BitmapFactory.decodeResource(getResources(), R.drawable.terrain);
+
+        Bitmap bitmapTile = Bitmap.createBitmap(bitmapTerrain, 0,bitmapTerrain.getWidth()*20,bitmapTerrain.getWidth(),640);
+        mapTileView.setImageBitmap(bitmapTile);
+
+        Context context = getApplicationContext();
+        CharSequence text = "Terrain Map Width = " + bitmapTerrain.getWidth();
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
