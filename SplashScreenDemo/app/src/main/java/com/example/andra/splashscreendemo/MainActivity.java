@@ -3,9 +3,6 @@ package com.example.andra.splashscreendemo;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ImageView;
-
-import com.bogdwellers.pinchtozoom.ImageMatrixTouchHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,9 +11,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-        Intent intent = new Intent(this, TestButtonActivity.class);
+        Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 }

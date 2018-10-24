@@ -23,8 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayMessageActivity"></activity>
-        <activity android:name=".TestButtonActivity"></activity>
+        <activity android:name=".DisplayMessageActivity" />
+        <activity android:name=".TestButtonActivity" />
+        <activity
+            android:name=".MenuActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_menu"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".MapActivity"
+            android:configChanges="keyboardHidden|screenSize"
+            android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".AssetActivity"></activity>
     </application>
 
 </manifest>

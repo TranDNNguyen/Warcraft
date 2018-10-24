@@ -51,6 +51,20 @@ public class SplashScreenActivity extends AppCompatActivity
         }
     }
 
+    protected void onPause() {
+        super.onPause();
+        m.stop();
+    }
+
+    protected void onResume(){
+        super.onResume();
+        try {
+            m.prepare();
+        } catch(Exception e){}
+        m.setLooping(true);
+        m.start();
+    } // TODO
+
     private class LogoLauncher extends Thread
     {
         public void run()
