@@ -2,6 +2,7 @@ package com.example.andra.splashscreendemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import java.util.Vector;
 
 public class AssetActivity extends AppCompatActivity {
     Vector<Asset> assets;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,17 +27,26 @@ public class AssetActivity extends AppCompatActivity {
         }
 
         ImageView image = (ImageView) findViewById(R.id.bitmapView);
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.peasant);
+         //load the peasant frames into one large bitmap
+        Bitmap peasantImages = BitmapFactory.decodeResource(getResources(), R.drawable.peasant);
+        Bitmap goldMineImages = BitmapFactory.decodeResource(getResources(), R.drawable.gold_mine);
 
-        int peasantWidth = b.getWidth();
+        int peasantWidth = peasantImages.getWidth();
         int peasantHeight = peasantWidth;
+        int goldMineWidth = goldMineImages.getWidth();
+        int goldMineHeight = goldMineWidth;
 
-        Bitmap peasantImg1 = b.crop
+        //grabbing the first frame from the peasant file
+        Bitmap peasantBitmap =  Bitmap.createBitmap(peasantImages, 0,0, peasantWidth,peasantHeight);
+        Bitmap goldMineBitmap =  Bitmap.createBitmap(goldMineImages, 0,0, goldMineWidth,goldMineHeight);
+        Bitmap result = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888);
 
-        image.setImageBitmap(b);
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(peasantBitmap, 300, 700, null);
+        canvas.drawBitmap(goldMineBitmap, 0, 0, null);
+
+        image.setImageBitmap(result);
+
+        //return result;
     }
-
-
-
-
 }
