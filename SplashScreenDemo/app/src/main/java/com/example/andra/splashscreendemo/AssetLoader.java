@@ -24,11 +24,17 @@ public class AssetLoader {
     public static Bitmap goldMineImages;
     public static Bitmap footmanImages;
 
+    /*
+    * Takes asset information from the map file, and compiles a vetor
+    * of assets that are part of the game upon launch
+    */
     public static Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
         InputStream is = context.getAssets().open(fileName);
         Scanner scanner = new Scanner(is);
         String[] temp = new String[4];
 
+        //Note: We set the bitmaps here instead of in the individual assets because these
+        //files are really big and should only be stored once TODO:move to another function? add other units
         peasantImages = BitmapFactory.decodeResource(res, R.drawable.peasant);
         goldMineImages = BitmapFactory.decodeResource(res, R.drawable.gold_mine);
         footmanImages = BitmapFactory.decodeResource(res, R.drawable.footman);
@@ -37,9 +43,7 @@ public class AssetLoader {
         numAssets = Integer.valueOf(line);
         line = scanner.nextLine(); //skip the assets comment
 
-        if(assets == null){
-            assets = new Vector<Asset>();
-        }
+        assets = new Vector<Asset>();
 
         for(int i = 0; i < numAssets; i++){
             line = scanner.nextLine();
@@ -47,12 +51,17 @@ public class AssetLoader {
             Asset newAsset = new Asset(temp);
             setAssetBitmap(newAsset, res);
             assets.add(newAsset);
-        }
+        }//make the specified assets
 
         return assets;
     }
 
+    /*
+     * sets the asset's internal bitmap based on the images stored in the loader
+     */
     public static void setAssetBitmap(Asset a, Resources res){
+        //TODO: add other unit types
+
         switch(a.type){
             case Peasant:
                 //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.peasant);
@@ -77,6 +86,9 @@ public class AssetLoader {
         }
     }
 
+    /*
+     * skips excess information in the map file
+     */
     public static String skipToNumAssets(Scanner scanner){
         while(scanner.hasNextLine()){
             String line = scanner.nextLine();

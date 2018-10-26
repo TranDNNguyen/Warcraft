@@ -46,6 +46,9 @@ public class Asset {
         }
     };
 
+    /*
+     * Assets draws itself on the canvas it is given
+     */
     public void drawAsset(Canvas canvas, int xOffset, int yOffset){
         canvas.drawBitmap(assetBitmap, x*assetWidth - xOffset, y*assetHeight - yOffset, null);
     }
@@ -54,12 +57,12 @@ public class Asset {
         //
 
     }
+
+
     Asset(String input[]){
         type = EAssetType.valueOf(input[0]);
         owner = Integer.valueOf(input[1]);
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
     }
-
-    //Asset(){}
 }
