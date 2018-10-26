@@ -274,15 +274,15 @@ public class MapActivity extends AppCompatActivity {
         for(int i = startY; i < endY; i++) {
             int left = 0;
             for (int j = startX; j < endX; j++) {
-                canvas.drawBitmap(tileSet[mapTiles.idxMap.get(i).get(j)], top, left, null);
+                //canvas.drawBitmap(tileSet[mapTiles.idxMap.get(i).get(j)], top, left, null);
+                canvas.drawBitmap(tileSet[mapTiles.idxMap.get(i).get(j)], left, top, null); //XXX
                 left += 32;
             }
             top += 32;
         }
 
-        //return temp;
+        //Add assets on top of the map
         AssetRenderer assetRenderer = new AssetRenderer(this, getResources());
-        //return overlay(temp, assetRenderer.renderAssets());
         canvas.drawBitmap( assetRenderer.renderAssets(), 0, 0, null);
         return temp;
     }

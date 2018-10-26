@@ -129,6 +129,10 @@ public class MapTiles {
             processMapLine(line);
             line = scanner.nextLine();
         }
+
+        //System.out.println(terrainMap.get(3).get(3).getIdx());
+        //System.out.println("\n"); //XXX
+
         parseDatFile("terrain.dat", context);
         createIndexMap();
     }
@@ -211,6 +215,9 @@ public class MapTiles {
             }
             idxMap.add(line);
         }
+
+        System.out.println(idxMap.get(3).get(3));
+        System.out.println("\n"); //XXX
     }
 
     //Placeholder function, only returns one subtype of tile for each tileType, re-implement later

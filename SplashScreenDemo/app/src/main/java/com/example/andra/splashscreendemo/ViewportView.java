@@ -84,7 +84,7 @@ public class ViewportView extends ImageView {
                     mActivePointerId = ev.getPointerId(0);
 
                     mp3 = MediaPlayer.create(this.getContext(),R.raw.building_explode1);
-                    mp3.start();          //Start playing
+                    //mp3.start();          //Start playing
                 }
                 break;
             }
