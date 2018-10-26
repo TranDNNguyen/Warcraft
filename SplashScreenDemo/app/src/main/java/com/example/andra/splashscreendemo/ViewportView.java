@@ -46,35 +46,40 @@ public class ViewportView extends ImageView {
     private float mPosX;
     private float mPosY;
 
+    private float mPosXMin = -6000; //TODO - set these based on map specifications?
+    private float mPosYMin = -5000;
+    private float mPosXMax = 6000;
+    private float mPosYMax = 8000;
+
     private float mLastTouchX;
     private float mLastTouchY;
-    private float mLastGestureX;
-    private float mLastGestureY;
+    //private float mLastGestureX;
+    //private float mLastGestureY;
     private int mActivePointerId = INVALID_POINTER_ID;
     private MediaPlayer mp3 = new MediaPlayer();    //Create MediaPlayer
 
-    private ScaleGestureDetector mScaleDetector;
+    //private ScaleGestureDetector mScaleDetector;
 
     private float mScaleFactor = 1.f;
 
     public ViewportView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-        mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
+        //mScaleDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
     }
 
     public ViewportView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        //mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        mScaleDetector.onTouchEvent(ev);
+        //mScaleDetector.onTouchEvent(ev);
 
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN: {
-                if (!mScaleDetector.isInProgress()) {
+          //      if (!mScaleDetector.isInProgress()) {
                     final float x = ev.getX();
                     final float y = ev.getY();
 
@@ -85,11 +90,12 @@ public class ViewportView extends ImageView {
 
                     mp3 = MediaPlayer.create(this.getContext(),R.raw.building_explode1);
                     //mp3.start();          //Start playing
-                }
+            //    }
                 break;
             }
 
             case MotionEvent.ACTION_POINTER_DOWN: {
+              /*
                 if (!mScaleDetector.isInProgress()) {
                     final float gx = mScaleDetector.getFocusX();
                     final float gy = mScaleDetector.getFocusY();
@@ -98,10 +104,11 @@ public class ViewportView extends ImageView {
                     mLastGestureY = gy;
                 }
                 break;
+                */
             }
 
             case MotionEvent.ACTION_MOVE: {
-                if (!mScaleDetector.isInProgress()) {
+                //if (!mScaleDetector.isInProgress()) {
                     Log.i("hi", "SD not in progress");
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
                     final float x = ev.getX(pointerIndex);
@@ -113,11 +120,22 @@ public class ViewportView extends ImageView {
                     mPosX += dx;
                     mPosY += dy;
 
+                    if(mPosX < mPosXMin){
+                        mPosX = mPosXMin;
+                    } else if(mPosX > mPosXMax){
+                        mPosX = mPosXMax;
+                    }
+                    if(mPosY < mPosYMin){
+                        mPosY = mPosYMin;
+                    } else if(mPosY > mPosYMax){
+                        mPosY = mPosYMax;
+                    }
+
                     invalidate();
 
                     mLastTouchX = x;
                     mLastTouchY = y;
-                } else {
+                /*} else {
                     Log.i("hi", "SD in progress");
                     final float gx = mScaleDetector.getFocusX();
                     final float gy = mScaleDetector.getFocusY();
@@ -135,7 +153,7 @@ public class ViewportView extends ImageView {
                     mLastGestureX = gx;
                     mLastGestureY = gy;
                 }
-
+*/
                 break;
             }
 
@@ -163,6 +181,9 @@ public class ViewportView extends ImageView {
             }
         }
 
+        System.out.println("mLastTouchX - mXposx" + (mLastTouchX - mPosX));
+        System.out.println("mLastTouchY - mXPosY" + (mLastTouchY - mPosY));
+
         return true;
     }
     @Override
@@ -171,13 +192,17 @@ public class ViewportView extends ImageView {
         canvas.save();
 
         canvas.translate(mPosX, mPosY);  // Detail : https://stackoverflow.com/questions/5789813/what-does-canvas-translate-do
+        System.out.println("mPosX" + mPosX);
+        System.out.println("mposY" + mPosY);
 
-        if (mScaleDetector.isInProgress()) {
-            canvas.scale(mScaleFactor, mScaleFactor, mScaleDetector.getFocusX(), mScaleDetector.getFocusY());
-        }
-        else{
-            canvas.scale(mScaleFactor, mScaleFactor, mLastGestureX, mLastGestureY);
-        }
+        System.out.println("Canvas Width" + canvas.getWidth());
+        System.out.println("Canvas Height" + canvas.getHeight());
+        //if (mScaleDetector.isInProgress()) {
+        //    canvas.scale(mScaleFactor, mScaleFactor, mScaleDetector.getFocusX(), mScaleDetector.getFocusY());
+        //}
+        //else{
+            //canvas.scale(mScaleFactor, mScaleFactor, mLastGestureX, mLastGestureY);
+        //}
         super.onDraw(canvas);
         canvas.restore();
 
@@ -191,7 +216,7 @@ public class ViewportView extends ImageView {
          */
 
     }
-
+/*
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -204,4 +229,6 @@ public class ViewportView extends ImageView {
             return true;
         }
     }
+
+    */
 }

@@ -9,8 +9,11 @@ import java.util.Vector;
 public class Asset {
     int owner;
     EAssetType type;
-    int x;
-    int y;
+    int x; //current x pos
+    int y; //current y pos
+    int x2; //x coordinate the unit is headed to
+    int y2; //y coordinate the unit is headed to
+
     Vector<Integer> pixelCoordinates;
     //Bitmap assetImages;
     Bitmap assetBitmap;
@@ -50,7 +53,7 @@ public class Asset {
      * Assets draws itself on the canvas it is given
      */
     public void drawAsset(Canvas canvas, int xOffset, int yOffset){
-        canvas.drawBitmap(assetBitmap, x*assetWidth - xOffset, y*assetHeight - yOffset, null);
+        canvas.drawBitmap(assetBitmap, x*32 - xOffset, y*32 - yOffset, null);
     }
 
     Asset(EAssetType t, int o, int x, int y){

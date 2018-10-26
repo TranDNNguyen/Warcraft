@@ -41,6 +41,7 @@ public class AssetRenderer {
 
     /*
      * Creates bitmap of current assets
+     * //TODO needs to be passed widths, heights, offsets from viewport/mapactivity instead of declaring them here
      */
     public Bitmap renderAssets() {
         //TODO: figure out better way to set size of asset bitmap
