@@ -1,6 +1,9 @@
 package com.example.andra.splashscreendemo;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -17,10 +20,18 @@ public class AssetLoader {
 
     public int tilePixelSize = 32;
 
-    public static Vector<Asset> assetParse(String fileName, Context context) throws IOException {
+    public static Bitmap peasantImages;
+    public static Bitmap goldMineImages;
+    public static Bitmap footmanImages;
+
+    public static Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
         InputStream is = context.getAssets().open(fileName);
         Scanner scanner = new Scanner(is);
         String[] temp = new String[4];
+
+        peasantImages = BitmapFactory.decodeResource(res, R.drawable.peasant);
+        goldMineImages = BitmapFactory.decodeResource(res, R.drawable.gold_mine);
+        footmanImages = BitmapFactory.decodeResource(res, R.drawable.footman);
 
         String line = skipToNumAssets(scanner);
         numAssets = Integer.valueOf(line);
@@ -34,10 +45,36 @@ public class AssetLoader {
             line = scanner.nextLine();
             temp = line.split(" ");
             Asset newAsset = new Asset(temp);
+            setAssetBitmap(newAsset, res);
             assets.add(newAsset);
         }
 
         return assets;
+    }
+
+    public static void setAssetBitmap(Asset a, Resources res){
+        switch(a.type){
+            case Peasant:
+                //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.peasant);
+                a.assetWidth = peasantImages.getWidth();
+                a.assetHeight = peasantImages.getHeight()/172;
+                a.assetBitmap = Bitmap.createBitmap(peasantImages, 0,0, a.assetWidth,a.assetHeight);
+                break;
+            case GoldMine:
+                //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.gold_mine);
+                a.assetWidth = goldMineImages.getWidth();
+                a.assetHeight = goldMineImages.getHeight()/2;
+                a.assetBitmap = Bitmap.createBitmap(goldMineImages, 0,0, a.assetWidth,a.assetHeight);
+                break;
+            case Footman:
+                //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.footman);
+                a.assetWidth = footmanImages.getWidth();
+                a.assetHeight = footmanImages.getHeight()/92;
+                a.assetBitmap = Bitmap.createBitmap(footmanImages, 0,0, a.assetWidth,a.assetHeight);
+                break;
+            default:
+                break;
+        }
     }
 
     public static String skipToNumAssets(Scanner scanner){

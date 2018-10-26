@@ -1,6 +1,10 @@
 package com.example.andra.splashscreendemo;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import java.util.Vector;
+
 
 public class Asset {
     int owner;
@@ -8,6 +12,10 @@ public class Asset {
     int x;
     int y;
     Vector<Integer> pixelCoordinates;
+    //Bitmap assetImages;
+    Bitmap assetBitmap;
+    int assetWidth;
+    int assetHeight;
 
     enum EAssetType{
         None(0),
@@ -38,6 +46,10 @@ public class Asset {
         }
     };
 
+    public void drawAsset(Canvas canvas, int xOffset, int yOffset){
+        canvas.drawBitmap(assetBitmap, x*assetWidth - xOffset, y*assetHeight - yOffset, null);
+    }
+
     Asset(EAssetType t, int o, int x, int y){
         //
 
@@ -50,5 +62,4 @@ public class Asset {
     }
 
     //Asset(){}
-
 }
