@@ -38,13 +38,12 @@ public class Asset {
         }
     };
 
-
     Asset(EAssetType t, int o, int x, int y){
         //
 
     }
     Asset(String input[]){
-        //AssetType
+        type = EAssetType.valueOf(input[0]);
         owner = Integer.valueOf(input[1]);
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);

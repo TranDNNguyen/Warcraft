@@ -26,6 +26,9 @@ public class AssetLoader {
         numAssets = Integer.valueOf(line);
         line = scanner.nextLine(); //skip the assets comment
 
+        if(assets == null){
+            assets = new Vector<Asset>();
+        }
 
         for(int i = 0; i < numAssets; i++){
             line = scanner.nextLine();
