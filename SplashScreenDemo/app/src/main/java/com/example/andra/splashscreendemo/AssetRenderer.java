@@ -1,5 +1,6 @@
 package com.example.andra.splashscreendemo;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,26 +12,29 @@ import android.widget.ImageView;
 import java.io.IOException;
 import java.util.Vector;
 
-public class AssetActivity extends AppCompatActivity {
+//public class AssetActivity extends AppCompatActivity {
+public class AssetRenderer {
     Vector<Asset> assets;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asset);
+    //@Override
+    //protected void onCreate(Bundle savedInstanceState) {
+        //super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_asset);
 
+
+    public AssetRenderer(Context context, Resources res){
         //get initial assets from loader
         try {
             //AssetLoader.setBitmaps(getResources());
-            assets = AssetLoader.assetParse("test.map", this, getResources());
+            assets = AssetLoader.assetParse("test.map", context, res);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
 
-        ImageView image = (ImageView) findViewById(R.id.bitmapView);
-        Bitmap result = renderAssets();
-        image.setImageBitmap(result);
+        //ImageView image = (ImageView) findViewById(R.id.bitmapView);
+        //Bitmap result = renderAssets();
+        //image.setImageBitmap(result);
         //return result;
     }
 

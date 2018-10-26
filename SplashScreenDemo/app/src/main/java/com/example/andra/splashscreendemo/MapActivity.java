@@ -3,6 +3,7 @@ package com.example.andra.splashscreendemo;
 import android.annotation.SuppressLint;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.media.MediaPlayer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -138,9 +139,12 @@ public class MapActivity extends AppCompatActivity {
          * imageView.setImageBitmap(terrain);
          */
 
+        int terrainHeight = terrain.getHeight();
+        int terrainWidth = terrain.getWidth();
+
         tileSet = new Bitmap[293];
         for(int i = 0; i < 293; i++){
-            tileSet[i] = Bitmap.createBitmap(terrain, 0,96*i,32,32);
+            tileSet[i] = Bitmap.createBitmap(terrain, 0,terrainHeight/293*i,terrainWidth,terrainWidth);
         }
 
         mapTiles = new MapTiles("test.map", this);
@@ -275,7 +279,20 @@ public class MapActivity extends AppCompatActivity {
             }
             top += 32;
         }
+
+        //return temp;
+        AssetRenderer assetRenderer = new AssetRenderer(this, getResources());
+        //return overlay(temp, assetRenderer.renderAssets());
+        canvas.drawBitmap( assetRenderer.renderAssets(), 0, 0, null);
         return temp;
+    }
+
+    public static Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawBitmap(bmp1, new Matrix(), null);
+        canvas.drawBitmap(bmp2, 0, 0, null);
+        return bmOverlay;
     }
 }
 
