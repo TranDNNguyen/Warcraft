@@ -3,6 +3,8 @@ package com.android.ecs160.warcraft;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -54,29 +56,35 @@ public class MainActivity_viewport extends AppCompatActivity {
             @Override
             public void run() {
                 //updateViewport();
+                viewportHandler.obtainMessage(1).sendToTarget();
 
                 assetActionRenderer.TimeStep(assetRenderer.assets);
             }
         }, 0, 100);
 
-        updateViewport();
+        //updateViewport();
+        viewportHandler.obtainMessage(1).sendToTarget();
         viewport.setOnTouchListener(touchListener);
     }
 
-    //TODO - implement runnable to make it as a thread.
-    //REQUIRED
-    private boolean updateViewport() {
 
-        Bitmap result = Bitmap.createBitmap(1000, 600, Bitmap.Config.ARGB_8888);
+    public Handler viewportHandler = new Handler() {
 
-        Canvas canvas = new Canvas(result);
-        canvas.drawBitmap(mapRenderer.drawTerrain(currX, currY), 0, 0, null);  //  Draw Map
-        canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
-        viewport.setImageBitmap(result);
-        minimap.setImageBitmap(mapRenderer.drawMinimap());
+        //TODO
+        //REQUIRED
+        //private boolean updateViewport(Message msg) {
+        public void handleMessage(Message msg) {
+            Bitmap result = Bitmap.createBitmap(1000, 600, Bitmap.Config.ARGB_8888);
 
-        return true;
-    }
+            Canvas canvas = new Canvas(result);
+            canvas.drawBitmap(mapRenderer.drawTerrain(currX, currY), 0, 0, null);  //  Draw Map
+            canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
+            viewport.setImageBitmap(result);
+            minimap.setImageBitmap(mapRenderer.drawMinimap());
+
+           // return true;
+        }
+    };
 
     //DEBUG  //  Displaying all the coordinates
     // - X,Y absolute coord, ImageView X,Y, Map X, Y
@@ -176,7 +184,8 @@ public class MainActivity_viewport extends AppCompatActivity {
                     mActivePointerId = ev.getPointerId(0);
 
                     assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
-                    updateViewport();
+                    //updateViewport();
+                    viewportHandler.obtainMessage(1).sendToTarget();
 
                     break;
                 }
@@ -211,13 +220,17 @@ public class MainActivity_viewport extends AppCompatActivity {
                     if (currX - dx >= 0) currX -= dx;
                     if (currY - dy >= 0) currY -= dy;
 
+                    viewportHandler.obtainMessage(1).sendToTarget();
 
+                    /*
                     if (!updateViewport()) {
-
                         // if viewport update failed,
                         currX += dx;
                         currY += dy;
                     }
+
+                     */
+
 
                     mLastTouchX = x;
                     mLastTouchY = y;
