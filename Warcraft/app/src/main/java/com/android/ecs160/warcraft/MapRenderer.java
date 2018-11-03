@@ -62,6 +62,8 @@ public class MapRenderer {
     public void generateMap() {
 
         int tileH = mapTiles.getMapHeight(), tileW = mapTiles.getMapWidth();
+        mapHeight = mapTiles.getMapHeight();
+        mapWidth = mapTiles.getMapWidth();
 
         terrainMap = Bitmap.createBitmap(tileW * TileSize, tileH * TileSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(terrainMap);

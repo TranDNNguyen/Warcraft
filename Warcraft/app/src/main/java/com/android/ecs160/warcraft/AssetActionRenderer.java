@@ -7,11 +7,13 @@ public class AssetActionRenderer {
     AssetRenderer assetRenderer;
     Router router;
     Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
+    MapTiles mapTiles;
 
     public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer){
         this.assetRenderer = assetRenderer;
         router = new Router(assetRenderer);
         terrainMap = mapRenderer.mapTiles.terrainMap;
+        mapTiles = mapRenderer.mapTiles;
     }
 
     public void TimeStep(Vector<Asset> assets) {
