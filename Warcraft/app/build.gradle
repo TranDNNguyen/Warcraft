@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.android.ecs160.viewport_sample"
+        applicationId "com.android.ecs160.warcraft"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1

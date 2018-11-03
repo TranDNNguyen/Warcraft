@@ -28,7 +28,7 @@ public class Asset {
 
     boolean isSelected = false;
 
-    enum EAssetAction{
+    enum EAssetAction {
         None(0),
         Walk(1);
         //TODO: add more
@@ -39,12 +39,12 @@ public class Asset {
             idx = i;
         }
 
-        int getIdx(){
+        int getIdx() {
             return idx;
         }
     }
 
-    enum EDirection{
+    enum EDirection {
         North(0),
         NorthEast(1),
         East(2),
@@ -61,12 +61,12 @@ public class Asset {
             idx = i;
         }
 
-        int getIdx(){
+        int getIdx() {
             return idx;
         }
-    };
+    }
 
-    enum EAssetType{
+    enum EAssetType {
         None(0),
         Peasant(1),
         Footman(2),
@@ -90,15 +90,16 @@ public class Asset {
             idx = i;
         }
 
-        int getIdx(){
+        int getIdx() {
             return idx;
         }
-    };
+    }
+
+    ;
 
 
-
-    public void setAction(EAssetAction assetAction, int x, int y){
-        if(assetAction == EAssetAction.Walk){
+    public void setAction(EAssetAction assetAction, int x, int y) {
+        if (assetAction == EAssetAction.Walk) {
             action = assetAction;
             x2 = x;
             y2 = y;
@@ -108,29 +109,29 @@ public class Asset {
     /*
      * Assets draws itself on the canvas it is given
      */
-    public void drawAsset(Canvas canvas, int xOffset, int yOffset){
+    public void drawAsset(Canvas canvas, int xOffset, int yOffset) {
         Bitmap resizedAsetBitmap = Bitmap.createScaledBitmap(assetBitmap, TileSize, TileSize, true);
-        canvas.drawBitmap(resizedAsetBitmap, x*TileSize - xOffset, y*TileSize - yOffset, null);
+        canvas.drawBitmap(resizedAsetBitmap, x * TileSize - xOffset, y * TileSize - yOffset, null);
     }
 
-    public void drawAssetSelection(Canvas canvas, int xOffset, int yOffset){
-        if(this.isSelected) {
+    public void drawAssetSelection(Canvas canvas, int xOffset, int yOffset) {
+        if (this.isSelected) {
             Paint paint = new Paint();
 
             paint.setColor(Color.GREEN);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
 
-            canvas.drawRect(x * TileSize - xOffset, y * TileSize - yOffset, x * TileSize - xOffset + TileSize, y * TileSize - yOffset + TileSize,  paint);
+            canvas.drawRect(x * TileSize - xOffset, y * TileSize - yOffset, x * TileSize - xOffset + TileSize, y * TileSize - yOffset + TileSize, paint);
         }
     }
 
-    Asset(EAssetType t, int o, int x, int y){
+    Asset(EAssetType t, int o, int x, int y) {
         //
 
     }
 
-    Asset(String input[]){
+    Asset(String input[]) {
         type = EAssetType.valueOf(input[0]);
         owner = Integer.valueOf(input[1]);
         x = Integer.valueOf(input[2]);

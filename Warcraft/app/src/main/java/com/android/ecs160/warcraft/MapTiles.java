@@ -1,12 +1,12 @@
 package com.android.ecs160.warcraft;
+
 import android.content.Context;
 
-import java.util.Vector;
-import java.io.*;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
-
-
+import java.util.Scanner;
+import java.util.Vector;
 
 
 // MapTiles class
@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class MapTiles {
 
-    enum ETerrainTileType{
+    enum ETerrainTileType {
         None(0),
         DarkGrass(1),
         LightGrass(2),
@@ -36,11 +36,14 @@ public class MapTiles {
             idx = i;
         }
 
-        int getIdx(){
+        int getIdx() {
             return idx;
         }
-    };
-    enum ETileType{
+    }
+
+    ;
+
+    enum ETileType {
         None(0),
         DarkGrass(1),
         LightGrass(2),
@@ -59,10 +62,13 @@ public class MapTiles {
         ETileType(int i) {
             idx = i;
         }
-        int getIdx(){
+
+        int getIdx() {
             return idx;
         }
-    };
+    }
+
+    ;
 
     //file with a .map extension
     String fileName;
@@ -74,29 +80,28 @@ public class MapTiles {
     String mapDir = "/Users/jugaljain/AndroidStudioProjects/ECS160Android/SplashScreenDemo/app/src/main/assets/";
 
     //2D array denoting a map consisting of tile types
-    Vector< Vector<ETerrainTileType>> terrainMap;
-    Vector< Vector<String>> tileSet;
-    Vector< Vector<Integer>> idxMap;
+    Vector<Vector<ETerrainTileType>> terrainMap;
+    Vector<Vector<String>> tileSet;
+    Vector<Vector<Integer>> idxMap;
 
     //Parsed lines read from .map file
-    Vector< Vector<String>> stringMap;
+    Vector<Vector<String>> stringMap;
 
     private int mapWidth;
     private int mapHeight;
 
     private HashMap<String, Integer> mapToTileType;
 
-    public MapTiles(String mapFileName, Context context){
+    public MapTiles(String mapFileName, Context context) {
         fileName = mapFileName;
         terrainMap = new Vector<Vector<ETerrainTileType>>();
         mapToTileType = new HashMap<String, Integer>();
-        tileSet = new Vector< Vector<String>>();
+        tileSet = new Vector<Vector<String>>();
         idxMap = new Vector<Vector<Integer>>();
 
         try {
             mapParse(fileName, context);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -119,9 +124,6 @@ public class MapTiles {
     }
 
 
-
-
-
     public void mapParse(String fileName, Context context) throws IOException {
         InputStream is = context.getAssets().open(fileName);
         Scanner scanner = new Scanner(is);
@@ -133,7 +135,7 @@ public class MapTiles {
         mapWidth = Integer.parseInt(tmpBuffer[0]);
         mapHeight = Integer.parseInt(tmpBuffer[1]);
         line = skipCommentLines(scanner);
-        for(int i = 0; i < mapHeight; i++) {
+        for (int i = 0; i < mapHeight; i++) {
             processMapLine(line);
             line = scanner.nextLine();
         }
@@ -146,39 +148,49 @@ public class MapTiles {
     }
 
 
-    public String skipCommentLines(Scanner scanner){
-        while(scanner.hasNextLine()){
+    public String skipCommentLines(Scanner scanner) {
+        while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.charAt(0) != '#'){
+            if (line.charAt(0) != '#') {
                 return line;
             }
         }
         return "";
     }
 
-    public void processMapLine(String line){
+    public void processMapLine(String line) {
         Vector<ETerrainTileType> mapLine = new Vector<ETerrainTileType>();
-        for(int i = 0; i < mapWidth; i++){
-            switch (line.charAt(i)){
-                case 'G':   mapLine.add(ETerrainTileType.DarkGrass);
+        for (int i = 0; i < mapWidth; i++) {
+            switch (line.charAt(i)) {
+                case 'G':
+                    mapLine.add(ETerrainTileType.DarkGrass);
                     break;
-                case 'g':   mapLine.add(ETerrainTileType.LightGrass);
+                case 'g':
+                    mapLine.add(ETerrainTileType.LightGrass);
                     break;
-                case 'D':   mapLine.add(ETerrainTileType.DarkDirt);
+                case 'D':
+                    mapLine.add(ETerrainTileType.DarkDirt);
                     break;
-                case 'd':   mapLine.add(ETerrainTileType.LightDirt);
+                case 'd':
+                    mapLine.add(ETerrainTileType.LightDirt);
                     break;
-                case 'R':   mapLine.add(ETerrainTileType.Rock);
+                case 'R':
+                    mapLine.add(ETerrainTileType.Rock);
                     break;
-                case 'r':   mapLine.add(ETerrainTileType.RockPartial);
+                case 'r':
+                    mapLine.add(ETerrainTileType.RockPartial);
                     break;
-                case 'F':   mapLine.add(ETerrainTileType.Forest);
+                case 'F':
+                    mapLine.add(ETerrainTileType.Forest);
                     break;
-                case 'f':   mapLine.add(ETerrainTileType.ForestPartial);
+                case 'f':
+                    mapLine.add(ETerrainTileType.ForestPartial);
                     break;
-                case 'W':   mapLine.add(ETerrainTileType.DeepWater);
+                case 'W':
+                    mapLine.add(ETerrainTileType.DeepWater);
                     break;
-                case 'w':   mapLine.add(ETerrainTileType.ShallowWater);
+                case 'w':
+                    mapLine.add(ETerrainTileType.ShallowWater);
                     break;
                 default:
                     /*
@@ -201,23 +213,23 @@ public class MapTiles {
         String line = skipCommentLines(scanner);
         line = skipCommentLines(scanner);
         line = skipCommentLines(scanner);
-        for(int i = 0; i < 293; i++){
+        for (int i = 0; i < 293; i++) {
             mapToTileType.put(line, i);
-            if(scanner.hasNextLine()){
+            if (scanner.hasNextLine()) {
                 line = scanner.nextLine();
             }
         }
     }
 
     //
-    public void buildTileSet(){
+    public void buildTileSet() {
 
     }
 
-    public void createIndexMap(){
-        for(int i = 0; i < mapHeight; i++){
+    public void createIndexMap() {
+        for (int i = 0; i < mapHeight; i++) {
             Vector<Integer> line = new Vector<Integer>();
-            for(int j = 0; j < mapWidth; j++){
+            for (int j = 0; j < mapWidth; j++) {
                 line.add(getTileIdx(terrainMap.get(i).get(j)));
             }
             idxMap.add(line);
@@ -228,8 +240,8 @@ public class MapTiles {
     }
 
     //Placeholder function, only returns one subtype of tile for each tileType, re-implement later
-    public int getTileIdx(ETerrainTileType tileType){
-        switch(tileType) {
+    public int getTileIdx(ETerrainTileType tileType) {
+        switch (tileType) {
             case DarkGrass:
                 return mapToTileType.get("dark-grass-F-0");
             case LightGrass:

@@ -51,13 +51,10 @@ public class ViewportView extends ImageView {
     int GLOBAL_TOUCH_CURRENT_POSITION_X = 0;
 
 
-
-
     String actionString = "Touch Location (" + 10 + "," + 10 + ")";
     TextView resultTV;
-    private int viewportWidth =800;
-    private int viewportHeight=600;
-
+    private int viewportWidth = 800;
+    private int viewportHeight = 600;
 
 
     private static final int INVALID_POINTER_ID = -1;
@@ -81,10 +78,9 @@ public class ViewportView extends ImageView {
 
     }
 
-    public void setResultTextView(TextView tv){
+    public void setResultTextView(TextView tv) {
         resultTV = tv;
     }
-
 
 
     /*
@@ -200,13 +196,13 @@ public class ViewportView extends ImageView {
     @Override
     public void onDraw(Canvas canvas) {
 
-      //  canvas.save();
+        //  canvas.save();
 
-      //  canvas.translate(mPosX, mPosY);  // Detail : https://stackoverflow.com/questions/5789813/what-does-canvas-translate-do
+        //  canvas.translate(mPosX, mPosY);  // Detail : https://stackoverflow.com/questions/5789813/what-does-canvas-translate-do
 
 
         super.onDraw(canvas);
-     //   canvas.restore();
+        //   canvas.restore();
 
         /*
 

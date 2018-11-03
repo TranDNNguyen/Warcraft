@@ -5,7 +5,7 @@ import java.util.Vector;
 public class AssetActionRenderer {
 
     public static void TimeStep(Vector<Asset> assets) {
-        for(Asset asset : assets) {
+        for (Asset asset : assets) {
             switch (asset.action) {
                 case None:
                     continue;
@@ -16,11 +16,11 @@ public class AssetActionRenderer {
     }
 
 
-    static void Walk(Asset asset){
+    static void Walk(Asset asset) {
         Asset.EDirection travelDirection;
         travelDirection = Router.FindPath(asset, asset.x2, asset.y2);
 
-        switch(travelDirection){
+        switch (travelDirection) {
             case North:
             case NorthWest:
             case NorthEast:
@@ -31,7 +31,7 @@ public class AssetActionRenderer {
             case SouthEast:
                 asset.y++;
         }
-        switch(travelDirection){
+        switch (travelDirection) {
             case West:
             case SouthWest:
             case NorthWest:
@@ -45,7 +45,7 @@ public class AssetActionRenderer {
 
         AssetRenderer.updateAssetFrame(asset);
 
-        if (asset.x == asset.x2 && asset.y == asset.y2){
+        if (asset.x == asset.x2 && asset.y == asset.y2) {
             asset.action = Asset.EAssetAction.None;
         }
     }

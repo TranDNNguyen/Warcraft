@@ -20,18 +20,17 @@ public class AssetRenderer {
 
     //@Override
     //protected void onCreate(Bundle savedInstanceState) {
-        //super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_asset);
+    //super.onCreate(savedInstanceState);
+    //setContentView(R.layout.activity_asset);
 
 
-    public AssetRenderer(Context context, Resources res){
+    public AssetRenderer(Context context, Resources res) {
         //get initial assets from loader
         try {
             //AssetLoader.setBitmaps(getResources());
             assets = AssetLoader.assetParse("test.map", context, res);
-           // selectedAsset = assets.get(0);
-        }
-        catch (IOException e) {
+            // selectedAsset = assets.get(0);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -53,50 +52,50 @@ public class AssetRenderer {
     }
 
     //x y: map coordinate offset in pixel
-    public void selectAssetOnLocation(int tileX, int tileY, int x, int y){
+    public void selectAssetOnLocation(int tileX, int tileY, int x, int y) {
         Asset selected = null;
-        for(Asset asset : assets) {
+        for (Asset asset : assets) {
             if (asset == null) {
                 System.out.println("EMPTY ASSET\n");
                 continue;
             }
-            Log.i("assetRenderer", "assetType="+asset.type +" ("+asset.x+","+asset.y+")");
-            if(asset.x == tileX && asset.y == tileY){
+            Log.i("assetRenderer", "assetType=" + asset.type + " (" + asset.x + "," + asset.y + ")");
+            if (asset.x == tileX && asset.y == tileY) {
                 asset.isSelected = true;//!asset.isSelected;
                 selected = asset;
-                Log.i("assetRenderer", "assetType="+asset.type +" = "+asset.isSelected);
+                Log.i("assetRenderer", "assetType=" + asset.type + " = " + asset.isSelected);
 
                 break;
             }
         }
-        if(selected != null){
-            renderAssets(x,y);
+        if (selected != null) {
+            renderAssets(x, y);
         }
     }
 
     /*
      * Takes in pixel coordinates and returns asset at that location if there is one
      * assumes that the pixel coordinates are relative to the map, not the screen
-    */
+     */
     //xPos: the absolute coordinates on the screen
     //currX: the coorinates where you've touched the screen within the view
     //values[]: will be location of xy coordinate of the view relative to the layout
-    public Asset selectAsset(int xPos, int yPos, int values[], int currX, int currY){
-    //public Asset selectAsset(int x, int y) {
+    public Asset selectAsset(int xPos, int yPos, int values[], int currX, int currY) {
+        //public Asset selectAsset(int x, int y) {
 
         //XY in Viewport
-        int viewX = (xPos-values[0]);
-        int viewY = (yPos-values[1]);
-        if(viewX < 0) viewX = 0;
-        if(viewY < 0) viewY = 0;
+        int viewX = (xPos - values[0]);
+        int viewY = (yPos - values[1]);
+        if (viewX < 0) viewX = 0;
+        if (viewY < 0) viewY = 0;
 
         //XY in Tile
-        int tileX = (currX+viewX)/tilePixelSize;
-        int tileY = (currY+viewY)/tilePixelSize;
+        int tileX = (currX + viewX) / tilePixelSize;
+        int tileY = (currY + viewY) / tilePixelSize;
 
         //tileIndicies = getTileIndex(x, y);
         lastSelectedAsset = selectedAsset;
-        if(lastSelectedAsset != null) {
+        if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
         }
         selectedAsset = getAsset(tileX, tileY);
@@ -104,13 +103,13 @@ public class AssetRenderer {
         //selection - drawing box
         //selectedAsset.isSelected = !selectedAsset.isSelected;
 
-        if(selectedAsset != null){ //an asset was selected
+        if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
-        } else if(lastSelectedAsset != null) {
-            if(lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
+        } else if (lastSelectedAsset != null) {
+            if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
-                lastSelectedAsset.isSelected= false;
+                lastSelectedAsset.isSelected = false;
 
             }//TODO
         }
@@ -144,8 +143,8 @@ public class AssetRenderer {
         Bitmap result = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(result);
-        for(Asset asset : assets){
-            if(asset == null){
+        for (Asset asset : assets) {
+            if (asset == null) {
                 System.out.println("EMPTY ASSET\n");
                 continue;
             }
@@ -157,8 +156,8 @@ public class AssetRenderer {
             int h = TileSize; //asset.assetHeight;
 
             //TODO fix this to make it less sphagetti
-            if((x*w - widthOffset) - 3*w > screenWidth || (y*h - heightOffset) - 3*w > screenHeight
-                    || (x*w) + 3*w < widthOffset || (y*h) + 3*w < heightOffset){
+            if ((x * w - widthOffset) - 3 * w > screenWidth || (y * h - heightOffset) - 3 * w > screenHeight
+                    || (x * w) + 3 * w < widthOffset || (y * h) + 3 * w < heightOffset) {
                 continue;
             }//image won't fit on bitmap, so it is out of view
 
@@ -171,16 +170,16 @@ public class AssetRenderer {
     }
 
 
-    public static void updateAssetFrame(Asset asset){//}, int newX, int newY){
+    public static void updateAssetFrame(Asset asset) {//}, int newX, int newY){
         int currentDir = 0;
         //int direction[] = {0, 5, 10, 15, 20, 25, 30, 35};
 
 
         //calcDirection(asset, newX, newY);
 
-        if(asset.type == Asset.EAssetType.Peasant){
+        if (asset.type == Asset.EAssetType.Peasant) {
             asset.assetBitmap = AssetLoader.peasantImages[asset.direction.getIdx() * 5];
-        } else if(asset.type == Asset.EAssetType.Footman){
+        } else if (asset.type == Asset.EAssetType.Footman) {
             asset.assetBitmap = AssetLoader.footmanImages[asset.direction.getIdx() * 5];
         }
     }

@@ -6,7 +6,7 @@ public class Router {
 
     //TODO should take asset, asset target, and asset decorated map
     //for now I will treat the map as flat and totally traversable.
-    public static Asset.EDirection FindPath(Asset asset, int destX, int destY){
+    public static Asset.EDirection FindPath(Asset asset, int destX, int destY) {
 
 
         //for now, this is all we need to do, since the whole map is traversable
@@ -30,46 +30,37 @@ public class Router {
         deltaX = destX - assetX;
         deltaY = assetY - destY;
         //calc left or right
-        if(deltaX < 0) {
+        if (deltaX < 0) {
             left = true;
-        }
-        else if(deltaX > 0) {
+        } else if (deltaX > 0) {
             right = true;
         }
         //calc up or down
         if (deltaY < 0) {
             down = true;
-        }
-        else if(deltaY > 0) {
+        } else if (deltaY > 0) {
             up = true;
         }
         //change global direction variable accordingly
-        if(right == true) {
-            if (up == true){
+        if (right == true) {
+            if (up == true) {
                 currentDir = Asset.EDirection.NorthEast;
-            }
-            else if (down = true) {
+            } else if (down = true) {
                 currentDir = Asset.EDirection.SouthEast;
-            }
-            else {
+            } else {
                 currentDir = Asset.EDirection.East;
             }
-        }
-        else if(left == true) {
-            if(up == true){
+        } else if (left == true) {
+            if (up == true) {
                 currentDir = Asset.EDirection.NorthWest;
-            }
-            else if(down = true) {
+            } else if (down = true) {
                 currentDir = Asset.EDirection.SouthWest;
-            }
-            else {
+            } else {
                 currentDir = Asset.EDirection.West;
             }
-        }
-        else if (up == true){
+        } else if (up == true) {
             currentDir = Asset.EDirection.North;
-        }
-        else if (down = true) {
+        } else if (down = true) {
             currentDir = Asset.EDirection.South;
         }
 

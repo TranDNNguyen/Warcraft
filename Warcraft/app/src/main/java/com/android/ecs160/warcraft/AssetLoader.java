@@ -27,9 +27,9 @@ public class AssetLoader {
 
 
     /*
-    * Takes asset information from the map file, and compiles a vetor
-    * of assets that are part of the game upon launch
-    */
+     * Takes asset information from the map file, and compiles a vetor
+     * of assets that are part of the game upon launch
+     */
     public static Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
         InputStream is = context.getAssets().open(fileName);
         Scanner scanner = new Scanner(is);
@@ -42,17 +42,17 @@ public class AssetLoader {
         Bitmap peasant = BitmapFactory.decodeResource(res, R.drawable.peasant);
         Bitmap footman = BitmapFactory.decodeResource(res, R.drawable.footman);
 
-        int peasantHeight = peasant.getHeight()/172; //used for indexing bitmap
+        int peasantHeight = peasant.getHeight() / 172; //used for indexing bitmap
         int peasantWidth = peasant.getWidth();
-        int footmanHeight = footman.getHeight()/92; //used for indexing bitmap
+        int footmanHeight = footman.getHeight() / 92; //used for indexing bitmap
         int footmanWidth = footman.getWidth();
 
-        for(int i = 0; i < 172; i++){
-            peasantImages[i] = Bitmap.createBitmap(peasant, 0, peasantHeight*i, peasantWidth, peasantHeight);
+        for (int i = 0; i < 172; i++) {
+            peasantImages[i] = Bitmap.createBitmap(peasant, 0, peasantHeight * i, peasantWidth, peasantHeight);
         }//parses initial bitmap into smaller sprite-sized bitmaps
         peasant = null;
-        for(int i = 0; i < 92; i++){
-            footmanImages[i] = Bitmap.createBitmap(footman, 0, footmanHeight*i, footmanWidth, footmanHeight);
+        for (int i = 0; i < 92; i++) {
+            footmanImages[i] = Bitmap.createBitmap(footman, 0, footmanHeight * i, footmanWidth, footmanHeight);
         }//parses initial bitmap into smaller sprite-sized bitmaps
         footman = null; //XXX
 
@@ -64,7 +64,7 @@ public class AssetLoader {
 
         assets = new Vector<Asset>();
 
-        for(int i = 0; i < numAssets; i++){
+        for (int i = 0; i < numAssets; i++) {
             line = scanner.nextLine();
             temp = line.split(" ");
             Asset newAsset = new Asset(temp);
@@ -78,27 +78,27 @@ public class AssetLoader {
     /*
      * sets the asset's internal bitmap based on the images stored in the loader
      */
-    public static void setAssetBitmap(Asset a, Resources res){
+    public static void setAssetBitmap(Asset a, Resources res) {
         //TODO: add other unit types
 
-        switch(a.type){
+        switch (a.type) {
             case Peasant:
                 //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.peasant);
                 a.assetWidth = peasantImages[0].getWidth();
                 a.assetHeight = peasantImages[0].getHeight();
-                a.assetBitmap = Bitmap.createBitmap(peasantImages[0], 0,0, a.assetWidth,a.assetHeight);
+                a.assetBitmap = Bitmap.createBitmap(peasantImages[0], 0, 0, a.assetWidth, a.assetHeight);
                 break;
             case GoldMine:
                 //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.gold_mine);
                 a.assetWidth = goldMineImages.getWidth();
-                a.assetHeight = goldMineImages.getHeight()/2;
-                a.assetBitmap = Bitmap.createBitmap(goldMineImages, 0,0, a.assetWidth,a.assetHeight);
+                a.assetHeight = goldMineImages.getHeight() / 2;
+                a.assetBitmap = Bitmap.createBitmap(goldMineImages, 0, 0, a.assetWidth, a.assetHeight);
                 break;
             case Footman:
                 //a.assetImages = BitmapFactory.decodeResource(res, R.drawable.footman);
                 a.assetWidth = footmanImages[0].getWidth();
                 a.assetHeight = footmanImages[0].getHeight();
-                a.assetBitmap = Bitmap.createBitmap(footmanImages[0], 0,0, a.assetWidth,a.assetHeight);
+                a.assetBitmap = Bitmap.createBitmap(footmanImages[0], 0, 0, a.assetWidth, a.assetHeight);
                 break;
             default:
                 break;
@@ -108,16 +108,15 @@ public class AssetLoader {
     /*
      * skips excess information in the map file
      */
-    public static String skipToNumAssets(Scanner scanner){
-        while(scanner.hasNextLine()){
+    public static String skipToNumAssets(Scanner scanner) {
+        while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.equals("# Number of assets")){
+            if (line.equals("# Number of assets")) {
                 return scanner.nextLine();
             }
         }
         return "";
     }
-
 
 
 }

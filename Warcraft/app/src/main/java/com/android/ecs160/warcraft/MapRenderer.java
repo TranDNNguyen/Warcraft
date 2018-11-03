@@ -29,7 +29,7 @@ public class MapRenderer {
 
 
     //init. = init() + loadMapdata()
-    MapRenderer(Context c){
+    MapRenderer(Context c) {
         mContext = c;
         //mapTiles = new MapTiles("hedges.map", mContext);
         mapTiles = new MapTiles("test.map", mContext);
@@ -37,7 +37,8 @@ public class MapRenderer {
         //Log.e("MapError", "Failed to setup MapRenderer");
 
     }
-    MapRenderer(Context c, int w, int h){
+
+    MapRenderer(Context c, int w, int h) {
         mContext = c;
         mapTiles = new MapTiles("test.map", mContext);
         generateTileSet();
@@ -47,7 +48,7 @@ public class MapRenderer {
         generateMap();
     }
 
-    public void setViewportSize(int w, int h){
+    public void setViewportSize(int w, int h) {
         viewWidth = w;
         viewHeight = h;
     }
@@ -57,19 +58,19 @@ public class MapRenderer {
     //  Maybe we can draw map once, and just copy the viewport region of map, using Canvas.
     //
     //REQUIRED ONE  // = drawTerrain() in Original Game Code
-    public void generateMap(){
+    public void generateMap() {
 
         int tileH = mapTiles.getMapHeight(), tileW = mapTiles.getMapWidth();
 
-        terrainMap = Bitmap.createBitmap(tileW*TileSize, tileH*TileSize, Bitmap.Config.ARGB_8888);
+        terrainMap = Bitmap.createBitmap(tileW * TileSize, tileH * TileSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(terrainMap);
         Bitmap temp;
 
         int top = 0;
-        for(int i = 0; i < tileH; i++) {
+        for (int i = 0; i < tileH; i++) {
             int left = 0;
             for (int j = 0; j < tileW; j++) {
-                temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)],TileSize, TileSize, false);
+                temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)], TileSize, TileSize, false);
                 canvas.drawBitmap(temp, top, left, null);
                 left += TileSize;
             }
@@ -102,18 +103,17 @@ public class MapRenderer {
     */
 
 
-
-    public Bitmap drawTerrain(int x, int y){
+    public Bitmap drawTerrain(int x, int y) {
 
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
-        viewArea = Bitmap.createBitmap(terrainMap, x, y, 1000   , 600);
+        viewArea = Bitmap.createBitmap(terrainMap, x, y, 1000, 600);
         //viewArea = Bitmap.createBitmap(scaledMap, x,y,1000,600);
         return viewArea;
     }
 
 
-    public Bitmap drawMinimap(){
+    public Bitmap drawMinimap() {
 
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
@@ -123,39 +123,20 @@ public class MapRenderer {
     }
 
 
-
-
     //REQUIRED // = loadMapTiles()
     public Bitmap[] generateTileSet() {
         terrain = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.terrain);
         Bitmap[] ts = new Bitmap[293];  // = 293 tiles.
-        for(int i = 0; i < 293; i++){
-            tileSet[i] = Bitmap.createBitmap(terrain, 0,32*i,32,32);
+        for (int i = 0; i < 293; i++) {
+            tileSet[i] = Bitmap.createBitmap(terrain, 0, 32 * i, 32, 32);
         }
         //Log.e("MapError", "What is going on?");
         return ts;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //Pocketmon Map Function ...
-    public void loadMapData(){
+    public void loadMapData() {
         terrain = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.map_pokemon);
         //map.setImageBitmap(terrain);  // No Scaling
 
@@ -174,37 +155,36 @@ public class MapRenderer {
 
 
     //TODO - resize the viewport image.
-    public void loadMapData(int viewW, int viewH){
+    public void loadMapData(int viewW, int viewH) {
         this.loadMapData();
         viewWidth = viewW;
         viewHeight = viewH;
     }
 
-    public Bitmap drawMap(){
+    public Bitmap drawMap() {
         return scaledMap;
     }
-
 
 
     //Pokemon Map Function ...
     // Rendering - Required one.
     public Bitmap drawPokemonMap(int x, int y) {
         this.loadMapData();
-        viewArea = Bitmap.createBitmap(scaledMap, x,y,1000,600);
+        viewArea = Bitmap.createBitmap(scaledMap, x, y, 1000, 600);
         return viewArea;
     }
 
     //Pocketmon Map Function ...
     // Rendering - Required one.  //  version 2
     public Bitmap drawPokemonMap(int x, int y, int w, int h) {
-        viewArea = Bitmap.createBitmap(scaledMap, x,y,w,h);
+        viewArea = Bitmap.createBitmap(scaledMap, x, y, w, h);
         return viewArea;
     }
 
     //Boundary Checking Function.
-    public boolean checkBoundary(int x, int y){
-        if(x < 0 || mapWidth < x+viewWidth) return false;
-        if(y < 0 || mapHeight < y+viewHeight) return false;
+    public boolean checkBoundary(int x, int y) {
+        if (x < 0 || mapWidth < x + viewWidth) return false;
+        if (y < 0 || mapHeight < y + viewHeight) return false;
         return true;
     }
 }
