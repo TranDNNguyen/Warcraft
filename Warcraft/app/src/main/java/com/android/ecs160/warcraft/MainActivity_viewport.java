@@ -49,7 +49,7 @@ public class MainActivity_viewport extends AppCompatActivity {
         //Map Renderer
         mapRenderer = new MapRenderer(this, 1000, 600);
         assetRenderer = new AssetRenderer(this, getResources());
-        assetActionRenderer = new AssetActionRenderer(assetRenderer);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {

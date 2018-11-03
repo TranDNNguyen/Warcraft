@@ -12,7 +12,8 @@ import android.graphics.Canvas;
 
 public class MapRenderer {
 
-    private MapTiles mapTiles;// = new MapTiles("hedges.map", mContext);
+    //private
+    public MapTiles mapTiles;// = new MapTiles("hedges.map", mContext);
     private Bitmap[] tileSet = new Bitmap[293];// = generateTileSet();
 
     int TileSize = 32;// MainActivity_viewport.getTileSize();

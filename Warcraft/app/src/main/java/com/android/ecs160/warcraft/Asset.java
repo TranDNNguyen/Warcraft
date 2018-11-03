@@ -18,6 +18,8 @@ public class Asset {
     //int direction; //TODO: use enum instead
     EDirection direction;
     EAssetAction action;
+    PlayerColor color;
+
 
     Vector<Integer> pixelCoordinates;
     //Bitmap assetImages;
@@ -25,6 +27,7 @@ public class Asset {
     int assetWidth;
     int assetHeight;
     int TileSize = MainActivity_viewport.getTileSize();
+    int size;
 
     boolean isSelected = false;
 
@@ -139,6 +142,29 @@ public class Asset {
         }
     }
 
+    enum PlayerColor{
+        Red(0),
+        Blue(1),
+        Green(2),
+        Purple(3),
+        Orange(4),
+        Yellow(5),
+        Black(6),
+        White(7),
+        None(8);
+
+        private int idx;
+
+        PlayerColor(int i) {
+            idx = i;
+        }
+
+        int getIdx() {
+            return idx;
+        }
+    }
+
+
     enum EAssetType {
         None(0),
         Peasant(1),
@@ -234,5 +260,6 @@ public class Asset {
         y = Integer.valueOf(input[3]);
         direction = EDirection.North;
         action = EAssetAction.None;
+        color = PlayerColor.Red;
     }
 }

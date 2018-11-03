@@ -1,15 +1,17 @@
 package com.android.ecs160.warcraft;
+
 import android.content.Context;
 
-import java.util.Random;
-import java.util.Vector;
-import java.io.*;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Vector;
 
 public class MapTiles {
 
-    enum ETerrainTileType{
+    enum ETerrainTileType {
         None(0),
         DarkGrass(1),
         LightGrass(2),
@@ -29,11 +31,14 @@ public class MapTiles {
             idx = i;
         }
 
-        int getIdx(){
+        int getIdx() {
             return idx;
         }
-    };
-    enum ETileType{
+    }
+
+    ;
+
+    enum ETileType {
         None(0),
         DarkGrass(1),
         LightGrass(2),
@@ -52,10 +57,13 @@ public class MapTiles {
         ETileType(int i) {
             idx = i;
         }
-        int getIdx(){
+
+        int getIdx() {
             return idx;
         }
-    };
+    }
+
+    ;
 
     //file with a .map extension
     private String fileName;
@@ -64,7 +72,7 @@ public class MapTiles {
     private String mapName;
 
     //2D array denoting a map consisting of tile types
-    Vector< Vector<ETerrainTileType>> terrainMap;
+    public Vector<Vector<ETerrainTileType>> terrainMap;
     // feeds into
     private HashMap<ETerrainTileType, String> typeToName;
     //which feeds into
@@ -72,13 +80,13 @@ public class MapTiles {
     //which feeds into
     private HashMap<String, Integer> stringToIdx;
     //which lets us create
-    Vector< Vector<Integer>> idxMap;
+    Vector<Vector<Integer>> idxMap;
 
-    private int mapWidth;
-    private int mapHeight;
+    private static int mapWidth;
+    private static int mapHeight;
 
 
-    public MapTiles(String mapFileName, Context context){
+    public MapTiles(String mapFileName, Context context) {
         fileName = mapFileName;
 
         terrainMap = new Vector<Vector<ETerrainTileType>>();
@@ -89,20 +97,18 @@ public class MapTiles {
         nameToStrings = new HashMap<String, Vector<String>>();
 
 
-
         try {
             mapParse(fileName, context);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public int getMapWidth() {
+    public static int getMapWidth() {
         return mapWidth;
     }
 
-    public int getMapHeight() {
+    public static int getMapHeight() {
         return mapHeight;
     }
 
@@ -128,7 +134,7 @@ public class MapTiles {
         mapWidth = Integer.parseInt(tmpBuffer[0]);
         mapHeight = Integer.parseInt(tmpBuffer[1]);
         line = skipCommentLines(scanner);
-        for(int i = 0; i < mapHeight; i++) {
+        for (int i = 0; i < mapHeight; i++) {
             processMapLine(line);
             line = scanner.nextLine();
         }
@@ -137,13 +143,26 @@ public class MapTiles {
         createIndexMap();
     }
 
+    public static boolean isTraversable(ETerrainTileType tileType) {
+        switch (tileType) {
+            case None:
+            case DarkGrass:
+            case LightGrass:
+            case DarkDirt:
+            case LightDirt:
+            //case Rubble:
+            //case Stump:
+                return true;
+            default:
+                return false;
+        }
+    }
 
 
-
-    public String skipCommentLines(Scanner scanner){
-        while(scanner.hasNextLine()){
+    public String skipCommentLines(Scanner scanner) {
+        while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if(line.charAt(0) != '#'){
+            if (line.charAt(0) != '#') {
                 return line;
             }
         }
@@ -151,29 +170,39 @@ public class MapTiles {
 
     }
 
-    public void processMapLine(String line){
+    public void processMapLine(String line) {
         Vector<ETerrainTileType> mapLine = new Vector<ETerrainTileType>();
-        for(int i = 0; i < mapWidth; i++){
-            switch (line.charAt(i)){
-                case 'G':   mapLine.add(ETerrainTileType.DarkGrass);
+        for (int i = 0; i < mapWidth; i++) {
+            switch (line.charAt(i)) {
+                case 'G':
+                    mapLine.add(ETerrainTileType.DarkGrass);
                     break;
-                case 'g':   mapLine.add(ETerrainTileType.LightGrass);
+                case 'g':
+                    mapLine.add(ETerrainTileType.LightGrass);
                     break;
-                case 'D':   mapLine.add(ETerrainTileType.DarkDirt);
+                case 'D':
+                    mapLine.add(ETerrainTileType.DarkDirt);
                     break;
-                case 'd':   mapLine.add(ETerrainTileType.LightDirt);
+                case 'd':
+                    mapLine.add(ETerrainTileType.LightDirt);
                     break;
-                case 'R':   mapLine.add(ETerrainTileType.Rock);
+                case 'R':
+                    mapLine.add(ETerrainTileType.Rock);
                     break;
-                case 'r':   mapLine.add(ETerrainTileType.RockPartial);
+                case 'r':
+                    mapLine.add(ETerrainTileType.RockPartial);
                     break;
-                case 'F':   mapLine.add(ETerrainTileType.Forest);
+                case 'F':
+                    mapLine.add(ETerrainTileType.Forest);
                     break;
-                case 'f':   mapLine.add(ETerrainTileType.ForestPartial);
+                case 'f':
+                    mapLine.add(ETerrainTileType.ForestPartial);
                     break;
-                case 'W':   mapLine.add(ETerrainTileType.DeepWater);
+                case 'W':
+                    mapLine.add(ETerrainTileType.DeepWater);
                     break;
-                case 'w':   mapLine.add(ETerrainTileType.ShallowWater);
+                case 'w':
+                    mapLine.add(ETerrainTileType.ShallowWater);
                     break;
                 default:
                     /*
@@ -192,7 +221,7 @@ public class MapTiles {
 
     //Helper function to remove the last digit and hyphen from a tile variant name
     //for input "light-grass-F-0" should return "light-grass-F"
-    private String stripLastDigit(String input){
+    private String stripLastDigit(String input) {
 //        String out;
 //        int idx;
 //        for(idx = input.length()-1; idx >= 0; idx--){
@@ -212,20 +241,19 @@ public class MapTiles {
         String line = skipCommentLines(scanner);
         line = skipCommentLines(scanner);
         line = skipCommentLines(scanner);
-        for(int i = 0; i < 293; i++){
+        for (int i = 0; i < 293; i++) {
             stringToIdx.put(line, i);
             String key = stripLastDigit(line);
-            System.out.print(key + " " + line +"\n");
-            if(nameToStrings.containsKey(key)){
+            System.out.print(key + " " + line + "\n");
+            if (nameToStrings.containsKey(key)) {
                 nameToStrings.get(key).add(line);
-            }
-            else{
+            } else {
                 Vector<String> val = new Vector<String>();
                 val.add(line);
                 nameToStrings.put(key, val);
                 //System.out.print("entered");
             }
-            if(scanner.hasNextLine()){
+            if (scanner.hasNextLine()) {
                 line = scanner.nextLine();
             }
 
@@ -233,15 +261,15 @@ public class MapTiles {
     }
 
     //
-    public void buildTileSet(){
+    public void buildTileSet() {
 
     }
 
 
-    public void createIndexMap(){
-        for(int i = 0; i < mapHeight; i++){
+    public void createIndexMap() {
+        for (int i = 0; i < mapHeight; i++) {
             Vector<Integer> line = new Vector<Integer>();
-            for(int j = 0; j < mapWidth; j++){
+            for (int j = 0; j < mapWidth; j++) {
                 line.add(getTileIdx(terrainMap.get(i).get(j), i, j));
             }
             idxMap.add(line);
@@ -249,9 +277,9 @@ public class MapTiles {
     }
 
     //Placeholder function, only returns one subtype of tile for each tileType, re-implement later
-    public int getTileIdx(ETerrainTileType tileType, int y, int x){
+    public int getTileIdx(ETerrainTileType tileType, int y, int x) {
 
-        if(x == mapWidth -1 || y == mapHeight -1) {
+        if (x == mapWidth - 1 || y == mapHeight - 1) {
             String tileName = typeToName.get(tileType);
             tileName += "-F";
             int max = nameToStrings.get(tileName).size();
@@ -262,9 +290,9 @@ public class MapTiles {
         }
 
         ETerrainTileType UL = terrainMap.get(y).get(x);
-        ETerrainTileType UR = terrainMap.get(y).get(x+1);
-        ETerrainTileType LL = terrainMap.get(y+1).get(x);
-        ETerrainTileType LR = terrainMap.get(y+1).get(x+1);
+        ETerrainTileType UR = terrainMap.get(y).get(x + 1);
+        ETerrainTileType LL = terrainMap.get(y + 1).get(x);
+        ETerrainTileType LR = terrainMap.get(y + 1).get(x + 1);
         int typeIndex;
         ETerrainTileType overallType = ETerrainTileType.Max;
 
@@ -272,18 +300,16 @@ public class MapTiles {
         ETerrainTileType typeB = typeA;
 
 
-        if(UR != typeA){
+        if (UR != typeA) {
             typeB = UR;
-        }
-        else if(LL != typeA){
+        } else if (LL != typeA) {
             typeB = LL;
-        }
-        else if(LR != typeA){
+        } else if (LR != typeA) {
             typeB = LR;
         }
 
         //System.out.println(typeA + " " + typeB);
-        if(typeA == typeB){
+        if (typeA == typeB) {
             overallType = typeA;
             String tileName = typeToName.get(overallType);
             tileName += "-F";
@@ -321,7 +347,7 @@ public class MapTiles {
                     || (typeB == ETerrainTileType.Forest && typeA == ETerrainTileType.LightGrass)) {
                 overallType = ETerrainTileType.Forest;
             } else if ((typeA == ETerrainTileType.DeepWater && typeB == ETerrainTileType.ShallowWater)
-                    ||(typeB == ETerrainTileType.DeepWater && typeA == ETerrainTileType.ShallowWater)) {
+                    || (typeB == ETerrainTileType.DeepWater && typeA == ETerrainTileType.ShallowWater)) {
                 overallType = ETerrainTileType.DeepWater;
             }
         }
@@ -344,7 +370,7 @@ public class MapTiles {
         //tileName += "F";
         System.out.println("this is " + tileName);
         int max = nameToStrings.get(tileName).size();
-        if(max > 1) {
+        if (max > 1) {
             var = new Random().nextInt(max);
         } else {
             var = 0;

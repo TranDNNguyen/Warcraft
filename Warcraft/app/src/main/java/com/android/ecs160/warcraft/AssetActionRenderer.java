@@ -5,9 +5,13 @@ import java.util.Vector;
 public class AssetActionRenderer {
 
     AssetRenderer assetRenderer;
+    Router router;
+    Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
 
-    public AssetActionRenderer(AssetRenderer assetRenderer){
+    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer){
         this.assetRenderer = assetRenderer;
+        router = new Router(assetRenderer);
+        terrainMap = mapRenderer.mapTiles.terrainMap;
     }
 
     public void TimeStep(Vector<Asset> assets) {
@@ -23,7 +27,7 @@ public class AssetActionRenderer {
 
     void Walk(Asset asset) {
         Asset.EDirection travelDirection;
-        travelDirection = Router.FindPath(asset, asset.x2, asset.y2);
+        travelDirection = router.FindPath(terrainMap, asset, asset.x2, asset.y2);
         asset.direction = travelDirection;
 
         switch (travelDirection) {
