@@ -12,22 +12,27 @@ import java.util.Vector;
 
 public class AssetLoader {
     private String filename;
-    //private int mapWidth;
-    //private int mapHeight;
     private static int numAssets;
-    private static Vector<Asset> assets;
+    //private static Vector<Asset> assets;
 
     public int tilePixelSize = 32;
 
     //public static Bitmap peasantImages;
     static Bitmap[] peasantImages = new Bitmap[172];
     public static Bitmap goldMineImages;
-    //public static Bitmap footmanImages;
     static Bitmap[] footmanImages = new Bitmap[92];
 
+    //filenames
+    //num frames
+    //width of images?
+
+    int[] R_IDS = {0, R.drawable.peasant, R.drawable.footman,R.drawable.archer, R.drawable.ranger,
+            R.drawable.gold_mine, R.drawable.town_hall, R.drawable.keep, R.drawable.castle,
+            R.drawable.farm, R.drawable.barracks, R.drawable.lumber_mill, R.drawable.blacksmith,
+            R.drawable.scout_tower, R.drawable.guard_tower, R.drawable.cannon_tower};
 
     /*
-     * Takes asset information from the map file, and compiles a vetor
+     * Takes asset information from the map file, and compiles a vector
      * of assets that are part of the game upon launch
      */
     public static Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
@@ -37,7 +42,6 @@ public class AssetLoader {
 
         //Note: We set the bitmaps here instead of in the individual assets because these
         //files are really big and should only be stored once TODO:move to another function? add other units
-
 
         Bitmap peasant = BitmapFactory.decodeResource(res, R.drawable.peasant);
         Bitmap footman = BitmapFactory.decodeResource(res, R.drawable.footman);
@@ -62,7 +66,7 @@ public class AssetLoader {
         numAssets = Integer.valueOf(line);
         line = scanner.nextLine(); //skip the assets comment
 
-        assets = new Vector<Asset>();
+        Vector<Asset>assets = new Vector<Asset>();
 
         for (int i = 0; i < numAssets; i++) {
             line = scanner.nextLine();
@@ -74,6 +78,10 @@ public class AssetLoader {
 
         return assets;
     }
+
+
+
+
 
     /*
      * sets the asset's internal bitmap based on the images stored in the loader
