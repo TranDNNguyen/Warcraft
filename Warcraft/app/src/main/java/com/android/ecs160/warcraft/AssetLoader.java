@@ -13,6 +13,7 @@ import java.util.Vector;
 public class AssetLoader {
     private String filename;
     private static int numAssets;
+    Resources resources;
     //private static Vector<Asset> assets;
 
     public int tilePixelSize = 32;
@@ -26,15 +27,55 @@ public class AssetLoader {
     //num frames
     //width of images?
 
-    int[] R_IDS = {0, R.drawable.peasant, R.drawable.footman,R.drawable.archer, R.drawable.ranger,
+    static int[] R_IDS = {0, R.drawable.peasant, R.drawable.footman,R.drawable.archer, R.drawable.ranger,
             R.drawable.gold_mine, R.drawable.town_hall, R.drawable.keep, R.drawable.castle,
             R.drawable.farm, R.drawable.barracks, R.drawable.lumber_mill, R.drawable.blacksmith,
             R.drawable.scout_tower, R.drawable.guard_tower, R.drawable.cannon_tower};
 
+    static int [] numFrames = {0, 172, 92, 68, 68, 2, 4, 2, 2, 4, 4, 4, 4, 4, 2, 2};
+
+    public Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
+        InputStream is = context.getAssets().open(fileName);
+        Scanner scanner = new Scanner(is);
+        String[] temp = new String[4];
+        resources = res;
+
+        String line = skipToNumAssets(scanner);
+        numAssets = Integer.valueOf(line);
+        line = scanner.nextLine(); //skip the assets comment
+
+        Vector<Asset> assets = new Vector<Asset>();
+
+        for (int i = 0; i < numAssets; i++) {
+            line = scanner.nextLine();
+            temp = line.split(" ");
+            Asset newAsset = new Asset(temp);
+            setAssetBitmap(newAsset, 0);
+            assets.add(newAsset);
+        }//make the specified assets
+
+        return assets;
+    }
+
+
+    public void setAssetBitmap(Asset a, int frame) {
+
+        int index = a.type.getIdx();
+        Bitmap allFrames = BitmapFactory.decodeResource(resources, R_IDS[index]);
+        int imageHeight = allFrames.getHeight() / numFrames[index];
+        int imageWidth = allFrames.getWidth();
+
+        //grab the current requested frame from the appropriate file
+        a.assetBitmap = Bitmap.createBitmap(allFrames, 0, imageHeight * frame, imageWidth, imageHeight);
+        a.assetWidth = imageWidth;
+        a.assetHeight = imageHeight;
+    }
+
+
     /*
      * Takes asset information from the map file, and compiles a vector
      * of assets that are part of the game upon launch
-     */
+
     public static Vector<Asset> assetParse(String fileName, Context context, Resources res) throws IOException {
         InputStream is = context.getAssets().open(fileName);
         Scanner scanner = new Scanner(is);
@@ -79,13 +120,13 @@ public class AssetLoader {
         return assets;
     }
 
+    */
 
 
 
 
     /*
      * sets the asset's internal bitmap based on the images stored in the loader
-     */
     public static void setAssetBitmap(Asset a, Resources res) {
         //TODO: add other unit types
 
@@ -112,6 +153,7 @@ public class AssetLoader {
                 break;
         }
     }
+    */
 
     /*
      * skips excess information in the map file

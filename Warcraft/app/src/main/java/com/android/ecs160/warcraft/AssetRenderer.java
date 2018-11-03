@@ -15,6 +15,7 @@ public class AssetRenderer {
     Asset selectedAsset;
     int TileSize = MainActivity_viewport.getTileSize();
     Asset lastSelectedAsset;
+    AssetLoader assetLoader;
 
     public int tilePixelSize = 32;
 
@@ -28,7 +29,8 @@ public class AssetRenderer {
         //get initial assets from loader
         try {
             //AssetLoader.setBitmaps(getResources());
-            assets = AssetLoader.assetParse("test.map", context, res);
+            assetLoader = new AssetLoader();
+            assets = assetLoader.assetParse("test.map", context, res);
             // selectedAsset = assets.get(0);
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,6 +53,7 @@ public class AssetRenderer {
         return null;
     }
 
+    /*
     //x y: map coordinate offset in pixel
     public void selectAssetOnLocation(int tileX, int tileY, int x, int y) {
         Asset selected = null;
@@ -72,6 +75,9 @@ public class AssetRenderer {
             renderAssets(x, y);
         }
     }
+    */
+
+
 
     /*
      * Takes in pixel coordinates and returns asset at that location if there is one
@@ -163,25 +169,32 @@ public class AssetRenderer {
 
             asset.drawAsset(canvas, widthOffset, heightOffset);
             asset.drawAssetSelection(canvas, widthOffset, heightOffset);
-
         }
 
         return result;
     }
 
-
-    public static void updateAssetFrame(Asset asset) {//}, int newX, int newY){
+    /*
+     * figures out what frame is needed for the asset, and requests it from loader.
+     */
+    public void updateAssetFrame(Asset asset) {//}, int newX, int newY){
         int currentDir = 0;
+        int frameIndex = 0;
         //int direction[] = {0, 5, 10, 15, 20, 25, 30, 35};
-
-
         //calcDirection(asset, newX, newY);
 
-        if (asset.type == Asset.EAssetType.Peasant) {
-            asset.assetBitmap = AssetLoader.peasantImages[asset.direction.getIdx() * 5];
-        } else if (asset.type == Asset.EAssetType.Footman) {
-            asset.assetBitmap = AssetLoader.footmanImages[asset.direction.getIdx() * 5];
-        }
+        if(asset.isBuilding()){
+            frameIndex = 0;
+        }//TODO - add active/inactive states for buildings
+        else if(asset.type == Asset.EAssetType.Peasant){
+            frameIndex = asset.direction.getIdx() * 5; //just for walking + direction
+            //TODO: consider action type
+        }//peasant
+        else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){
+            frameIndex = asset.direction.getIdx() * 5;
+        }//footman or archer
+
+        assetLoader.setAssetBitmap(asset, frameIndex);
     }
 
     //takes in asset and it's new coordinates

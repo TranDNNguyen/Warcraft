@@ -168,7 +168,30 @@ public class Asset {
         }
     }
 
-    ;
+    public boolean isBuilding(){
+        switch (type){
+            case None:
+            case Peasant:
+            case Footman:
+            case Archer:
+            case Ranger:
+                return false;
+            case GoldMine:
+            case TownHall:
+            case Keep:
+            case Castle:
+            case Farm:
+            case Barracks:
+            case LumberMill:
+            case Blacksmith:
+            case ScoutTower:
+            case GuardTower:
+            case CannonTower:
+                return true;
+            default:
+                return false;
+        }
+    }
 
 
     public void setAction(EAssetAction assetAction, int x, int y) {

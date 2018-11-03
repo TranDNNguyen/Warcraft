@@ -23,6 +23,7 @@ public class MainActivity_viewport extends AppCompatActivity {
     ImageView viewport, minimap;
     MapRenderer mapRenderer; //,map1; // for Pokemon Map
     AssetRenderer assetRenderer;
+    AssetActionRenderer assetActionRenderer;
 
     TextView resultTV;
     String resultString;
@@ -46,6 +47,7 @@ public class MainActivity_viewport extends AppCompatActivity {
         //Map Renderer
         mapRenderer = new MapRenderer(this, 1000, 600);
         assetRenderer = new AssetRenderer(this, getResources());
+        assetActionRenderer = new AssetActionRenderer(assetRenderer);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -53,7 +55,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             public void run() {
                 //updateViewport();
 
-                AssetActionRenderer.TimeStep(assetRenderer.assets);
+                assetActionRenderer.TimeStep(assetRenderer.assets);
             }
         }, 0, 100);
 
