@@ -115,12 +115,16 @@ public class Router {
         }
     }
 
-    boolean MovingAway(Asset.EDirection dir1, Asset.EDirection dir2) {
+
+    boolean MovingAway(Asset.EDirection dir1, int dir2) {
+    //boolean MovingAway(Asset.EDirection dir1, Asset.EDirection dir2) {
         int Value;
-        if ((0 > dir2.getIdx()) || (Asset.EDirection.Max.getIdx()) <= dir2.getIdx()) {
+        //if ((0 > dir2.getIdx()) || (Asset.EDirection.Max.getIdx()) <= dir2.getIdx()) {
+        if ((0 > dir2) || (Asset.EDirection.Max.getIdx()) <= dir2) {
             return false;
         }
-        Value = ((Asset.EDirection.Max.getIdx() + dir2.getIdx()) - dir1.getIdx()) % Asset.EDirection.Max.getIdx();
+        //Value = ((Asset.EDirection.Max.getIdx() + dir2.getIdx()) - dir1.getIdx()) % Asset.EDirection.Max.getIdx();
+        Value = ((Asset.EDirection.Max.getIdx() + dir2) - dir1.getIdx()) % Asset.EDirection.Max.getIdx();
         if ((1 >= Value) || (Asset.EDirection.Max.getIdx() - 1 <= Value)) {
             return true;
         }
@@ -134,7 +138,6 @@ public class Router {
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
 
-       /*
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
@@ -152,7 +155,9 @@ public class Router {
         int ResMapYOffsets[] = {-1, 0, 1, 0};
         int DiagCheckXOffset[] = {0, 1, 1, 1, 0, -1, -1, -1};
         int DiagCheckYOffset[] = {-1, -1, 0, 1, 1, 1, 0, -1};
-        int SearchDirectionCount = SearchDirecitons.length / Asset.EDirection.Max.getIdx();
+        int SearchDirectionCount = SearchDirecitons.length; //TODO debug
+
+        // / Asset.EDirection.Max.getIdx();
         Asset.EDirection LastInDirection, DirectionBeforeLast;
         //Queue<SSearchTarget> SearchQueue ;
         Vector<SSearchTarget> SearchQueue = new Vector<>();
@@ -244,7 +249,14 @@ public class Router {
             for (int Index = 0; Index < SearchDirectionCount; Index++) {
                 TempTile.x = CurrentSearch.DX + ResMapXOffsets[Index];
                 TempTile.y = CurrentSearch.DY + ResMapYOffsets[Index];
-                if ((SEARCH_STATUS_UNVISITED == DMap.get(TempTile.y + 1).get(TempTile.x + 1) || MovingAway(SearchDirecitons[Index], Asset.EDirection.values()[SEARCH_STATUS_OCCUPIED - DMap.get(TempTile.y + 1).get(TempTile.x + 1)]))) {
+                if ((SEARCH_STATUS_UNVISITED == DMap.get(TempTile.y + 1).get(TempTile.x + 1)
+                        || MovingAway(SearchDirecitons[Index], SEARCH_STATUS_OCCUPIED - DMap.get(TempTile.y + 1).get(TempTile.x + 1)))) {
+                        //|| MovingAway(SearchDirecitons[Index], Asset.EDirection.values()[SEARCH_STATUS_OCCUPIED - DMap.get(TempTile.y + 1).get(TempTile.x + 1)]))) {
+
+
+
+                    //if((SEARCH_STATUS_UNVISITED == DMap[TempTile.Y() + 1][TempTile.X() + 1])||MovingAway(SearchDirecitons[Index], (EDirection)(SEARCH_STATUS_OCCUPIED - DMap[TempTile.Y() + 1][TempTile.X() + 1]))){
+
                     DMap.get(TempTile.y + 1).set(TempTile.x + 1, Index);
                     MapTiles.ETerrainTileType CurTileType = terrainMap.get(TempTile.x).get(TempTile.y); //resmap.TileType(TempTile.X(), TempTile.Y());
                     //if((CTerrainMap::ETileType::Grass == CurTileType)||(CTerrainMap::ETileType::Dirt == CurTileType)||(CTerrainMap::ETileType::Stump == CurTileType)||(CTerrainMap::ETileType::Rubble == CurTileType)||(CTerrainMap::ETileType::None == CurTileType)){
@@ -300,10 +312,10 @@ public class Router {
         }
 
         return LastInDirection;
-        */
+
 
         //for now, this is all we need to do, since the whole map is traversable
-        return calcDirection(asset, destX, destY);
+        //return calcDirection(asset, destX, destY);
     }
 
 }
