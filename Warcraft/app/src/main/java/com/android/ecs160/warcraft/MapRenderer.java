@@ -12,7 +12,7 @@ import android.graphics.Canvas;
 
 public class MapRenderer {
 
-    //private
+    public boolean updateFailed;
     public MapTiles mapTiles;// = new MapTiles("hedges.map", mContext);
     private Bitmap[] tileSet = new Bitmap[293];// = generateTileSet();
 
@@ -43,6 +43,7 @@ public class MapRenderer {
         mContext = c;
         mapTiles = new MapTiles("test.map", mContext);
         generateTileSet();
+        updateFailed = false;
 
         //viewWidth = 1000;
         //viewHeight = h;
@@ -108,10 +109,19 @@ public class MapRenderer {
 
     public Bitmap drawTerrain(int x, int y) {
 
+        //TODO: boundary checking?
+        //if (currX - dx >= 0) currX -= dx;
+        if(x < 0 || y < 0 || x > 2048-1000 || y > 2048 - 600){
+            updateFailed = true;
+            return null;
+        }
+        // if (currY - dy >= 0) currY -= dy;
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
         viewArea = Bitmap.createBitmap(terrainMap, x, y, 1000, 600);
         //viewArea = Bitmap.createBitmap(scaledMap, x,y,1000,600);
+
+        updateFailed = false;
         return viewArea;
     }
 

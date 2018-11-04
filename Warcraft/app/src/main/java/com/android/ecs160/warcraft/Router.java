@@ -127,10 +127,14 @@ public class Router {
         return false;
     }
 
+    //TODO: DEBUG
+
     //TODO should take asset, asset target, and asset decorated map
     //for now I will treat the map as flat and totally traversable.
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
+
+       /*
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
@@ -230,7 +234,7 @@ public class Router {
         DMap.get(StartY + 1).set(StartX + 1, SEARCH_STATUS_VISITED);
 
         while (true) {
-            if (CurrentTile == TargetTile) {
+            if (CurrentTile.x == TargetTile.x && CurrentTile.y == TargetTile.y) {
                 BestSearch = CurrentSearch;
                 break;
             }
@@ -281,8 +285,6 @@ public class Router {
             CurrentTile.y -= ResMapYOffsets[Index];
         }
 
-        //TODO: left off here
-
         if (DirectionBeforeLast != LastInDirection) {
             //MapTiles.ETileType CurTileType = resmap.TileType(StartX + DiagCheckXOffset[to_underlying(DirectionBeforeLast)], StartY + DiagCheckYOffset[to_underlying(DirectionBeforeLast)]);
             MapTiles.ETerrainTileType CurTileType = terrainMap.get(StartX + DiagCheckXOffset[DirectionBeforeLast.getIdx()]).get(StartY + DiagCheckYOffset[DirectionBeforeLast.getIdx()]);
@@ -298,14 +300,10 @@ public class Router {
         }
 
         return LastInDirection;
+        */
 
         //for now, this is all we need to do, since the whole map is traversable
-        //return calcDirection(asset, destX, destY);
+        return calcDirection(asset, destX, destY);
     }
-
-
-    /*TODO: C++ code to translate/analyze
-
-     */
 
 }
