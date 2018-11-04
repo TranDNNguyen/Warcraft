@@ -232,9 +232,18 @@ public class Asset {
      * Assets draws itself on the canvas it is given
      */
     public void drawAsset(Canvas canvas, int xOffset, int yOffset) {
-        Bitmap resizedAsetBitmap = Bitmap.createScaledBitmap(assetBitmap, TileSize, TileSize, true);
-        canvas.drawBitmap(resizedAsetBitmap, x * TileSize - xOffset, y * TileSize - yOffset, null);
+
+        //NOTE
+        // - Displaying Correct Size for Asset / 11/04/18
+        // - Had to place the image without scaling in the middle of tile (72 px image on 32px tile, centered.)
+        //
+        int assetSize = assetBitmap.getWidth();
+        int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
+        int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
+        Bitmap resizedAsetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
+        canvas.drawBitmap(resizedAsetBitmap, adjustX, adjustY, null);
     }
+
 
     public void drawAssetSelection(Canvas canvas, int xOffset, int yOffset) {
         if (this.isSelected) {
