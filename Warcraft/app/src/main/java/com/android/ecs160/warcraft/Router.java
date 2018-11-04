@@ -137,7 +137,7 @@ public class Router {
     //for now I will treat the map as flat and totally traversable.
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
-
+        
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
