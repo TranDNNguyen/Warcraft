@@ -21,7 +21,6 @@ public class MainActivity_viewport extends AppCompatActivity {
     static int TILE_SIZE = 32;
     static int viewportWidth = 1000;
     static int viewportHeight = 600;
-    boolean updateFailed;
     int dx;
     int dy;
 
@@ -50,11 +49,9 @@ public class MainActivity_viewport extends AppCompatActivity {
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
         //Map Renderer
-        mapRenderer = new MapRenderer(this, 1000, 600);
+        mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
         assetRenderer = new AssetRenderer(this, getResources());
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
-
-        updateFailed = false;
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -81,15 +78,12 @@ public class MainActivity_viewport extends AppCompatActivity {
         //REQUIRED
         //private boolean updateViewport(Message msg) {
         public void handleMessage(Message msg) {
-            Bitmap result = Bitmap.createBitmap(1000, 600, Bitmap.Config.ARGB_8888);
+            Bitmap result = Bitmap.createBitmap(viewportWidth, viewportHeight, Bitmap.Config.ARGB_8888);
 
             Canvas canvas = new Canvas(result);
-            if(currX > 2048 - 1000 || currY > 2048-600 || currX < 0 || currY < 0){
-                updateFailed = true; //debug
-                //currX -= dx;
-                //currY -= dy;
-            }//for debugging
-            else {
+            if(!(currX > MapRenderer.bitmapWidth - viewportWidth
+                    || currY > MapRenderer.bitmapHeight - viewportHeight
+                    || currX < 0 || currY < 0)){//boundary check
                 Bitmap temp = mapRenderer.drawTerrain(currX, currY);
                 if (temp != null) {
                     canvas.drawBitmap(temp, 0, 0, null);  //  Draw Map
@@ -97,8 +91,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                     viewport.setImageBitmap(result);
                     minimap.setImageBitmap(mapRenderer.drawMinimap());
                 }
-
-                updateFailed = false;
             }
            // return true;
         }
@@ -238,10 +230,10 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //TODO
                     //Boundary Check - Put it in the MapRenderer
 
-                    if (currX - dx >= 0 && currX - dx < 2048 - 1000){
+                    if (currX - dx >= 0 && currX - dx < MapRenderer.bitmapWidth - viewportWidth){
                         currX -= dx;
                     }
-                    if (currY - dy >= 0 && currY - dy < 2048 - 600){
+                    if (currY - dy >= 0 && currY - dy < MapRenderer.bitmapHeight - viewportHeight){
                         currY -= dy;
                     }
 
@@ -249,23 +241,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //currY -= dy;
 
                     viewportHandler.obtainMessage(1).sendToTarget();
-
-/*
-                    if(updateFailed){
-                        currX += dx;
-                        currY += dy;
-                    }
-*/
-
-                    /*
-                    if (!updateViewport()) {
-                        // if viewport update failed,
-                        currX += dx;
-                        currY += dy;
-                    }
-
-                     */
-
 
                     mLastTouchX = x;
                     mLastTouchY = y;

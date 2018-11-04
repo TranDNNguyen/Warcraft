@@ -28,6 +28,8 @@ public class MapRenderer {
     private int viewWidth;
     private int viewHeight;
 
+    static public int bitmapWidth;
+    static public int bitmapHeight;
 
     //init. = init() + loadMapdata()
     MapRenderer(Context c) {
@@ -66,7 +68,10 @@ public class MapRenderer {
         mapHeight = mapTiles.getMapHeight();
         mapWidth = mapTiles.getMapWidth();
 
-        terrainMap = Bitmap.createBitmap(tileW * TileSize, tileH * TileSize, Bitmap.Config.ARGB_8888);
+        bitmapWidth = tileW * TileSize;
+        bitmapHeight = tileH * TileSize;
+
+        terrainMap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(terrainMap);
         Bitmap temp;
 
@@ -111,10 +116,12 @@ public class MapRenderer {
 
         //TODO: boundary checking?
         //if (currX - dx >= 0) currX -= dx;
+        /*
         if(x < 0 || y < 0 || x > 2048-1000 || y > 2048 - 600){
             updateFailed = true;
             return null;
         }
+        */
         // if (currY - dy >= 0) currY -= dy;
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
