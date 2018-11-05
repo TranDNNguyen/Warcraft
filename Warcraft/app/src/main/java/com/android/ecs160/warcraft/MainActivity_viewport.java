@@ -41,7 +41,23 @@ public class MainActivity_viewport extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main_viewport);
+
+        //Hiding SystemUI + Implementing UI changeListener~   src:https://stackoverflow.com/questions/32214258/how-to-hide-status-and-navigation-bars-after-first-touch-event
         hideUI();
+        View decorView = this.getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    Message msg = uiHandler.obtainMessage(); //Implement your hide functionality accordingly
+                    uiHandler.sendMessageDelayed(msg, 3000);
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                }
+            }
+        });
+
 
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
@@ -71,6 +87,16 @@ public class MainActivity_viewport extends AppCompatActivity {
         viewport.setOnTouchListener(touchListener);
     }
 
+    public Handler uiHandler = new Handler() {
+
+        //TODO
+        //REQUIRED
+        //private boolean updateViewport(Message msg) {
+        public void handleMessage(Message msg) {
+            hideUI();
+            // return true;
+        }
+    };
 
     public Handler viewportHandler = new Handler() {
 
