@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import java.io.IOException;
@@ -172,6 +174,37 @@ public class AssetRenderer {
         }
 
         return result;
+    }
+
+
+    public void generateMiniMap(Bitmap minimap){
+
+        int sampleMultiplier = 5; // Map Scaling Factor
+
+        Canvas canvas = new Canvas(minimap);
+        Bitmap temp;
+        int radius = 4, x, y;
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.RED);
+
+        for (Asset asset : assets) {
+            if (asset == null) {
+                System.out.println("EMPTY ASSET\n");
+                continue;
+            }
+            //TODO: Add change different color for different player
+            //  For example, Goldmine, neutral, different color.
+            //if(asset.type == )
+
+            //TODO should this be in drawAsset()??
+            x = asset.x;
+            y = asset.y;
+
+            canvas.drawCircle(x, y, radius, paint);
+
+        }
+        canvas = null;
     }
 
     /*

@@ -78,7 +78,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 assetActionRenderer.TimeStep(assetRenderer.assets);
             }
-        }, 0, 100);
+        }, 0, 50);
 
         dx = dy = 0;
 
@@ -115,7 +115,15 @@ public class MainActivity_viewport extends AppCompatActivity {
                     canvas.drawBitmap(temp, 0, 0, null);  //  Draw Map
                     canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
                     viewport.setImageBitmap(result);
-                    minimap.setImageBitmap(mapRenderer.drawMinimap());
+
+                    //Minimap Part
+
+                    Bitmap minimapTemp;
+                    minimapTemp = mapRenderer.drawMinimap();
+                    assetRenderer.generateMiniMap(minimapTemp);
+
+                    minimap.setImageBitmap(minimapTemp);
+
                 }
             }
            // return true;

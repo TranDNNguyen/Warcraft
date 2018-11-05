@@ -37,6 +37,7 @@ public class MapRenderer {
         //mapTiles = new MapTiles("hedges.map", mContext);
         mapTiles = new MapTiles("test.map", mContext);
         generateTileSet();
+        generateMiniMap();
         //Log.e("MapError", "Failed to setup MapRenderer");
 
     }
@@ -45,6 +46,7 @@ public class MapRenderer {
         mContext = c;
         mapTiles = new MapTiles("test.map", mContext);
         generateTileSet();
+        generateMiniMap();
         updateFailed = false;
 
         //viewWidth = 1000;
@@ -88,29 +90,34 @@ public class MapRenderer {
     }
 
 
-    /*
-    public Bitmap generateMiniMap(){
 
+    //public void generateMiniMap(Canvas canvas){
+    //public void generateMiniMap(Bitmap minimap){
+    public void generateMiniMap(){
+
+        int sampleMultiplier = 5; // Map Scaling Factor
         int tileH = mapTiles.getMapHeight(), tileW = mapTiles.getMapWidth();
 
-        terrainMap = Bitmap.createBitmap(tileW, tileH, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(terrainMap);
+        minimap = Bitmap.createBitmap(MapTiles.getMapWidth()*5, MapTiles.getMapHeight()*5, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(minimap);
         Bitmap temp;
 
         int top = 0;
         for(int i = 0; i < tileH; i++) {
             int left = 0;
             for (int j = 0; j < tileW; j++) {
-                temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)],TileSize, TileSize, false);
+                temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)],sampleMultiplier, sampleMultiplier, false);
                 canvas.drawBitmap(temp, top, left, null);
-                left += TileSize;
+                left += sampleMultiplier;
             }
-            top += TileSize;
+            top += sampleMultiplier;
         }
+    }
+
+
+    public Bitmap drawMinimap(){
         return minimap;
     }
-    */
-
 
     public Bitmap drawTerrain(int x, int y) {
 
@@ -133,11 +140,14 @@ public class MapRenderer {
     }
 
 
-    public Bitmap drawMinimap() {
+    public Bitmap drawMinimap_test() {
 
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
         minimap = Bitmap.createScaledBitmap(terrainMap, 100, 100, true);
+
+
+
         //viewArea = Bitmap.createBitmap(scaledMap, x,y,1000,600);
         return minimap;
     }

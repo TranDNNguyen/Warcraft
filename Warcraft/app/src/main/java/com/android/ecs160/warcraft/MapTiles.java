@@ -1,6 +1,7 @@
 package com.android.ecs160.warcraft;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -122,6 +123,7 @@ public class MapTiles {
         typeToName.put(ETerrainTileType.DeepWater, "deep-water");
         typeToName.put(ETerrainTileType.ShallowWater, "shallow-water");
     }
+
 
     public void mapParse(String fileName, Context context) throws IOException {
         InputStream is = context.getAssets().open(fileName);
