@@ -66,7 +66,7 @@ public class Router {
         if (right == true) {
             if (up == true) {
                 currentDir = Asset.EDirection.NorthEast;
-            } else if (down = true) {
+            } else if (down == true) {
                 currentDir = Asset.EDirection.SouthEast;
             } else {
                 currentDir = Asset.EDirection.East;
@@ -74,7 +74,7 @@ public class Router {
         } else if (left == true) {
             if (up == true) {
                 currentDir = Asset.EDirection.NorthWest;
-            } else if (down = true) {
+            } else if (down == true) {
                 currentDir = Asset.EDirection.SouthWest;
             } else {
                 currentDir = Asset.EDirection.West;
@@ -137,7 +137,7 @@ public class Router {
     //for now I will treat the map as flat and totally traversable.
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
-
+        /*
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
@@ -313,9 +313,9 @@ public class Router {
 
         return LastInDirection;
 
-
+        */
         //for now, this is all we need to do, since the whole map is traversable
-        //return calcDirection(asset, destX, destY);
+        return calcDirection(asset, destX, destY);
     }
 
 }
