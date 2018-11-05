@@ -66,7 +66,7 @@ public class Router {
         if (right == true) {
             if (up == true) {
                 currentDir = Asset.EDirection.NorthEast;
-            } else if (down = true) {
+            } else if (down == true) {
                 currentDir = Asset.EDirection.SouthEast;
             } else {
                 currentDir = Asset.EDirection.East;
@@ -74,7 +74,7 @@ public class Router {
         } else if (left == true) {
             if (up == true) {
                 currentDir = Asset.EDirection.NorthWest;
-            } else if (down = true) {
+            } else if (down == true) {
                 currentDir = Asset.EDirection.SouthWest;
             } else {
                 currentDir = Asset.EDirection.West;

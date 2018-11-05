@@ -162,6 +162,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             int xPos = (int) ev.getX();
             int yPos = (int) ev.getY();
 
+            // Get location of View in the screen.
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
@@ -178,17 +179,18 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 //Releasing - First Finger
                 case MotionEvent.ACTION_UP: {
-                    Log.i("viewport", "mLastTouchY " + mLastTouchY);
-
                     mLastTouchX = x;
                     mLastTouchY = y;
 
-                    //
+                    //NOTE: Save the Location of First-Finger (PointerID is used to distinguish the touchInputs for each finger, - 0 for 1st finger.)
                     mActivePointerId = ev.getPointerId(0);  //  First Finger
 
+                    //IF no multitouch used at all. -> select Asset.
                     if(selectionType == 1) {
                         assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
                     }
+
+                    //Update?
                     viewportHandler.obtainMessage(1).sendToTarget();
 
                     break;
@@ -250,11 +252,12 @@ public class MainActivity_viewport extends AppCompatActivity {
                     break;
                 }
 
+                //Multitouch - One finger lifted
+                //NOTE: Save the last location, update the mActivePointerID (if first finger had been lifted, set mActivePointerID to another finger ID, so that on touch listener can still go on without crash.).
                 case MotionEvent.ACTION_POINTER_UP: {
 
                     final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
                     final int pointerId = ev.getPointerId(pointerIndex);
-
 
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mActivePointerId = ev.getPointerId(newPointerIndex);
