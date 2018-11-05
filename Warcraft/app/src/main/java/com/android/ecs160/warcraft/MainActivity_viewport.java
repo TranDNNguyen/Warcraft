@@ -147,103 +147,106 @@ public class MainActivity_viewport extends AppCompatActivity {
 
     private int currX = 0, currY = 0;
 
+
+    private int selectionType = 0;  //  0 for None, 1 for AssetSelection(SingleTouch), 2 for Panning Map(Multitouch)
+
+
     ImageView.OnTouchListener touchListener = new ImageView.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent ev) {
 
-            //Toast.makeText(this.getContext(), "This is my Toast message!", Toast.LENGTH_LONG).show();
-
-            //String actionString = "Touch Location (" + 10 + "," + 10 + ")";
-            //TextView resultTV = (TextView) findViewById(R.id.xyTextView);
-            //resultTV.setText(actionString);
-
             final int action = ev.getAction();
 
+            float x = ev.getX();
+            float y = ev.getY();
             int xPos = (int) ev.getX();
             int yPos = (int) ev.getY();
 
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
-            //Displaying all the coordinates
+            //NOTE: Displaying all the coordinates
             // - X,Y absolute coord, ImageView X,Y, Map X, Y
             displayCoordinates(xPos, yPos, values, currX, currY);
 
+
+            //NOTE: disable multitouch with 3+ fingers
+            if(ev.getPointerCount() > 2) return true;
+
+
             switch (action & MotionEvent.ACTION_MASK) {
 
+                //Releasing - First Finger
                 case MotionEvent.ACTION_UP: {
-                    final float x = ev.getX();
-                    final float y = ev.getY();
-
                     Log.i("viewport", "mLastTouchY " + mLastTouchY);
+
+                    mLastTouchX = x;
+                    mLastTouchY = y;
+
+                    //
+                    mActivePointerId = ev.getPointerId(0);  //  First Finger
+
+                    if(selectionType == 1) {
+                        assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
+                    }
+                    viewportHandler.obtainMessage(1).sendToTarget();
 
                     break;
                 }
 
+                //Pressing - First Finger
                 case MotionEvent.ACTION_DOWN: {
-
-                    final float x = ev.getX();
-                    final float y = ev.getY();
-
                     mLastTouchX = x;
                     mLastTouchY = y;
-
-                    Log.i("viewport", "mLastTouchX " + mLastTouchX);
-                    Log.i("viewport", "mLastTouchY " + mLastTouchY);
-
-                    mActivePointerId = ev.getPointerId(0);
-
-                    assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
-                    //updateViewport();
-                    viewportHandler.obtainMessage(1).sendToTarget();
+                    mActivePointerId = ev.getPointerId(0);  //  First Finger
+                    selectionType = 1; // AssetSelection Available
 
                     break;
                 }
 
+                //Multitouch Pressing  // Panning Map for now.
                 case MotionEvent.ACTION_POINTER_DOWN: {
-                    final float gx = ev.getX();
-                    final float gy = ev.getY();
-
-
-                    mLastGestureX = gx;
-                    mLastGestureY = gy;
+                    selectionType = 2;  //  MultitouchEvent, panning Screen Now.
                     break;
                 }
 
+
+                //General MOVE event
                 case MotionEvent.ACTION_MOVE: {
+                    //NOTE
+                    //  Get the location of first finger that touched.
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                    final int x = (int) ev.getX(pointerIndex);
-                    final int y = (int) ev.getY(pointerIndex);
-
-                    //final int dx = x - (int) mLastTouchX;
-                    //final int dy = y - (int) mLastTouchY;
-
-                    dx = x - (int) mLastTouchX;
-                    dy = y - (int) mLastTouchY;
-
-                    if (800 - (mPosX + dx) >= 0)//&& mPosX+dx < viewportWidth)
-                        mPosX += dx;
-                    if (600 - (mPosY + dy) >= 0)//&& mPosY+dy < viewportHeight)
-                        mPosY += dy;
+                    x = (int) ev.getX(pointerIndex);
+                    y = (int) ev.getY(pointerIndex);
 
 
-                    //TODO
-                    //Boundary Check - Put it in the MapRenderer
+                    //Setting up TwoFinger Drag
+                    if(ev.getPointerCount() >= 2) {
+                        dx = (int) x - (int) mLastTouchX;
+                        dy = (int) y - (int) mLastTouchY;
 
-                    if (currX - dx >= 0 && currX - dx < MapRenderer.bitmapWidth - viewportWidth){
-                        currX -= dx;
+                        if (1000 - (mPosX + dx) >= 0)//&& mPosX+dx < viewportWidth)
+                            mPosX += dx;
+                        if (600 - (mPosY + dy) >= 0)//&& mPosY+dy < viewportHeight)
+                            mPosY += dy;
+
+
+                        //TODO
+                        //Boundary Check - Put it in the MapRenderer
+                        if (currX - dx >= 0 && currX - dx < MapRenderer.bitmapWidth - viewportWidth) {
+                            currX -= dx;
+                        }
+                        if (currY - dy >= 0 && currY - dy < MapRenderer.bitmapHeight - viewportHeight) {
+                            currY -= dy;
+                        }
+
+                        viewportHandler.obtainMessage(1).sendToTarget();
+
+                        mLastTouchX = x;
+                        mLastTouchY = y;
                     }
-                    if (currY - dy >= 0 && currY - dy < MapRenderer.bitmapHeight - viewportHeight){
-                        currY -= dy;
-                    }
 
-                    //currX -= dx;
-                    //currY -= dy;
 
-                    viewportHandler.obtainMessage(1).sendToTarget();
-
-                    mLastTouchX = x;
-                    mLastTouchY = y;
                     break;
                 }
 
@@ -251,22 +254,10 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                     final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
                     final int pointerId = ev.getPointerId(pointerIndex);
-                    if (pointerId == mActivePointerId) {
-                        // This was our active pointer going up. Choose a new
-                        // active pointer and adjust accordingly.
-                        final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
 
-                        mLastTouchX = ev.getX(newPointerIndex);
-                        mLastTouchY = ev.getY(newPointerIndex);
 
-                        mActivePointerId = ev.getPointerId(newPointerIndex);
-                    } else {
-                        final int tempPointerIndex = ev.findPointerIndex(mActivePointerId);
-
-                        mLastTouchX = ev.getX(tempPointerIndex);
-                        mLastTouchY = ev.getY(tempPointerIndex);
-                    }
-
+                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    mActivePointerId = ev.getPointerId(newPointerIndex);
                     break;
                 }
             }

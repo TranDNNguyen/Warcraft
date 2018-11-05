@@ -138,6 +138,7 @@ public class Router {
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
 
+        /*
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
@@ -313,9 +314,9 @@ public class Router {
 
         return LastInDirection;
 
-
+        */
         //for now, this is all we need to do, since the whole map is traversable
-        //return calcDirection(asset, destX, destY);
+        return calcDirection(asset, destX, destY);
     }
 
 }

@@ -144,14 +144,11 @@ public class MapRenderer {
 
 
     //REQUIRED // = loadMapTiles()
-    public Bitmap[] generateTileSet() {
+    public void generateTileSet() {
         terrain = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.terrain);
-        Bitmap[] ts = new Bitmap[293];  // = 293 tiles.
         for (int i = 0; i < 293; i++) {
             tileSet[i] = Bitmap.createBitmap(terrain, 0, 32 * i, 32, 32);
         }
-        //Log.e("MapError", "What is going on?");
-        return ts;
     }
 
 

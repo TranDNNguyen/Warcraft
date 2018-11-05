@@ -13,6 +13,7 @@
         <activity
             android:name="com.android.ecs160.warcraft.MainActivity_viewport"
             android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
