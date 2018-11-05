@@ -195,11 +195,18 @@ public class AssetRenderer {
             }
             //TODO: Add change different color for different player
             //  For example, Goldmine, neutral, different color.
-            //if(asset.type == )
-
+            if(asset.type == Asset.EAssetType.GoldMine)
+                paint.setColor(Color.WHITE);
+            else if(asset.type == Asset.EAssetType.Archer ||
+                    asset.type == Asset.EAssetType.Footman ||
+                    asset.type == Asset.EAssetType.Peasant ||
+                    asset.type == Asset.EAssetType.Ranger)
+                paint.setColor(Color.RED);
+            else
+                paint.setColor(Color.WHITE);
             //TODO should this be in drawAsset()??
-            x = asset.x;
-            y = asset.y;
+            x = asset.x * sampleMultiplier;
+            y = asset.y * sampleMultiplier;
 
             canvas.drawCircle(x, y, radius, paint);
 

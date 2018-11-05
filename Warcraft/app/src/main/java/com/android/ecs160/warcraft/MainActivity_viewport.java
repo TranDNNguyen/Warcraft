@@ -119,10 +119,11 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //Minimap Part
 
                     Bitmap minimapTemp;
-                    minimapTemp = mapRenderer.drawMinimap();
+                    minimapTemp = Bitmap.createBitmap(mapRenderer.drawMinimap());
                     assetRenderer.generateMiniMap(minimapTemp);
 
                     minimap.setImageBitmap(minimapTemp);
+                    minimapTemp = null; // for Garbage Collection
 
                 }
             }
