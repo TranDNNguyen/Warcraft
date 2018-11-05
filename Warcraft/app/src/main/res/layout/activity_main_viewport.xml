@@ -60,6 +60,13 @@
                     android:text="Cancel" />
 
 
+                <TextView
+                    android:id="@+id/tutorialTextView"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="To select asset, tap it \n\nTo pan the map, drag the screen with two fingers." />
+
             </LinearLayout>
 
         </LinearLayout>

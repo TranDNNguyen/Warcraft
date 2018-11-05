@@ -40,8 +40,24 @@ public class MainActivity_viewport extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        hideUI();
         setContentView(R.layout.activity_main_viewport);
+
+        //Hiding SystemUI + Implementing UI changeListener~   src:https://stackoverflow.com/questions/32214258/how-to-hide-status-and-navigation-bars-after-first-touch-event
+        hideUI();
+        View decorView = this.getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    // TODO: The system bars are visible. Make any desired
+                    Message msg = uiHandler.obtainMessage(); //Implement your hide functionality accordingly
+                    uiHandler.sendMessageDelayed(msg, 3000);
+                } else {
+                    // TODO: The system bars are NOT visible. Make any desired
+                }
+            }
+        });
+
 
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
@@ -62,7 +78,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 assetActionRenderer.TimeStep(assetRenderer.assets);
             }
-        }, 0, 100);
+        }, 0, 50);
 
         dx = dy = 0;
 
@@ -71,6 +87,16 @@ public class MainActivity_viewport extends AppCompatActivity {
         viewport.setOnTouchListener(touchListener);
     }
 
+    public Handler uiHandler = new Handler() {
+
+        //TODO
+        //REQUIRED
+        //private boolean updateViewport(Message msg) {
+        public void handleMessage(Message msg) {
+            hideUI();
+            // return true;
+        }
+    };
 
     public Handler viewportHandler = new Handler() {
 
@@ -89,7 +115,16 @@ public class MainActivity_viewport extends AppCompatActivity {
                     canvas.drawBitmap(temp, 0, 0, null);  //  Draw Map
                     canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
                     viewport.setImageBitmap(result);
-                    minimap.setImageBitmap(mapRenderer.drawMinimap());
+
+                    //Minimap Part
+
+                    Bitmap minimapTemp;
+                    minimapTemp = Bitmap.createBitmap(mapRenderer.drawMinimap());
+                    assetRenderer.generateMiniMap(minimapTemp);
+
+                    minimap.setImageBitmap(minimapTemp);
+                    minimapTemp = null; // for Garbage Collection
+
                 }
             }
            // return true;
@@ -270,7 +305,6 @@ public class MainActivity_viewport extends AppCompatActivity {
     };
 
     private void hideUI() {
-
         View decorView = getWindow().getDecorView();
 
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -280,7 +314,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE;
         decorView.setSystemUiVisibility(uiOptions);
-
     }
 
 
