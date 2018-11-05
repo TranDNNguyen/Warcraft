@@ -19,7 +19,7 @@ public class Asset {
     EDirection direction;
     EAssetAction action;
     PlayerColor color;
-
+    AssetData assetData;
 
     Vector<Integer> pixelCoordinates;
     //Bitmap assetImages;
@@ -27,11 +27,11 @@ public class Asset {
     int assetWidth;
     int assetHeight;
     int TileSize = MainActivity_viewport.getTileSize();
-    int size;
+    //int size;
 
     boolean isSelected = false;
 
-    class AssetData{
+    static class AssetData{
         protected String resourceName;
         protected int hitPoints;
         protected int armor;
@@ -73,22 +73,46 @@ public class Asset {
         }
     }
 
-    class AssetTypeData{
-        AssetData archer = new AssetData("archer", 60, 2, 4, 0, 1, 10, 500, 50, 1, 70, 10, 0, 3, 6, 4);
-        AssetData barracks = new AssetData("barracks", 800, 20, 3, 0, 3, 0, 700, 400, 0, 200, 0, 0, 0, 0, 0);
-        AssetData blacksmith = new AssetData("blacksmith", 775, 20, 3, 0, 3, 0, 800, 450, 0, 200, 0, 0, 0, 0, 0);
-        AssetData cannon_tower = new AssetData("cannon_tower", 160, 20, 9, 9, 2, 0, 500, 150, 0, 190, 1, 20, 50, 0, 7);
-        AssetData castle = new AssetData("castle", 1600, 0, 9, 6, 4, 0, 2500, 1200, 60, 0, 0, 0, 0, 0, 0);
-        AssetData farm = new AssetData("farm", 400, 0, 3, 0, 2, 0, 500, 250, 100, 0, 0, 0, 0, 0, 0);
-        AssetData footman = new AssetData("footman", 60, 2, 4, 0, 1, 10, 600, 0, 1, 60, 10, 0, 6, 3, 1);
-        AssetData gold_mine = new AssetData("gold_mine", 25500, 0, 1, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
-        AssetData guard_tower = new AssetData("gaurd_tower", 130, 20, 9, 9, 2, 0, 500, 150, 0, 140, 1, 20, 4, 12, 6);
-        AssetData keep = new AssetData("keep", 1400, 0, 6, 4, 4, 0, 2000, 1000, 60, 0, 0, 0, 0, 0, 0);
-        AssetData lumber_mill = new AssetData("lumber_mill", 600, 20, 3, 0, 3, 0, 600, 450, 0, 150, 0, 0, 0, 0, 0);
-        AssetData peasant = new AssetData("peasent", 30, 0, 4, 0, 1, 10, 400, 0, 1, 45, 10, 0, 3, 2, 1);
-        AssetData ranger = new AssetData("ranger", 50, 2, 5, 0, 1, 10, 500, 50, 1, 70, 10, 10, 3, 6, 4);
-        AssetData scout_tower = new AssetData("scout_tower", 100, 20, 9, 0, 2, 0, 550, 200, 0, 120, 0, 0, 0, 0, 0);
-        AssetData town_hall = new AssetData("town_hall", 1200, 0, 4, 0, 4, 0, 800, 0, 60, 0, 0, 0, 0, 0, 0);
+    static class AssetTypeData{
+        static AssetData archer = new AssetData("archer", 60, 2, 4, 0, 1, 10, 500, 50, 1, 70, 10, 0, 3, 6, 4);
+        static AssetData barracks = new AssetData("barracks", 800, 20, 3, 0, 3, 0, 700, 400, 0, 200, 0, 0, 0, 0, 0);
+        static AssetData blacksmith = new AssetData("blacksmith", 775, 20, 3, 0, 3, 0, 800, 450, 0, 200, 0, 0, 0, 0, 0);
+        static AssetData cannon_tower = new AssetData("cannon_tower", 160, 20, 9, 9, 2, 0, 500, 150, 0, 190, 1, 20, 50, 0, 7);
+        static AssetData castle = new AssetData("castle", 1600, 0, 9, 6, 4, 0, 2500, 1200, 60, 0, 0, 0, 0, 0, 0);
+        static AssetData farm = new AssetData("farm", 400, 0, 3, 0, 2, 0, 500, 250, 100, 0, 0, 0, 0, 0, 0);
+        static AssetData footman = new AssetData("footman", 60, 2, 4, 0, 1, 10, 600, 0, 1, 60, 10, 0, 6, 3, 1);
+        static AssetData gold_mine = new AssetData("gold_mine", 25500, 0, 1, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+        static AssetData guard_tower = new AssetData("gaurd_tower", 130, 20, 9, 9, 2, 0, 500, 150, 0, 140, 1, 20, 4, 12, 6);
+        static AssetData keep = new AssetData("keep", 1400, 0, 6, 4, 4, 0, 2000, 1000, 60, 0, 0, 0, 0, 0, 0);
+        static AssetData lumber_mill = new AssetData("lumber_mill", 600, 20, 3, 0, 3, 0, 600, 450, 0, 150, 0, 0, 0, 0, 0);
+        static AssetData peasant = new AssetData("peasent", 30, 0, 4, 0, 1, 10, 400, 0, 1, 45, 10, 0, 3, 2, 1);
+        static AssetData ranger = new AssetData("ranger", 50, 2, 5, 0, 1, 10, 500, 50, 1, 70, 10, 10, 3, 6, 4);
+        static AssetData scout_tower = new AssetData("scout_tower", 100, 20, 9, 0, 2, 0, 550, 200, 0, 120, 0, 0, 0, 0, 0);
+        static AssetData town_hall = new AssetData("town_hall", 1200, 0, 4, 0, 4, 0, 800, 0, 60, 0, 0, 0, 0, 0, 0);
+
+
+        public static AssetData getAssetData(EAssetType type){
+            switch(type){
+                case Archer: return archer;
+                case Barracks: return barracks;
+                case Blacksmith: return blacksmith;
+                case CannonTower: return cannon_tower;
+                case Castle: return castle;
+                case Farm: return farm;
+                case Footman: return footman;
+                case GoldMine: return gold_mine;
+                case GuardTower:return guard_tower;
+                case Keep:return keep;
+                case LumberMill: return lumber_mill;
+                case Peasant: return peasant;
+                case Ranger: return ranger;
+                case ScoutTower: return scout_tower;
+                case TownHall: return town_hall;
+                default:
+                    return null;
+            }
+        }
+
     }
 
     enum EAssetAction {
@@ -270,5 +294,6 @@ public class Asset {
         direction = EDirection.North;
         action = EAssetAction.None;
         color = PlayerColor.Red;
+        assetData = AssetTypeData.getAssetData(type);
     }
 }

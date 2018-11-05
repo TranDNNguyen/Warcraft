@@ -1,6 +1,8 @@
 package com.android.ecs160.warcraft;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -137,7 +139,7 @@ public class Router {
     //for now I will treat the map as flat and totally traversable.
     public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
                                      Asset asset, int destX, int destY) {
-        /*
+
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
@@ -180,9 +182,9 @@ public class Router {
                 temp.add(0);
             }
             DMap.add(temp);
-            for (int i = 0; i < MapWidth + 2; i++) {
-                temp.add(0);
-            }
+            //for (int i = 0; i < MapWidth + 2; i++) {
+            //    temp.add(0);
+            //}
             DMap.add(0, temp);
 
             //}
@@ -209,21 +211,31 @@ public class Router {
 
         // const std::list< std::shared_ptr< CPlayerAsset > > &Assets() const;
 
+
         //for(auto &Res : resmap.Assets()){
         for (Asset Res : assetRenderer.assets) {
+            if(Res.x == 7 && Res.y == 9){
+                Res.x = Res.x;
+            }
 
             if (asset != Res) {
+                System.out.print("processing a unit,");
                 if (Asset.EAssetType.None != Res.type) {
+                    System.out.print(" asset has a type,");
                     if ((Asset.EAssetAction.Walk != Res.action) || (asset.color != Res.color)) {
+                        System.out.println(" asset is not walking OR asset is not our color");
                         if ((asset.color != Res.color) || ((Asset.EAssetAction.ConveyGold != Res.action) && (Asset.EAssetAction.ConveyLumber != Res.action) && (Asset.EAssetAction.MineGold != Res.action))) {
-                            for (int YOff = 0; YOff < Res.size; YOff++) {
-                                for (int XOff = 0; XOff < Res.size; XOff++) {
+                            for (int YOff = 0; YOff < Res.assetData.size; YOff++) {
+                                for (int XOff = 0; XOff < Res.assetData.size; XOff++) {
+                                    System.out.println("marking a tile as visited");
                                     DMap.get(Res.y + YOff + 1).set(Res.x + XOff + 1, SEARCH_STATUS_VISITED);
                                 }
                             }
                         }
                     } else {
-                        DMap.get(Res.y + 1).set(Res.x + 1, SEARCH_STATUS_OCCUPIED - Res.direction.getIdx());
+                        //DMap.get(Res.y + 1).set(Res.x + 1, SEARCH_STATUS_OCCUPIED - Res.direction.getIdx());
+                        System.out.println("marking a tile as occupied");
+                        DMap.get(Res.y + 1).set(Res.x + 1, SEARCH_STATUS_OCCUPIED);
                     }
                 }
             }
@@ -237,6 +249,22 @@ public class Router {
         CurrentSearch.DTargetDistanceSquared = BestSearch.DTargetDistanceSquared = CurrentTile.DistanceSquared(TargetTile);
         CurrentSearch.DInDirection = BestSearch.DInDirection = Asset.EDirection.Max;
         DMap.get(StartY + 1).set(StartX + 1, SEARCH_STATUS_VISITED);
+
+
+        //TODO
+        // DEBUG print out DMAP
+        //char temp[] = new char[12];
+        for(int i=0; i < 12; i++){
+            String temp = "";
+            for(int j = 0; j < 12; j++){
+                System.out.print(DMap.get(j).get(i));
+                //temp.concat(Integer.toString(DMap.get(j).get(i)));
+            }
+            //Log.d("DMap", temp);
+            System.out.println();
+            System.out.println();
+        }
+
 
         while (true) {
             if (CurrentTile.x == TargetTile.x && CurrentTile.y == TargetTile.y) {
@@ -313,9 +341,9 @@ public class Router {
 
         return LastInDirection;
 
-        */
+
         //for now, this is all we need to do, since the whole map is traversable
-        return calcDirection(asset, destX, destY);
+        //return calcDirection(asset, destX, destY);
     }
 
 }
