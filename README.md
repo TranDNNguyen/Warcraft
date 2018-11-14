@@ -1,21 +1,20 @@
 # ECS160Android
 ECS 160 Project Android Version
+--------------------------------------------------------
+Working Working Working 
+--------------------------------------------------------
+Implementing UI fragmentation
+--------------------------------------------------------
+Added FragmentManager in MainAcrivity
 
-Welcome! 
-This is "dev" branch where we push the most recent, stable working version of Android Team's work.
+    static FragmentManager fragManager;
+    
+1. We set it to Static so that It can be accessible from other class to change the contents of fragments, more freedom is better you know.
+2. It handles all the fragments
 
+--------------------------------------------------------
+Example,
 
-11/05/2018
-  < What you can do in this version ? >
-  - move map(using two finger drag)
-  - select unit and move the selected unit(no awesome animation yet) (just tap the unit and tap location to move)
-  - live minimap with assets on it (depicted as a dot)
-  
-IF you want to test the android version for fun, try install the "app-debug" apk file.
-
-
-tbh, currently units are so small that it is hard to select unit, but bear with it xD
-Also, buttons are for display only now, don't be fooled or don't throw any question like why it doesn't work. (It looks nice at least.)
-
-
-Thank you all.
+FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+fragment.peasantSelected();
+// You can Call function in a Fragment by this way.
