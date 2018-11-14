@@ -47,17 +47,29 @@
                     android:scaleType="centerInside"
                     android:visibility="visible"/>
 
-                <Button
-                    android:id="@+id/moveBtn"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Move!" />
+                <fragment
+                    android:id="@+id/fragment3"
+                    android:name="com.android.ecs160.warcraft.FragmentThree"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    />
 
-                <Button
-                    android:id="@+id/cancelBtn"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Cancel" />
+                <fragment
+                    android:id="@+id/fragment4"
+                    android:layout_weight="1"
+                    android:name="com.android.ecs160.warcraft.FragmentFour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+                <fragment
+                    android:id="@+id/fragment5"
+                    android:layout_weight="1"
+                    android:name="com.android.ecs160.warcraft.Fragment_ActionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
 
 
                 <TextView
