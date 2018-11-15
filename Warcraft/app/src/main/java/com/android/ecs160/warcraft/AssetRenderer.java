@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,6 +20,8 @@ public class AssetRenderer {
     int TileSize = MainActivity_viewport.getTileSize();
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
+
+    private Context mContext;
 
     public int tilePixelSize = 32;
 
@@ -32,6 +36,7 @@ public class AssetRenderer {
         try {
             //AssetLoader.setBitmaps(getResources());
             assetLoader = new AssetLoader();
+            mContext = context;
             assets = assetLoader.assetParse("test.map", context, res);
             // selectedAsset = assets.get(0);
         } catch (IOException e) {
@@ -118,6 +123,22 @@ public class AssetRenderer {
                 lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
+
+                if(lastSelectedAsset.type == Asset.EAssetType.Peasant){
+
+
+                    //NOTE: UIFrag
+                    //Fragment, changing image, based on the selection,
+                    //TODO: 1. It is currently changing images after selecting units, so we may have to modify the onTouchListener in MainActivity
+                    //TODO: 2. Need to Implement all features like setting appropriate image upon selecting specific unit, and building.
+                    //TODO: 3. Need to work on deselection, change image to transparent, or empty image.s
+                    FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+                    fragment.peasantSelected();
+                }
+                else if(lastSelectedAsset.type == Asset.EAssetType.Footman){
+
+                }
+
 
             }//TODO
         }

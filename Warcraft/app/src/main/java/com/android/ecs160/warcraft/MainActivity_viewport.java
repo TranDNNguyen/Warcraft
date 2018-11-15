@@ -1,10 +1,12 @@
 package com.android.ecs160.warcraft;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,6 +23,10 @@ public class MainActivity_viewport extends AppCompatActivity {
     static int TILE_SIZE = 32;
     static int viewportWidth = 1000;
     static int viewportHeight = 600;
+
+    static FragmentManager fragManager;
+
+
     int dx;
     int dy;
 
@@ -81,6 +87,11 @@ public class MainActivity_viewport extends AppCompatActivity {
         }, 0, 50);
 
         dx = dy = 0;
+
+        fragManager = getSupportFragmentManager();
+
+
+
 
         //updateViewport();
         viewportHandler.obtainMessage(1).sendToTarget();
