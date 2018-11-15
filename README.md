@@ -2,8 +2,14 @@
 ECS 160 Project Android Version
 
 Welcome! 
-This is "dev" branch where we push the most recent, stable working version of Android Team's work.
 
+#### Branch Information
+
+This is "master" branch where we push the current stable production build of the Android Team's work.
+
+Note that the most up-to-date development version can be found on the "dev" branch, albeit with potential bugs and tests-in-progress.
+
+#### Latest Features
 
 11/05/2018
   < What you can do in this version ? >
