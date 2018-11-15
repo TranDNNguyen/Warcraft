@@ -132,8 +132,8 @@ public class AssetRenderer {
                     //TODO: 1. It is currently changing images after selecting units, so we may have to modify the onTouchListener in MainActivity
                     //TODO: 2. Need to Implement all features like setting appropriate image upon selecting specific unit, and building.
                     //TODO: 3. Need to work on deselection, change image to transparent, or empty image.s
-                    FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-                    fragment.peasantSelected();
+//                    FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+//                    fragment.peasantSelected();
                 }
                 else if(lastSelectedAsset.type == Asset.EAssetType.Footman){
 

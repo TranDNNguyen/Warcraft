@@ -127,6 +127,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                     canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
                     viewport.setImageBitmap(result);
 
+
                     //Minimap Part
 
                     Bitmap minimapTemp;
