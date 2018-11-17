@@ -1,97 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity_viewport">
+    android:layout_centerInParent="true"
+    android:background="@android:color/white"
 
+    android:columnCount="3"
+    android:rowCount="3"
+    android:visibility="visible">
 
-    <!--  CustomView - ViewportView  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:baselineAligned="false"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/viewportView"
-                android:maxWidth="1000px"
-                android:maxHeight="600px"
-                android:layout_width="1000px"
-                android:layout_height="600px"
-                android:layout_gravity="left|top"
-                android:layout_margin="20px"
-                android:scaleType="centerInside"
-                android:visibility="visible"
-
-                />
-            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="false"
+                android:visibility="visible" />
 
-                <ImageView
-                    android:id="@+id/minimapView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|top"
-                    android:layout_margin="20px"
-                    android:maxWidth="100px"
+            <TextView
+                android:id="@+id/xyTextView"
 
-                    android:maxHeight="100px"
-                    android:scaleType="centerInside"
-                    android:visibility="visible"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:text="X and Y Coordinate" />
+        </LinearLayout>
 
-                <fragment
-                    android:id="@+id/fragment3"
-                    android:name="com.android.ecs160.warcraft.FragmentThree"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
 
-                <fragment
-                    android:id="@+id/fragment4"
-                    android:layout_weight="1"
-                    android:name="com.android.ecs160.warcraft.FragmentFour"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+            <ImageView
+                android:id="@+id/minimapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
 
-                <fragment
-                    android:id="@+id/fragment5"
-                    android:layout_weight="1"
-                    android:name="com.android.ecs160.warcraft.Fragment_ActionButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    />
+                android:layout_weight=".2"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:maxHeight="100px"
+                android:maxWidth="100px"
+                android:scaleType="center"
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/fragment5"
+                tools:layout_editor_absoluteX="482dp" />
 
+            <fragment
+                android:id="@+id/fragment3"
+                android:name="com.android.ecs160.warcraft.FragmentThree"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                tools:layout="@layout/fragment_three"
+                tools:layout_editor_absoluteX="484dp"
+                tools:layout_editor_absoluteY="269dp" />
 
-                <TextView
-                    android:id="@+id/tutorialTextView"
+            <fragment
+                android:id="@+id/fragment4"
+                android:name="com.android.ecs160.warcraft.FragmentFour"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                tools:layout_editor_absoluteX="483dp"
+                tools:layout_editor_absoluteY="184dp" />
 
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="To select asset, tap it \n\nTo pan the map, drag the screen with two fingers." />
+            <fragment
+                android:id="@+id/fragment5"
+                android:name="com.android.ecs160.warcraft.Fragment_ActionButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                tools:layout_editor_absoluteX="483dp"
+                tools:layout_editor_absoluteY="101dp" />
 
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tutorialTextView"
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".2"
+                android:text="To select asset, tap it \n\nTo pan the map, drag the screen with two fingers."
+                android:textSize="6sp"
+                tools:layout_editor_absoluteX="622dp"
+                tools:layout_editor_absoluteY="303dp" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/xyTextView"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="X and Y Coordinate" />
-
-
     </LinearLayout>
-
 
 </FrameLayout>

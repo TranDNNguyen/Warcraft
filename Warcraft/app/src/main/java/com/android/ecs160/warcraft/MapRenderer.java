@@ -49,8 +49,8 @@ public class MapRenderer {
         generateMiniMap();
         updateFailed = false;
 
-        //viewWidth = 1000;
-        //viewHeight = h;
+        viewWidth = w;
+        viewHeight = h;
         generateMap();
     }
 
@@ -132,7 +132,8 @@ public class MapRenderer {
         // if (currY - dy >= 0) currY -= dy;
         //Tile Size Constant
         //Bitmap temp = Bitmap.createBitmap(terrain, startX, startY, viewWidth, viewHeight);
-        viewArea = Bitmap.createBitmap(terrainMap, x, y, 1000, 600);
+        //viewArea = Bitmap.createBitmap(terrainMap, x, y, 1000, 600);
+        viewArea = Bitmap.createBitmap(terrainMap, x, y, viewWidth, viewHeight);
         //viewArea = Bitmap.createBitmap(scaledMap, x,y,1000,600);
 
         updateFailed = false;
@@ -195,7 +196,9 @@ public class MapRenderer {
 
     //Pokemon Map Function ...
     // Rendering - Required one.
-    public Bitmap drawPokemonMap(int x, int y) {
+    /*
+      public Bitmap drawPokemonMap(int x, int y) {
+
         this.loadMapData();
         viewArea = Bitmap.createBitmap(scaledMap, x, y, 1000, 600);
         return viewArea;
@@ -207,6 +210,7 @@ public class MapRenderer {
         viewArea = Bitmap.createBitmap(scaledMap, x, y, w, h);
         return viewArea;
     }
+    */
 
     //Boundary Checking Function.
     public boolean checkBoundary(int x, int y) {

@@ -25,13 +25,21 @@ public class AssetRenderer {
 
     public int tilePixelSize = 32;
 
+
+    //TODO: figure out better way to set size of asset bitmap
+    int screenWidth;// = 1000;//Resources.getSystem().getDisplayMetrics().widthPixels;
+    int screenHeight;// = 600;//Resources.getSystem().getDisplayMetrics().heightPixels;
+
     //@Override
     //protected void onCreate(Bundle savedInstanceState) {
     //super.onCreate(savedInstanceState);
     //setContentView(R.layout.activity_asset);
 
+    public AssetRenderer(Context context, Resources res, int viewportWidth, int viewportHeight) {
 
-    public AssetRenderer(Context context, Resources res) {
+        screenWidth = viewportWidth;
+        screenHeight = viewportHeight;
+
         //get initial assets from loader
         try {
             //AssetLoader.setBitmaps(getResources());
@@ -161,9 +169,6 @@ public class AssetRenderer {
      * //TODO needs to be passed widths, heights, offsets from viewport/mapactivity instead of declaring them here
      */
     public Bitmap renderAssets(int widthOffset, int heightOffset) {
-        //TODO: figure out better way to set size of asset bitmap
-        int screenWidth = 1000;//Resources.getSystem().getDisplayMetrics().widthPixels;
-        int screenHeight = 600;//Resources.getSystem().getDisplayMetrics().heightPixels;
 
         //TODO: set/get offset that corresponds with what parts of the map are visible
         //int widthOffset = 0;

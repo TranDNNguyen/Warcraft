@@ -82,7 +82,7 @@ public class FragmentThree extends Fragment {
         imgBtn.setImageBitmap(Icon.returnImage(2)); //footman
 
         //TODO: need to store state of buildings and upgrades
-        if(1 /*if ranger upgrade not complete*/ ) {
+        if(true /*if ranger upgrade not complete*/ ) {
             imgBtn.setImageBitmap(Icon.returnImage(4)); //archer
         } else {
             imgBtn.setImageBitmap(Icon.returnImage(6)); //ranger
@@ -97,9 +97,9 @@ public class FragmentThree extends Fragment {
         imgBtn.setImageBitmap(Icon.returnImage(0)); //peasant
 
         //TODO: need to store state of buildings and upgrades
-        if(1 /*if keep upgrade not complete*/ ) {
+        if(true  /*if keep upgrade not complete*/ ) {
             imgBtn.setImageBitmap(Icon.returnImage(66)); //keep
-        } else if (1 /*if castle upgrade not complete*/ ){
+        } else if (true /*if castle upgrade not complete*/ ){
             imgBtn.setImageBitmap(Icon.returnImage(68)); //castle
         }
     }

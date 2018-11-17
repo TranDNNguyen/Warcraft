@@ -1,72 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="300px"
-        android:layout_height="300px"
-        android:layout_centerInParent="true"
-        android:background="@android:color/white"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
 
-        android:columnCount="3"
-        android:rowCount="3"
-        android:visibility="visible">
-    <ImageButton
-        android:id="@+id/archer"
-        android:layout_column="0"
-        android:layout_row="0"
-        android:layout_width="100px"
-        android:layout_height="100px"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:visibility="visible">
 
-        />
-    <ImageButton
-        android:id="@+id/axethrower"
-        android:layout_column="1"
-        android:layout_row="0"
-        android:layout_width="100px"
-        android:layout_height="100px"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        />
-    <Button android:layout_column="2"
-        android:layout_row="0"
-        android:layout_width="100px"
-        android:layout_height="100px"
+        <ImageButton
+            android:id="@+id/archer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-        android:text="3"/>
-    <Button android:layout_column="0"
-        android:layout_row="1"
-        android:layout_width="100px"
-        android:layout_height="100px"
+            android:layout_weight="1" />
 
-        android:text="4"/>
-    <Button android:layout_column="1"
-        android:layout_row="1"
-        android:layout_width="100px"
-        android:layout_height="100px"
+        <ImageButton
+            android:id="@+id/axethrower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-        android:text="5"/>
-    <Button android:layout_column="2"
-        android:layout_row="1"
-        android:layout_width="100px"
-        android:layout_height="100px"
+            android:layout_weight="1" />
 
-        android:text="6"/>
-    <Button android:layout_column="0"
-        android:layout_row="2"
-        android:layout_width="100px"
-        android:layout_height="100px"
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-        android:text="7"/>
-    <Button android:layout_column="1"
-        android:layout_row="2"
-        android:layout_width="100px"
-        android:layout_height="100px"
+            android:layout_weight="1"
+            android:text="3" />
+    </LinearLayout>
 
-        android:text="8"/>
-    <Button android:layout_column="2"
-        android:layout_row="2"
-        android:layout_width="100px"
-        android:layout_height="100px"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        android:text="9"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-    </GridLayout>
+            android:layout_weight="1"
+            android:text="4" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:text="5" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:text="6" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:text="7" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:text="8" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1"
+            android:text="9" />
+    </LinearLayout>
+
+</LinearLayout>
