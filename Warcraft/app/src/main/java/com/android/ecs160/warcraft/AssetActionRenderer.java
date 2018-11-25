@@ -87,14 +87,23 @@ public class AssetActionRenderer {
 
         if(travelDirection == Asset.EDirection.Max){
             asset.removeCommand();
+            asset.steps = 0;
             return;
         }//asset cannot move further, as pathfinding is no longer giving useful directions
         else if (Arrived(asset)) {
             asset.removeCommand();
+            asset.steps = 0;
             return;
         }
 
         asset.direction = travelDirection;
+
+        asset.steps++;
+
+        //testing
+        if(asset.steps % 5 != 0){
+            return;
+        }
 
         switch (travelDirection) {
             case North:

@@ -261,6 +261,7 @@ public class AssetRenderer {
                 if(asset.lumber > 0){
                     frameIndex += 120;
                 }
+                frameIndex += (asset.steps % 5);
             }else if(action == Asset.EAssetAction.HarvestLumber){
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
@@ -269,6 +270,7 @@ public class AssetRenderer {
         }//peasant
         else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){
             frameIndex = asset.direction.getIdx() * 5;
+            frameIndex += (asset.steps % 5);
         }//footman or archer
 
         assetLoader.setAssetBitmap(asset, frameIndex);

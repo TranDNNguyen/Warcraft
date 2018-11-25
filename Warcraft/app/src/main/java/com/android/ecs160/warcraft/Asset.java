@@ -279,6 +279,33 @@ public class Asset {
         int assetSize = assetBitmap.getWidth();
         int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
         int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
+
+        //testing TODO:
+        if(commands.peek() == EAssetAction.Walk) {
+            switch (direction) {
+                case North:
+                case NorthWest:
+                case NorthEast:
+                    adjustY -= (steps % 5) * (TileSize / 5);
+                    break;
+                case South:
+                case SouthWest:
+                case SouthEast:
+                    adjustY += (steps % 5) * (TileSize / 5);
+            }
+            switch (direction) {
+                case West:
+                case SouthWest:
+                case NorthWest:
+                    adjustX -= (steps % 5) * (TileSize / 5);
+                    break;
+                case East:
+                case NorthEast:
+                case SouthEast:
+                    adjustX += (steps % 5) * (TileSize / 5);
+            }
+        }//
+
         Bitmap resizedAssetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
         canvas.drawBitmap(resizedAssetBitmap, adjustX, adjustY, null);
     }
