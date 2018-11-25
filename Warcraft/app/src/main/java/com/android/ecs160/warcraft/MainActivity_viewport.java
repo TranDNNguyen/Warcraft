@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -248,13 +249,13 @@ public class MainActivity_viewport extends AppCompatActivity {
 
 
             //NOTE: disable multitouch with 3+ fingers
-            if(ev.getPointerCount() > 2) return true;
+            //if(ev.getPointerCount() > 2) return true;
             if(xPos < 0 || yPos < 0) return true;
 
             switch (action & MotionEvent.ACTION_MASK) {
 
 
-                //Releasing - First Finger
+                //Releasing == Literally Final Decision Part
                 case MotionEvent.ACTION_UP: {
                     mLastTouchX = x;
                     mLastTouchY = y;
@@ -265,6 +266,11 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //IF no multitouch used at all. -> select Asset.
                     if(selectionType == 1) {
                         assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
+                    }
+
+                    // 3 Finger-tap -> Show/Hide Minimap
+                    else if(selectionType == 3){
+                        minimap.setVisibility(minimap.getVisibility()==View.INVISIBLE ? View.VISIBLE : View.INVISIBLE );
                     }
 
                     //Update?
@@ -280,12 +286,24 @@ public class MainActivity_viewport extends AppCompatActivity {
                     mActivePointerId = ev.getPointerId(0);  //  First Finger
                     selectionType = 1; // AssetSelection Available
 
+
                     break;
                 }
 
                 //Multitouch Pressing  // Panning Map for now.
                 case MotionEvent.ACTION_POINTER_DOWN: {
-                    selectionType = 2;  //  MultitouchEvent, panning Screen Now.
+                    // Multitouch Event
+                    //Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
+
+                    //Show/Hide minimap w/ 3 finger-tap
+                    if(ev.getPointerCount() >= 3){
+                        selectionType = 3;
+                        Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    //  Panning Screen w/ 2 fingers
+                    else if(ev.getPointerCount() == 2)
+                        selectionType = 2;
                     break;
                 }
 
@@ -296,9 +314,15 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //  Get the location of first finger that touched.
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
+                    //3FingerTap - Show/Hide display
+                    if(selectionType == 3) return true;
+                    if(ev.getPointerCount() >= 3){
+                        selectionType = 3;
+                        return true;
+                    }
 
                     //Setting up TwoFinger Drag
-                    if(ev.getPointerCount() >= 2) {
+                    if(ev.getPointerCount() == 2) {
                         dx = (int) x - (int) mLastTouchX;
                         dy = (int) y - (int) mLastTouchY;
 
