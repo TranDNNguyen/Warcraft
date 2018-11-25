@@ -32,6 +32,7 @@ public class MainActivity_viewport extends AppCompatActivity {
     TextView resultTV;
     String resultString;
 
+
     public static int getTileSize() {
         return TILE_SIZE;
     }

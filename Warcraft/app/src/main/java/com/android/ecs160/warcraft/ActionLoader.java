@@ -336,6 +336,7 @@ public class ActionLoader {
         a.assetHeight = imageHeight;
     }
 
+    /*
     public void walk(Asset asset) {
         Asset.EDirection travelDirection;
         travelDirection = router.FindPath(terrainMap, asset, asset.x2, asset.y2);
@@ -385,12 +386,10 @@ public class ActionLoader {
                 asset.x++;
                 break;
         }
-/*
         assetRenderer.updateAssetFrame(asset);
 
         if (asset.x == asset.x2 && asset.y == asset.y2) {
             asset.action = Asset.EAssetAction.None;
         }
-*/
-    }
+    }*/
 }

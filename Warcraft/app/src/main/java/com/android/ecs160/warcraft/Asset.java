@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 
@@ -13,13 +15,19 @@ public class Asset {
     EAssetType type;
     int x; //current x pos
     int y; //current y pos
-    int x2; //x coordinate the unit is headed to
-    int y2; //y coordinate the unit is headed to
+    //int x2; //x coordinate the unit is headed to
+    //Queue<Integer> xs;
+    //Queue<Integer> ys;
+    Queue<CTilePosition> positions;
+    //int y2; //y coordinate the unit is headed to
     //int direction; //TODO: use enum instead
     EDirection direction;
-    EAssetAction action;
+    //EAssetAction action;
+    Queue<EAssetAction> commands;
     PlayerColor color;
     AssetData assetData;
+    int steps;
+    int lumber;
 
     Vector<Integer> pixelCoordinates;
     //Bitmap assetImages;
@@ -243,14 +251,21 @@ public class Asset {
         }
     }
 
+    public void removeCommand(){
+        commands.remove();
+        positions.remove();
+    }
 
-    public void setAction(EAssetAction assetAction, int x, int y) {
+    public void addCommand(EAssetAction assetAction, CTilePosition pos) {
         if (assetAction == EAssetAction.Walk) {
-            action = assetAction;
-            x2 = x;
-            y2 = y;
+            //action = assetAction;
+            commands.add(assetAction);
+            positions.add(pos);
+            //xs.add(x);
+            //ys.add(y);
         }
     }
+
 
     /*
      * Assets draws itself on the canvas it is given
@@ -264,8 +279,8 @@ public class Asset {
         int assetSize = assetBitmap.getWidth();
         int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
         int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
-        Bitmap resizedAsetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
-        canvas.drawBitmap(resizedAsetBitmap, adjustX, adjustY, null);
+        Bitmap resizedAssetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
+        canvas.drawBitmap(resizedAssetBitmap, adjustX, adjustY, null);
     }
 
 
@@ -292,7 +307,10 @@ public class Asset {
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
         direction = EDirection.North;
-        action = EAssetAction.None;
+        //action = EAssetAction.None;
+        commands = new LinkedList<>();
+        positions = new LinkedList<>();
+        //commands.add(EAssetAction.None);
         color = PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
     }

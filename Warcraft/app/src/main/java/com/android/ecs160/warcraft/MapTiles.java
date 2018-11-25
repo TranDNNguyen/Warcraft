@@ -86,8 +86,14 @@ public class MapTiles {
     private static int mapWidth;
     private static int mapHeight;
 
+    private static MapTiles myMapTiles = null;
 
     public MapTiles(String mapFileName, Context context) {
+
+        if(myMapTiles != null){
+            //todo: throw error
+        }
+        myMapTiles = this;
         fileName = mapFileName;
 
         terrainMap = new Vector<Vector<ETerrainTileType>>();
@@ -97,11 +103,20 @@ public class MapTiles {
         typeToName = new HashMap<ETerrainTileType, String>();
         nameToStrings = new HashMap<String, Vector<String>>();
 
-
         try {
             mapParse(fileName, context);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static MapTiles getMapTilesInstance(){
+        if(myMapTiles != null){
+            return myMapTiles;
+        }
+        else{
+            return null;
+            //TODO: throw error?
         }
     }
 
@@ -160,6 +175,13 @@ public class MapTiles {
         }
     }
 
+    public Vector<Vector<ETerrainTileType>> getCurrentTerrain(){
+        return terrainMap;
+    }
+
+    public ETerrainTileType getTileType(int x, int y){
+        return terrainMap.get(x).get(y);
+    }
 
     public String skipCommentLines(Scanner scanner) {
         while (scanner.hasNextLine()) {

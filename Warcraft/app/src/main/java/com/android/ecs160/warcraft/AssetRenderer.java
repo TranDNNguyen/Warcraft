@@ -88,6 +88,7 @@ public class AssetRenderer {
     //xPos: the absolute coordinates on the screen
     //currX: the coorinates where you've touched the screen within the view
     //values[]: will be location of xy coordinate of the view relative to the layout
+
     public Asset selectAsset(int xPos, int yPos, int values[], int currX, int currY) {
         //public Asset selectAsset(int x, int y) {
 
@@ -101,7 +102,7 @@ public class AssetRenderer {
         int tileX = (currX + viewX) / tilePixelSize;
         int tileY = (currY + viewY) / tilePixelSize;
 
-        //tileIndicies = getTileIndex(x, y);
+        //tileIndicies = getToleIndex(x, y);
         lastSelectedAsset = selectedAsset;
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
@@ -115,7 +116,8 @@ public class AssetRenderer {
             selectedAsset.isSelected = true;
         } else if (lastSelectedAsset != null) {
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
-                lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
+                AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY);
+                //lastSelectedAsset.findCommand(tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
 
@@ -227,8 +229,12 @@ public class AssetRenderer {
             frameIndex = 0;
         }//TODO - add active/inactive states for buildings
         else if(asset.type == Asset.EAssetType.Peasant){
-            frameIndex = asset.direction.getIdx() * 5; //just for walking + direction
-            //TODO: consider action type
+            if(asset.commands.peek() == Asset.EAssetAction.Walk){
+                frameIndex = asset.direction.getIdx() * 5; //just for walking + direction
+            }else if(asset.commands.peek() == Asset.EAssetAction.HarvestLumber){
+                frameIndex = 120 + asset.direction.getIdx() * 5;
+            }//TODO: fix magic numbers
+            //TODO: consider action type, switch statement?
         }//peasant
         else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){
             frameIndex = asset.direction.getIdx() * 5;
