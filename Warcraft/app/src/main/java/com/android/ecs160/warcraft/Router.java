@@ -254,9 +254,16 @@ public class Router {
                 TargetTile,
                 TempTile = new CTilePosition(0, 0);
 
-        Asset.EDirection SearchDirecitons[] = {Asset.EDirection.North, Asset.EDirection.East, Asset.EDirection.South, Asset.EDirection.West};
-        int ResMapXOffsets[] = {0, 1, 0, -1};
-        int ResMapYOffsets[] = {-1, 0, 1, 0};
+        //Asset.EDirection SearchDirecitons[] = {Asset.EDirection.North, Asset.EDirection.East, Asset.EDirection.South, Asset.EDirection.West};
+        Asset.EDirection SearchDirecitons[] = {Asset.EDirection.North, Asset.EDirection.NorthEast,
+                                                Asset.EDirection.East, Asset.EDirection.SouthEast,
+                                                Asset.EDirection.South, Asset.EDirection.SouthWest,
+                                                Asset.EDirection.West, Asset.EDirection.NorthWest};
+        //int ResMapXOffsets[] = {0, 1, 0, -1};
+        //int ResMapYOffsets[] = {-1, 0, 1, 0};
+        int ResMapXOffsets[] = {0, 1, 1, 1, 0, -1, -1, -1};
+        int ResMapYOffsets[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+
         int DiagCheckXOffset[] = {0, 1, 1, 1, 0, -1, -1, -1};
         int DiagCheckYOffset[] = {-1, -1, 0, 1, 1, 1, 0, -1};
         int SearchDirectionCount = SearchDirecitons.length; //TODO debug
@@ -361,7 +368,9 @@ public class Router {
         }
 
         //TODO:DUBUG: figure out what the below chunk of code actually does
+        /*
         if (DirectionBeforeLast != LastInDirection) {
+
             MapTiles.ETerrainTileType CurTileType = terrainMap.get(StartX + DiagCheckXOffset[DirectionBeforeLast.getIdx()]).get(StartY + DiagCheckYOffset[DirectionBeforeLast.getIdx()]);
             if (MapTiles.isTraversable(CurTileType)) {
                 int Sum = LastInDirection.getIdx() + DirectionBeforeLast.getIdx();
@@ -372,9 +381,8 @@ public class Router {
                 LastInDirection = Asset.EDirection.values()[Sum];
             }
         }
+        */
 
         return LastInDirection;
     }
 }
-
-

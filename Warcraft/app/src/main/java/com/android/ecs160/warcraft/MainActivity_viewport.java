@@ -1,15 +1,20 @@
 package com.android.ecs160.warcraft;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -19,8 +24,12 @@ import java.util.TimerTask;
 public class MainActivity_viewport extends AppCompatActivity {
 
     static int TILE_SIZE = 32;
-    static int viewportWidth = 1000;
-    static int viewportHeight = 600;
+    static int viewportWidth; //= 1000;
+    static int viewportHeight; //= 600;
+
+    static FragmentManager fragManager;
+
+
     int dx;
     int dy;
 
@@ -65,9 +74,25 @@ public class MainActivity_viewport extends AppCompatActivity {
         minimap = (ImageView) findViewById(R.id.minimapView);
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
+        //adjust map to size of screen
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int totalWidth = displaymetrics.widthPixels;
+        int totalHeight = displaymetrics.heightPixels;
+        double viewportWidthScale = 1;
+        double viewportHeightScale = .9;
+        viewportWidth = (int)(viewportWidthScale*totalWidth);
+        viewportHeight = (int)(viewportHeightScale*totalHeight);
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(viewportWidth, viewportHeight);
+        viewport.setLayoutParams(parms);
+
+        //viewportWidth = viewport.getLayoutParams().width;//.getMeasuredWidth();
+        //viewportHeight = viewport.getLayoutParams().height;//.getMeasuredHeight();
+
         //Map Renderer
         mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
-        assetRenderer = new AssetRenderer(this, getResources());
+        assetRenderer = new AssetRenderer(this, getResources(), viewportWidth, viewportHeight);
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
 
         Timer timer = new Timer();
@@ -82,6 +107,8 @@ public class MainActivity_viewport extends AppCompatActivity {
         }, 0, 50);
 
         dx = dy = 0;
+
+        fragManager = getSupportFragmentManager();
 
         //updateViewport();
         viewportHandler.obtainMessage(1).sendToTarget();
@@ -263,9 +290,9 @@ public class MainActivity_viewport extends AppCompatActivity {
                         dx = (int) x - (int) mLastTouchX;
                         dy = (int) y - (int) mLastTouchY;
 
-                        if (1000 - (mPosX + dx) >= 0)//&& mPosX+dx < viewportWidth)
+                        if (viewportWidth - (mPosX + dx) >= 0)//&& mPosX+dx < viewportWidth)
                             mPosX += dx;
-                        if (600 - (mPosY + dy) >= 0)//&& mPosY+dy < viewportHeight)
+                        if (viewportHeight - (mPosY + dy) >= 0)//&& mPosY+dy < viewportHeight)
                             mPosY += dy;
 
 
