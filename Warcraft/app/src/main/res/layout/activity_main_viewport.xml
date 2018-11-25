@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:background="#000000"
     >
 
 
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:background="#a9a2a2"
+            android:background="#000000"
             android:padding="0px"       />
 
         <ImageView
@@ -25,7 +25,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
 
-            android:background="#1fcfea"
+            android:background="#0a581b"
             android:padding="10px"
 
             android:scaleType="centerInside"
@@ -40,7 +40,7 @@
 
             android:layout_below="@id/minimapView"
             android:layout_alignParentLeft="true"
-
+            android:background="#00ffffff"
 
             />
 

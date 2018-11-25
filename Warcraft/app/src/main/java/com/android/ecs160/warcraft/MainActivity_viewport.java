@@ -193,34 +193,18 @@ public class MainActivity_viewport extends AppCompatActivity {
     }
 
 
-    //TODO - TouchEvent Listener
-    //  need to clean up, and also need to add features
-    //  - TwoFinger Drag for moving map
-    //  - OneFinger event for selecting assets + etc.
-
-
     // NOW
     // - Moving one or two fingers
-    // - if asset is selected, put sleection box around it.
-    int GLOBAL_TOUCH_POSITION_X = 0;
-    int GLOBAL_TOUCH_CURRENT_POSITION_X = 0;
-
+    // - if asset is selected, put selection box around it.
     private static final int INVALID_POINTER_ID = -1;
 
-    private float mPosX;  // Map location
-    private float mPosY;
-
-    private float mLastTouchX;
-    private float mLastTouchY;
-    private float mLastGestureX;
-    private float mLastGestureY;
-
+    private float mLastTouchX, mLastTouchY, mFirstTouchX, mFirstTouchY;
+    private float mLastGestureX, mLastGestureY;
     private int mActivePointerId = INVALID_POINTER_ID;
 
+
     private int currX = 0, currY = 0;  // Current LeftTop point
-
-
-    private int selectionType = 0;  //  0 for None, 1 for AssetSelection(SingleTouch), 2 for Panning Map(Multitouch)
+    private int selectionType = 0;  //  0 for None, 1 for AssetSelection(SingleTouch), 2 for Panning Map(Multitouch), 3 for Show/Hide minimap
 
 
     ImageView.OnTouchListener touchListener = new ImageView.OnTouchListener() {
@@ -233,10 +217,6 @@ public class MainActivity_viewport extends AppCompatActivity {
             float y = ev.getY(0);
             int xPos = (int) (x / screenZoomFactor );
             int yPos = (int) (y / screenZoomFactor );
-
-            //TESTING - Zooming feature
-            //float xPosF = (x / screenZoomFactor );
-            //float yPosF = (y / screenZoomFactor );
 
             // Get location of View in the screen.
             int values[] = new int[2];
@@ -273,7 +253,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                         minimap.setVisibility(minimap.getVisibility()==View.INVISIBLE ? View.VISIBLE : View.INVISIBLE );
                     }
 
-                    //Update?
+                    //Update
                     viewportHandler.obtainMessage(1).sendToTarget();
 
                     break;
@@ -281,24 +261,23 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 //Pressing - First Finger
                 case MotionEvent.ACTION_DOWN: {
+                    mFirstTouchX = x;
+                    mFirstTouchY = y;
                     mLastTouchX = x;
                     mLastTouchY = y;
                     mActivePointerId = ev.getPointerId(0);  //  First Finger
                     selectionType = 1; // AssetSelection Available
 
-
                     break;
                 }
 
-                //Multitouch Pressing  // Panning Map for now.
+                //Multitouch Event Handling part
                 case MotionEvent.ACTION_POINTER_DOWN: {
-                    // Multitouch Event
-                    //Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
 
                     //Show/Hide minimap w/ 3 finger-tap
                     if(ev.getPointerCount() >= 3){
                         selectionType = 3;
-                        Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                     //  Panning Screen w/ 2 fingers
@@ -321,16 +300,17 @@ public class MainActivity_viewport extends AppCompatActivity {
                         return true;
                     }
 
+                    //Drag - MultipleSelection
+                    if(selectionType == 1){
+                        mLastTouchX = x;
+                        mLastGestureY = y;
+                        return true;
+                    }
+
                     //Setting up TwoFinger Drag
-                    if(ev.getPointerCount() == 2) {
+                    if(selectionType == 2) {
                         dx = (int) x - (int) mLastTouchX;
                         dy = (int) y - (int) mLastTouchY;
-
-                        //LeftTop margin boundary check
-                        if (ConstLayoutWidth - (mPosX + dx) >= 0)
-                            mPosX += dx;
-                        if (ConstLayoutHeight - (mPosY + dy) >= 0)
-                            mPosY += dy;
 
 
                         //TODO

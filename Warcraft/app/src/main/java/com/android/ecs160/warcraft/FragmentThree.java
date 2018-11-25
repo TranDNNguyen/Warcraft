@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class FragmentThree extends Fragment {
+public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
 
     private View v;
     private IconImage Icon;
@@ -28,13 +29,20 @@ public class FragmentThree extends Fragment {
         v =inflater.inflate(R.layout.fragment_three, container, false);
 
         Icon = new IconImage(this.getContext());
-        imgBtn = (ImageButton) v.findViewById(R.id.archer);
+        imgBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
         imgBtn.setImageBitmap(Icon.returnTestImage());
-
+        imgBtn.setOnClickListener(this);
        // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
        // tv.setText("Can you read?");
 
         return v;
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(this.getContext(), "Asset Image Clicked", Toast.LENGTH_SHORT).show();
+
     }
 
     //NOTE: this is a test function with stupid name, so don't worry about it.
@@ -44,4 +52,8 @@ public class FragmentThree extends Fragment {
 
         return;
     }
+
+
+
+
 }
