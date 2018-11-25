@@ -255,11 +255,16 @@ public class AssetRenderer {
             frameIndex = 0;
         }//TODO - add active/inactive states for buildings
         else if(asset.type == Asset.EAssetType.Peasant){
-            if(asset.commands.peek() == Asset.EAssetAction.Walk){
-                frameIndex = asset.direction.getIdx() * 5; //just for walking + direction
-            }else if(asset.commands.peek() == Asset.EAssetAction.HarvestLumber){
-                frameIndex = 120 + asset.direction.getIdx() * 5;
-            }//TODO: fix magic numbers
+            Asset.EAssetAction action = asset.commands.peek();
+            if(action == Asset.EAssetAction.Walk){
+                frameIndex = asset.direction.getIdx() * 5;
+                if(asset.lumber > 0){
+                    frameIndex += 120;
+                }
+            }else if(action == Asset.EAssetAction.HarvestLumber){
+                frameIndex = 40 + asset.direction.getIdx() * 5;
+                frameIndex += (asset.steps % 5);
+            }//TODO: fix magic numbers?
             //TODO: consider action type, switch statement?
         }//peasant
         else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){

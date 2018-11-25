@@ -57,9 +57,15 @@ public class AssetActionRenderer {
         }
     }
 
-
-
     void HarvestLumber(Asset asset){
+        //
+        /*if(asset.steps == 0){
+            Walk(asset);
+            if (Arrived(asset)) {
+                asset.steps++;
+            }
+        }//have not reached lumber yet
+        */
         if(asset.steps >= GameModel.DHarvestSteps){
             asset.lumber = (GameModel.DLumberPerHarvest);
             asset.removeCommand();
@@ -78,6 +84,16 @@ public class AssetActionRenderer {
         Asset.EDirection travelDirection;
         //travelDirection = router.FindPath(terrainMap, asset, asset.xs.peek(), asset.xs.peek());
         travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
+
+        if(travelDirection == Asset.EDirection.Max){
+            asset.removeCommand();
+            return;
+        }//asset cannot move further, as pathfinding is no longer giving useful directions
+        else if (Arrived(asset)) {
+            asset.removeCommand();
+            return;
+        }
+
         asset.direction = travelDirection;
 
         switch (travelDirection) {
@@ -102,11 +118,6 @@ public class AssetActionRenderer {
             case SouthEast:
                 asset.x++;
         }
-
-        if (Arrived(asset)) {
-            asset.removeCommand();
-            //asset.action = Asset.EAssetAction.None;
-        }
     }
 
     public boolean Arrived(Asset asset){
@@ -116,11 +127,50 @@ public class AssetActionRenderer {
         if(asset.x == asset.positions.peek().x && asset.y == asset.positions.peek().y){
             return true;
         }else if(!mapTiles.isTraversable(tileType)){
-            return true;
+ //           return true;
         }//TODO:we've actually gone too far by this point. need to update logic
+
+        CTilePosition nextTile = getNextTile(asset);
+        tileType = mapTiles.getTileType(asset.x, asset.y);
+
+        if(!mapTiles.isTraversable(tileType) && nextTile == asset.positions.peek()){
+            return true;
+        }//we have reached a mining destination
 
         return false;
     }
+
+    public CTilePosition getNextTile(Asset asset){
+        int tempx = asset.x;
+        int tempy = asset.y;
+
+        switch (asset.direction) {
+            case North:
+            case NorthWest:
+            case NorthEast:
+                tempy--;
+                break;
+            case South:
+            case SouthWest:
+            case SouthEast:
+                tempy++;
+        }
+        switch (asset.direction) {
+            case West:
+            case SouthWest:
+            case NorthWest:
+                tempx--;
+                break;
+            case East:
+            case NorthEast:
+            case SouthEast:
+                tempx++;
+        }
+
+        return new CTilePosition(tempx, tempy);
+    }
+
+
 
 }
 

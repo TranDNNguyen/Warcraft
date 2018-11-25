@@ -257,13 +257,13 @@ public class Asset {
     }
 
     public void addCommand(EAssetAction assetAction, CTilePosition pos) {
-        if (assetAction == EAssetAction.Walk) {
+        //if (assetAction == EAssetAction.Walk) {
             //action = assetAction;
             commands.add(assetAction);
             positions.add(pos);
             //xs.add(x);
             //ys.add(y);
-        }
+        //}
     }
 
 

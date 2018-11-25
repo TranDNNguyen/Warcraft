@@ -381,7 +381,7 @@ public class Router {
                 LastInDirection = Asset.EDirection.values()[Sum];
             }
         }
-        
+
 
         return LastInDirection;
     }

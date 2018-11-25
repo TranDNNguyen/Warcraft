@@ -28,7 +28,7 @@ public class MainActivity_viewport extends AppCompatActivity {
     static int viewportHeight; //= 600;
 
     static FragmentManager fragManager;
-
+    int updateFrequency = 30;
 
     int dx;
     int dy;
@@ -68,6 +68,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             }
         });
 
+        new GameModel(updateFrequency);
 
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
@@ -104,7 +105,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 assetActionRenderer.TimeStep(assetRenderer.assets);
             }
-        }, 0, 50);
+        }, 0, updateFrequency);
 
         dx = dy = 0;
 
