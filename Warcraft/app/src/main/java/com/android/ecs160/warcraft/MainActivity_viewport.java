@@ -1,14 +1,14 @@
 package com.android.ecs160.warcraft;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,11 +21,12 @@ import java.util.TimerTask;
 public class MainActivity_viewport extends AppCompatActivity {
 
     static int TILE_SIZE = 32;
-    static int viewportWidth = 1000;
-    static int viewportHeight = 600;
+    static int viewportWidth, viewportHeight;
+    static int screenWidth, screenHeight, screenLeftBound, screenRightBound;
+    static int ConstLayoutWidth = 1000, ConstLayoutHeight = 600;
 
+    static float screenZoomFactor = 1.0f, ConstScreenZoomFactor = 0.6f;
     static FragmentManager fragManager;
-
 
     int dx;
     int dy;
@@ -64,16 +65,18 @@ public class MainActivity_viewport extends AppCompatActivity {
             }
         });
 
-
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
         minimap = (ImageView) findViewById(R.id.minimapView);
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
         //Map Renderer
-        mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
+        mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
         assetRenderer = new AssetRenderer(this, getResources());
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
+
+        //Initializations
+        InitScreenSetup();
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -81,22 +84,22 @@ public class MainActivity_viewport extends AppCompatActivity {
             public void run() {
                 //updateViewport();
                 viewportHandler.obtainMessage(1).sendToTarget();
-
                 assetActionRenderer.TimeStep(assetRenderer.assets);
             }
         }, 0, 50);
-
         dx = dy = 0;
 
+        //UI Fragment Setting
         fragManager = getSupportFragmentManager();
-
-
-
 
         //updateViewport();
         viewportHandler.obtainMessage(1).sendToTarget();
         viewport.setOnTouchListener(touchListener);
+
     }
+
+
+
 
     public Handler uiHandler = new Handler() {
 
@@ -115,21 +118,20 @@ public class MainActivity_viewport extends AppCompatActivity {
         //REQUIRED
         //private boolean updateViewport(Message msg) {
         public void handleMessage(Message msg) {
-            Bitmap result = Bitmap.createBitmap(viewportWidth, viewportHeight, Bitmap.Config.ARGB_8888);
+            Bitmap result = Bitmap.createBitmap(ConstLayoutWidth, ConstLayoutHeight, Bitmap.Config.ARGB_8888);
 
             Canvas canvas = new Canvas(result);
-            if(!(currX > MapRenderer.bitmapWidth - viewportWidth
-                    || currY > MapRenderer.bitmapHeight - viewportHeight
+            if(!(currX > MapRenderer.bitmapWidth - ConstLayoutWidth
+                    || currY > MapRenderer.bitmapHeight - ConstLayoutHeight
                     || currX < 0 || currY < 0)){//boundary check
                 Bitmap temp = mapRenderer.drawTerrain(currX, currY);
                 if (temp != null) {
                     canvas.drawBitmap(temp, 0, 0, null);  //  Draw Map
                     canvas.drawBitmap(assetRenderer.renderAssets(currX, currY), 0, 0, null);  //  Draw Assets
                     viewport.setImageBitmap(result);
-
+                    result = null;  // Performance
 
                     //Minimap Part
-
                     Bitmap minimapTemp;
                     minimapTemp = Bitmap.createBitmap(mapRenderer.drawMinimap());
                     assetRenderer.generateMiniMap(minimapTemp);
@@ -139,28 +141,50 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                 }
             }
-           // return true;
+            // return true;
         }
     };
+
+
+
+    //Set Screen Boundary wrt Zooming Factor things
+    public void InitScreenSetup(){
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        screenWidth  = size.x;
+        screenHeight = size.y;
+
+        //TODO current ScreenRatio is 10:6, in rare case, it is possible, some phone with larger width might have problems due to this part.
+        viewportHeight = screenHeight;
+        viewportWidth  = screenHeight * 10 / 6;
+
+        screenLeftBound = (screenWidth - viewportWidth) / 2; // == empty margin on left side
+        screenRightBound = screenWidth + screenLeftBound;  // == starting point of right empty margin
+
+        screenZoomFactor = ((float)screenHeight) / 600f;  // ConstScreenZoomFactor = 0.6 = 1000/600  //  We keep the ratio of the screen
+    }
+
 
     //DEBUG  //  Displaying all the coordinates
     // - X,Y absolute coord, ImageView X,Y, Map X, Y
     //xPos: the absolute coordinates on the screen
     //currX: the coorinates where you've touched the screen within the view
     //values[]: will be location of xy coordinate of the view relative to the layout
-    public void displayCoordinates(int xPos, int yPos, int values[], int currX, int currY) {
-        resultString = " Viewport = (" + (xPos - values[0]) + "," + (yPos - values[1]);
+    public void displayCoordinates(double xPos, double yPos, int values[], int currX, int currY) {
+        resultString = " Viewport = (" + (int)(xPos - values[0]) + "," + (int)(yPos - values[1]);
         resultString += ") / Map<top&left corner> = (" + (currX) + "," + (currY);
 
         //XY in Viewport
-        int viewX = (xPos - values[0]);
-        int viewY = (yPos - values[1]);
+        double viewX = (xPos - values[0]);
+        double viewY = (yPos - values[1]);
         if (viewX < 0) viewX = 0;
         if (viewY < 0) viewY = 0;
 
         //XY in Tile
-        int tileX = (currX + viewX) / TILE_SIZE;
-        int tileY = (currY + viewY) / TILE_SIZE;
+        int tileX = (int)(viewX) / TILE_SIZE;
+        int tileY = (int)(viewY) / TILE_SIZE;
 
         resultString += ") / Tile = (" + tileX + "," + tileY + ")";
         //if(map1.checkBoundary(xPos-values[0], yPos-values[1]))
@@ -182,7 +206,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
     private static final int INVALID_POINTER_ID = -1;
 
-    private float mPosX;
+    private float mPosX;  // Map location
     private float mPosY;
 
     private float mLastTouchX;
@@ -192,7 +216,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
     private int mActivePointerId = INVALID_POINTER_ID;
 
-    private int currX = 0, currY = 0;
+    private int currX = 0, currY = 0;  // Current LeftTop point
 
 
     private int selectionType = 0;  //  0 for None, 1 for AssetSelection(SingleTouch), 2 for Panning Map(Multitouch)
@@ -204,15 +228,20 @@ public class MainActivity_viewport extends AppCompatActivity {
 
             final int action = ev.getAction();
 
-            float x = ev.getX();
-            float y = ev.getY();
-            int xPos = (int) ev.getX();
-            int yPos = (int) ev.getY();
+            float x = ev.getX(0) - screenLeftBound;
+            float y = ev.getY(0);
+            int xPos = (int) (x / screenZoomFactor );
+            int yPos = (int) (y / screenZoomFactor );
+
+            //TESTING - Zooming feature
+            //float xPosF = (x / screenZoomFactor );
+            //float yPosF = (y / screenZoomFactor );
 
             // Get location of View in the screen.
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
+            //TESTING FUNCTION
             //NOTE: Displaying all the coordinates
             // - X,Y absolute coord, ImageView X,Y, Map X, Y
             displayCoordinates(xPos, yPos, values, currX, currY);
@@ -220,9 +249,10 @@ public class MainActivity_viewport extends AppCompatActivity {
 
             //NOTE: disable multitouch with 3+ fingers
             if(ev.getPointerCount() > 2) return true;
-
+            if(xPos < 0 || yPos < 0) return true;
 
             switch (action & MotionEvent.ACTION_MASK) {
+
 
                 //Releasing - First Finger
                 case MotionEvent.ACTION_UP: {
@@ -265,8 +295,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //NOTE
                     //  Get the location of first finger that touched.
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
-                    x = (int) ev.getX(pointerIndex);
-                    y = (int) ev.getY(pointerIndex);
 
 
                     //Setting up TwoFinger Drag
@@ -274,18 +302,19 @@ public class MainActivity_viewport extends AppCompatActivity {
                         dx = (int) x - (int) mLastTouchX;
                         dy = (int) y - (int) mLastTouchY;
 
-                        if (1000 - (mPosX + dx) >= 0)//&& mPosX+dx < viewportWidth)
+                        //LeftTop margin boundary check
+                        if (ConstLayoutWidth - (mPosX + dx) >= 0)
                             mPosX += dx;
-                        if (600 - (mPosY + dy) >= 0)//&& mPosY+dy < viewportHeight)
+                        if (ConstLayoutHeight - (mPosY + dy) >= 0)
                             mPosY += dy;
 
 
                         //TODO
                         //Boundary Check - Put it in the MapRenderer
-                        if (currX - dx >= 0 && currX - dx < MapRenderer.bitmapWidth - viewportWidth) {
+                        if (currX - dx >= 0 && currX - dx < MapRenderer.bitmapWidth - ConstLayoutWidth) {
                             currX -= dx;
                         }
-                        if (currY - dy >= 0 && currY - dy < MapRenderer.bitmapHeight - viewportHeight) {
+                        if (currY - dy >= 0 && currY - dy < MapRenderer.bitmapHeight - ConstLayoutHeight) {
                             currY -= dy;
                         }
 

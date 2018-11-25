@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#AA000000"
+    android:background="#ffffff"
     >
 
 
@@ -14,26 +14,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-
-            android:layout_margin="10dip"
-
-            android:background="#000000"
-            android:padding="2dip"
-            />
+            android:background="#a9a2a2"
+            android:padding="0px"       />
 
         <ImageView
             android:id="@+id/minimapView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dip"
-            android:background="#000000"
-            android:padding="2dip"
-            android:maxWidth="100px"
-            android:maxHeight="100px"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+
+            android:background="#1fcfea"
+            android:padding="10px"
+
             android:scaleType="centerInside"
 
             />
 
+        <fragment
+            android:id="@+id/fragment3"
+            android:name="com.android.ecs160.warcraft.FragmentThree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@id/minimapView"
+            android:layout_alignParentLeft="true"
+
+
+            />
 
         <TextView
             android:id="@+id/xyTextView"
@@ -42,7 +51,12 @@
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@id/viewportView"
             android:background="#AA0000"
-            android:padding="2dip"
-            android:text="X and Y Coordinate" />
+            android:padding="10px"
+            android:text="X and Y Coordinate"
+            android:visibility="visible"
+            />
+
+
+
 
 </RelativeLayout>
