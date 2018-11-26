@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
 
@@ -62,17 +61,17 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     }
 
 
-
+    //Display Asset Info.  //  Invoked when Asset Image was being clicked.
     @Override
     public void onClick(View v) {
 
         //Custom Toast View
         //https://stackoverflow.com/questions/11288475/custom-toast-on-android-a-simple-example
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.assetinfo, (ViewGroup) v.findViewById(R.id.toast_layout_assetInfo));
-        ImageView image = (ImageView) layout.findViewById(R.id.assetInfo_image);
+        View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) v.findViewById(R.id.toast_layout_Info));
+        ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
         image.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(currentAsset.getAssetData_ResourceName())));
-        TextView text = (TextView) layout.findViewById(R.id.assetInfo_text);
+        TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
         text.setText(   currentAsset.getAssetData().resourceName + "\n" +
                         "Health : " + currentAsset.getAssetData().hitPoints + "/"+Asset.AssetTypeData.getAssetData(currentAsset.type).hitPoints + "\n"+
                         " Armor : " + currentAsset.getAssetData().armor + "\n" +
@@ -87,10 +86,9 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
-
-        currentAsset.getAssetData();
-
+        layout = null;
     }
+
 
     // Update the button images in this asset image fragment
     public void updateButtonImages(Asset selectedAsset) {

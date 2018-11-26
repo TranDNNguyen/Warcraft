@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toast_layout_assetInfo"
+    android:id="@+id/toast_layout_Info"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:background="#DAAA" >
 
-    <ImageView android:id="@+id/assetInfo_image"
+    <ImageView android:id="@+id/toast_info_image"
         android:layout_width="100px"
         android:layout_height="100px"
         android:scaleType="fitCenter"
         android:layout_marginRight="10dp" />
 
-    <TextView android:id="@+id/assetInfo_text"
+    <TextView android:id="@+id/toast_info_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFF" />

@@ -10,8 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -122,6 +125,42 @@ public class MainActivity_viewport extends AppCompatActivity {
         viewportHandler.obtainMessage(1).sendToTarget();
         viewport.setOnTouchListener(touchListener);
 
+
+        displayTutorialMessage();
+    }
+
+
+    public void displayTutorialMessage(){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) findViewById(R.id.toast_layout_Info));
+        ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
+        image.setImageBitmap(null);
+        TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
+        text.setText(  "This is Tutorial Message for you!\n" +
+                        "Welcome to WC2 Android Developer version");
+
+        Toast toast = new Toast(getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+        /*
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                text.setText(  "Tap on Unit to select\n"+
+                        "To move the map, drag the screen with two fingers\n"+
+                        "To hide/show minimap, tap the screen with three finger");
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
+            }
+        }, 2000);
+        */
     }
 
 
