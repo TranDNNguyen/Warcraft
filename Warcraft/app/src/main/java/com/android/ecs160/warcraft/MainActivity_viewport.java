@@ -222,7 +222,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
-            //TESTING FUNCTION
+            //TESTING FUNCTION // DEBUGGING
             //NOTE: Displaying all the coordinates
             // - X,Y absolute coord, ImageView X,Y, Map X, Y
             //displayCoordinates(xPos, yPos, values, currX, currY);

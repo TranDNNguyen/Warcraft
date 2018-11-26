@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#7f8287"
+    android:background="@null"
     android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/AssetImageBtn"
         android:layout_width="100px"
         android:layout_height="100px"
-        android:background="#00ffffff" />
+        android:background="@null" />
 
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,7 +29,7 @@
             android:layout_row="0"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="1"
             />
         <ImageButton
@@ -38,7 +38,7 @@
             android:layout_row="0"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="2"
             />
         <ImageButton android:layout_column="2"
@@ -46,49 +46,49 @@
             android:id="@+id/actionBtn3"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="3"/>
         <ImageButton android:layout_column="0"
             android:layout_row="1"
             android:id="@+id/actionBtn4"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="4"/>
         <ImageButton android:layout_column="1"
             android:layout_row="1"
             android:id="@+id/actionBtn5"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="5"/>
         <ImageButton android:layout_column="2"
             android:layout_row="1"
             android:id="@+id/actionBtn6"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="6"/>
         <ImageButton android:layout_column="0"
             android:layout_row="2"
             android:id="@+id/actionBtn7"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="7"/>
         <ImageButton android:layout_column="1"
             android:layout_row="2"
             android:id="@+id/actionBtn8"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="8"/>
         <ImageButton android:layout_column="2"
             android:layout_row="2"
             android:id="@+id/actionBtn9"
             android:layout_width="100px"
             android:layout_height="100px"
-
+            android:background="@null"
             android:text="9"/>
 
     </GridLayout>

@@ -119,25 +119,29 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
+
+            //TODO - fill this switch statement with the rest of the assets
+            Integer[] iconNumbers;
+            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+            switch (selectedAsset.type) {
+                case Peasant:
+                    iconNumbers = Asset.getAssetActionIcons("Peasant");
+                    actionFragment.updateButtonImages(iconNumbers);
+                    break;
+                case Footman:
+                    iconNumbers = Asset.getAssetActionIcons("Footman");
+                    actionFragment.updateButtonImages(iconNumbers);
+                    break;
+            }
+            actionFragment = null;
+            iconNumbers = null;
+
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
 
-                //TODO - fill this switch statement with the rest of the assets
-                Integer[] iconNumbers;
-                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-                switch (lastSelectedAsset.type) {
-                    case Peasant:
-                        iconNumbers = Asset.getAssetActionIcons("Peasant");
-                        actionFragment.updateButtonImages(iconNumbers);
-                        break;
-                    case Footman:
-                        iconNumbers = Asset.getAssetActionIcons("Footman");
-                        actionFragment.updateButtonImages(iconNumbers);
-                        break;
-                }
 
                 if(lastSelectedAsset.type == Asset.EAssetType.Peasant){
 

@@ -39,7 +39,10 @@
             android:background="#AA0000"
             android:padding="10px"
             android:text="X and Y Coordinate"
-            android:visibility="visible"
+
+
+            android:visibility="invisible"
+
             />
 
 
