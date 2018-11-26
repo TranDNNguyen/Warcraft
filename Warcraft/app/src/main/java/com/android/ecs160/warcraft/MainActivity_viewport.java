@@ -99,8 +99,11 @@ public class MainActivity_viewport extends AppCompatActivity {
 
         //Map Renderer
 
-        mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
-        assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
+        //mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
+        //assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
+        mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
+        assetRenderer = new AssetRenderer(this, getResources(), viewportWidth, viewportHeight);
+
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
 
         //Initializations
