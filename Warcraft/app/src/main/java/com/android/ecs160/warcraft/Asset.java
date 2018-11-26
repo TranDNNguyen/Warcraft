@@ -219,6 +219,17 @@ public class Asset {
         }
     }
 
+
+
+
+    public AssetData getAssetData(){
+        return this.assetData;
+    }
+
+    public String getAssetData_ResourceName(){
+        return this.assetData.resourceName;
+    }
+
     // Map list of buttons to each asset on tap.
     // TODO - Add more mappings for each asset
     private static final HashMap<String, Integer[]> assetActionMap;
@@ -227,13 +238,29 @@ public class Asset {
         Integer PeasantIconNumbers[] = new Integer[] {84, 86, 87, 88, 89};
         Integer FootmanIconNumbers[] = new Integer[] {84, 86, 87, 170, 172};
 
-        assetActionMap.put("Peasant", PeasantIconNumbers);
-        assetActionMap.put("Footman", FootmanIconNumbers);
+        assetActionMap.put("peasant", PeasantIconNumbers);
+        assetActionMap.put("footman", FootmanIconNumbers);
     }
 
     public static Integer[] getAssetActionIcons(String assetName) {
         return assetActionMap.get(assetName);
     }
+
+
+    private static final HashMap<String, Integer> assetImageMap;
+    static {
+        assetImageMap = new HashMap<String, Integer>();
+        Integer PeasantImage = new Integer(0);
+        Integer FootmanImage = new Integer(2);
+
+        assetImageMap.put("peasant", PeasantImage);
+        assetImageMap.put("footman", FootmanImage);
+    }
+
+    public static Integer getAssetImageIcons(String assetName) {
+        return assetImageMap.get(assetName);
+    }
+
 
     public boolean isBuilding(){
         switch (type){
