@@ -18,7 +18,6 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
     public FragmentThree(){
 
-
     }
 
     @Nullable

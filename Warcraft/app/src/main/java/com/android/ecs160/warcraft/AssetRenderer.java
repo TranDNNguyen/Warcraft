@@ -118,7 +118,7 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
-        } else if (lastSelectedAsset != null) {
+        } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
