@@ -324,8 +324,15 @@ public class Asset {
     }
 
     Asset(EAssetType t, int o, int x, int y) {
-        //
-
+        type = t;
+        owner = o;
+        this.x = x;
+        this.y = y;
+        direction = EDirection.South;
+        commands = new LinkedList<>();
+        positions = new LinkedList<>();
+        color = PlayerColor.Red;
+        assetData = AssetTypeData.getAssetData(type);
     }
 
     Asset(String input[]) {
@@ -334,10 +341,8 @@ public class Asset {
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
         direction = EDirection.North;
-        //action = EAssetAction.None;
         commands = new LinkedList<>();
         positions = new LinkedList<>();
-        //commands.add(EAssetAction.None);
         color = PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
     }
