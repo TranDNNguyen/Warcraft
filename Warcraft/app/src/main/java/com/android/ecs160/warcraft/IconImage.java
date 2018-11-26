@@ -52,8 +52,12 @@ public class IconImage {
         return Bitmap.createScaledBitmap(iconSet[6], 100, 100, false);
     }
 
-    public void setIconImage6(ImageButton imgBtn6) {
+    public void setIconImage6(ImageButton imgBtn6){
         imgBtn6.setImageBitmap(iconSet[6]);
+    }
+
+    public Bitmap getIconImage(Integer iconNumber) {
+        return Bitmap.createScaledBitmap(iconSet[iconNumber], 100, 100, false);
     }
 }
 

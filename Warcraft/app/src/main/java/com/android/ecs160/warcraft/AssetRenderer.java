@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -20,6 +21,9 @@ public class AssetRenderer {
     int TileSize = MainActivity_viewport.getTileSize();
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
+
+    FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+
 
     private Context mContext;
 
@@ -35,10 +39,10 @@ public class AssetRenderer {
     //super.onCreate(savedInstanceState);
     //setContentView(R.layout.activity_asset);
 
-    public AssetRenderer(Context context, Resources res, int viewportWidth, int viewportHeight) {
+    public AssetRenderer(Context context, Resources res, int width, int height) {
 
-        screenWidth = viewportWidth;
-        screenHeight = viewportHeight;
+        screenWidth = width;
+        screenHeight = height;
 
         //get initial assets from loader
         try {
@@ -127,12 +131,16 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
-        } else if (lastSelectedAsset != null) {
+            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+            actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
+
+        } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY);
                 //lastSelectedAsset.findCommand(tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
+
 
                 if(lastSelectedAsset.type == Asset.EAssetType.Peasant){
 
@@ -142,8 +150,8 @@ public class AssetRenderer {
                     //TODO: 1. It is currently changing images after selecting units, so we may have to modify the onTouchListener in MainActivity
                     //TODO: 2. Need to Implement all features like setting appropriate image upon selecting specific unit, and building.
                     //TODO: 3. Need to work on deselection, change image to transparent, or empty image.s
-                    FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-                    fragment.peasantSelected();
+//                    FragmentThree fragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+//                    fragment.peasantSelected();
                 }
                 else if(lastSelectedAsset.type == Asset.EAssetType.Footman){
 

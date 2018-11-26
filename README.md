@@ -10,4 +10,3 @@ traversable are with access to a forest tile.
 - Added display of lumber gathering frame in the correct direction when peasant
 approaches a forest tile. 
 
-

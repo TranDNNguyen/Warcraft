@@ -8,15 +8,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.util.Log;
 
-public class FragmentThree extends Fragment {
+public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
+
+    private final int MAX_BUTTONS = 9;
 
     private View v;
     private IconImage Icon;
     private ImageButton imgBtn;
 
-    public FragmentThree(){
+    private Integer images[] = new Integer[] {
+            R.id.actionBtn1,
+            R.id.actionBtn2,
+            R.id.actionBtn3,
+            R.id.actionBtn4,
+            R.id.actionBtn5,
+            R.id.actionBtn6,
+            R.id.actionBtn7,
+            R.id.actionBtn8,
+            R.id.actionBtn9,
+    };
 
+    public FragmentThree(){
 
     }
 
@@ -28,92 +44,114 @@ public class FragmentThree extends Fragment {
         v =inflater.inflate(R.layout.fragment_three, container, false);
 
         Icon = new IconImage(this.getContext());
-        imgBtn = (ImageButton) v.findViewById(R.id.archer);
+        imgBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
         imgBtn.setImageBitmap(Icon.returnTestImage());
-
-       // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
-       // tv.setText("Can you read?");
+        imgBtn.setOnClickListener(this);
+        // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
+        // tv.setText("Can you read?");
 
         return v;
     }
 
-    //NOTE: this is a test function with stupid name, so don't worry about it.
-    public void peasantSelected() {
-        imgBtn.setImageBitmap(Icon.returnImage6());
+
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(this.getContext(), "Asset Image Clicked", Toast.LENGTH_SHORT).show();
     }
 
-    public void footmanUnitButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(83)); //human-move
-        imgBtn.setImageBitmap(Icon.returnImage(164)); //human-armor-1
-        imgBtn.setImageBitmap(Icon.returnImage(116)); //human-weapon-1
-        imgBtn.setImageBitmap(Icon.returnImage(170)); //human-patrol
-        imgBtn.setImageBitmap(Icon.returnImage(172)); //human-stand-ground
-    }
 
-    public void rangedUnitButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(83)); //human-move
-        imgBtn.setImageBitmap(Icon.returnImage(164)); //human-armor-1
-        imgBtn.setImageBitmap(Icon.returnImage(124)); //human-arrow-1
-        imgBtn.setImageBitmap(Icon.returnImage(170)); //human-patrol
-        imgBtn.setImageBitmap(Icon.returnImage(172)); //human-stand-ground
-    }
 
-    public void peasantButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(83)); //human-move
-        imgBtn.setImageBitmap(Icon.returnImage(164)); //human-armor-1
-        imgBtn.setImageBitmap(Icon.returnImage(116)); //human-weapon-1
-        imgBtn.setImageBitmap(Icon.returnImage(85)); //repair
-        imgBtn.setImageBitmap(Icon.returnImage(86)); //mine
-        imgBtn.setImageBitmap(Icon.returnImage(89)); //human-convey
-        imgBtn.setImageBitmap(Icon.returnImage(87)); //build-simple
-    }
+    // Update the button images in this asset image fragment
+    public void updateButtonImages(Asset selectedAsset) {
+        if(selectedAsset == null)
+            return;
 
-    public void buildSimpleButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(38)); //chicken-farm
-        imgBtn.setImageBitmap(Icon.returnImage(42)); //human-barracks
-        imgBtn.setImageBitmap(Icon.returnImage(40)); //town-hall
-        imgBtn.setImageBitmap(Icon.returnImage(44)); //human-lumber-mill
-        imgBtn.setImageBitmap(Icon.returnImage(46)); //human-blacksmith
-        imgBtn.setImageBitmap(Icon.returnImage(60)); //scout-tower
-        imgBtn.setImageBitmap(Icon.returnImage(91)); //cancel
-    }
+        Bitmap currentIcon;
+        ImageButton currentImageBtn;
+        Integer[] buttonNumbers = Asset.getAssetActionIcons("Peasant");;  // Holding index numbers of Action Icons for selectedAsset
 
-    public void barracksButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(2)); //footman
+        // Directly grabb the asset data  // In Asset.java - Implemented GetAssetData method, to grab the resource data(String value of resource type)
+        String assetType = selectedAsset.getAssetData_ResourceName();
+        buttonNumbers = Asset.getAssetActionIcons(assetType);
 
-        //TODO: need to store state of buildings and upgrades
-        if(true /*if ranger upgrade not complete*/ ) {
-            imgBtn.setImageBitmap(Icon.returnImage(4)); //archer
-        } else {
-            imgBtn.setImageBitmap(Icon.returnImage(6)); //ranger
+        //Set images on ImageBtns  // Order: Asset Profile Image -> Action Icons
+        currentImageBtn = getActivity().findViewById(R.id.AssetImageBtn);
+        currentImageBtn.setVisibility(View.VISIBLE);
+        currentImageBtn.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(assetType)));
+
+
+        //Init. Action Buttons
+        int numberOfButtons = buttonNumbers.length;
+        for (int buttonIndex = 0; buttonIndex < 9; buttonIndex++) {
+            currentImageBtn = getActivity().findViewById(images[buttonIndex]);
+            currentImageBtn.setVisibility(View.INVISIBLE);
+
+            if(buttonIndex < numberOfButtons)
+                currentImageBtn.setVisibility(View.VISIBLE);
         }
-    }
 
-    public void chickenFarmButtons() {
+        //Action Button Setting
+        if(selectedAsset != null){
+            for (int buttonIndex = 0; buttonIndex < numberOfButtons; buttonIndex++) {
+                currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
+                currentImageBtn = getActivity().findViewById(images[buttonIndex]);
+                currentImageBtn.setImageBitmap(currentIcon);
+            }
 
-    }
-
-    public void townHallButtons() {
-        imgBtn.setImageBitmap(Icon.returnImage(0)); //peasant
-
-        //TODO: need to store state of buildings and upgrades
-        if(true  /*if keep upgrade not complete*/ ) {
-            imgBtn.setImageBitmap(Icon.returnImage(66)); //keep
-        } else if (true /*if castle upgrade not complete*/ ){
-            imgBtn.setImageBitmap(Icon.returnImage(68)); //castle
         }
+
+        currentIcon = null;
+        currentImageBtn = null;
+        buttonNumbers = null;
     }
 
-    public void blacksmithButtons() {
 
+    // Update the button images in this asset image fragment
+    public void updateButtonImages(Integer[] buttonNumbers) {
+        Bitmap currentIcon;
+        ImageButton currentImageBtn;
+
+        //Initialize the visibility of Buttons
+        for (int buttonIndex = 0; buttonIndex < 9; buttonIndex++) {
+            currentImageBtn = getActivity().findViewById(images[buttonIndex]);
+            currentImageBtn.setVisibility(View.INVISIBLE);
+
+            if(buttonIndex < 5)
+                currentImageBtn.setVisibility(View.VISIBLE);
+        }
+
+        //Set images on ImageBtns  // Order: Asset Profile Image -> Action Icons
+        currentImageBtn = getActivity().findViewById(R.id.AssetImageBtn);
+        currentImageBtn.setVisibility(View.VISIBLE);
+        //currentImageBtn.setImageBitmap();
+
+        for (int buttonIndex = 0; buttonIndex < 5; buttonIndex++) {
+            currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
+            currentImageBtn = getActivity().findViewById(images[buttonIndex]);
+            currentImageBtn.setImageBitmap(currentIcon);
+        }
+        currentIcon = null;
+        currentImageBtn = null;
     }
 
-    public void lumberMillButtons() {
+    public void resetUIButtonImages(){
+        Bitmap currentIcon;
+        ImageButton currentImageBtn;
 
+
+        //Initialize AssetProfile Image
+        currentImageBtn = getActivity().findViewById(R.id.AssetImageBtn);
+        currentImageBtn.setVisibility(View.INVISIBLE);
+
+        //Initialize the visibility of Buttons
+        for (int buttonIndex = 0; buttonIndex < 9; buttonIndex++) {
+            currentImageBtn = getActivity().findViewById(images[buttonIndex]);
+            currentImageBtn.setVisibility(View.INVISIBLE);
+        }
+
+        currentIcon = null;
+        currentImageBtn = null;
     }
 
-    //used for building and units while being trained or built
-    public void cancelButton() {
-        imgBtn.setImageBitmap(Icon.returnImage(91)); //cancel
-    }
 }
+
