@@ -245,7 +245,8 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                     //IF no multitouch used at all. -> select Asset.
                     if(selectionType == 1) {
-                        assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
+                        Asset selectedAsset = assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
+                        //TODO - do something with the asset
                     }
 
                     // 3 Finger-tap -> Show/Hide Minimap

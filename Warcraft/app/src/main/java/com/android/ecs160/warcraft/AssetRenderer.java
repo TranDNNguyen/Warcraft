@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -123,6 +124,20 @@ public class AssetRenderer {
                 lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
+
+                //TODO - fill this switch statement with the rest of the assets
+                Integer[] iconNumbers;
+                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+                switch (lastSelectedAsset.type) {
+                    case Peasant:
+                        iconNumbers = Asset.getAssetActionIcons("Peasant");
+                        actionFragment.updateButtonImages(iconNumbers);
+                        break;
+                    case Footman:
+                        iconNumbers = Asset.getAssetActionIcons("Footman");
+                        actionFragment.updateButtonImages(iconNumbers);
+                        break;
+                }
 
                 if(lastSelectedAsset.type == Asset.EAssetType.Peasant){
 

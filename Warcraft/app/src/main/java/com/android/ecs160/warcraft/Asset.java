@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import java.util.Vector;
+import java.util.HashMap;
 
 
 public class Asset {
@@ -216,6 +217,22 @@ public class Asset {
         int getIdx() {
             return idx;
         }
+    }
+
+    // Map list of buttons to each asset on tap.
+    // TODO - Add more mappings for each asset
+    private static final HashMap<String, Integer[]> assetActionMap;
+    static {
+        assetActionMap = new HashMap<String, Integer[]>();
+        Integer PeasantIconNumbers[] = new Integer[] {84, 86, 87, 88, 89};
+        Integer FootmanIconNumbers[] = new Integer[] {84, 86, 87, 170, 172};
+
+        assetActionMap.put("Peasant", PeasantIconNumbers);
+        assetActionMap.put("Footman", FootmanIconNumbers);
+    }
+
+    public static Integer[] getAssetActionIcons(String assetName) {
+        return assetActionMap.get(assetName);
     }
 
     public boolean isBuilding(){

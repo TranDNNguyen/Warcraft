@@ -8,12 +8,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.util.Log;
 
 public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
+
+    private final int MAX_BUTTONS = 9;
 
     private View v;
     private IconLoader Icon;
     private ImageButton imgBtn;
+
+    private Integer images[] = new Integer[] {
+            R.id.actionBtn1,
+            R.id.actionBtn2,
+            R.id.actionBtn3,
+            R.id.actionBtn4,
+            R.id.actionBtn5,
+            R.id.actionBtn6,
+            R.id.actionBtn7,
+            R.id.actionBtn8,
+            R.id.actionBtn9,
+    };
 
     public FragmentThree(){
 
@@ -40,18 +56,17 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     @Override
     public void onClick(View v) {
         Toast.makeText(this.getContext(), "Asset Image Clicked", Toast.LENGTH_SHORT).show();
-        peasantSelected();
+        //peasantSelected();
     }
 
-    //NOTE: this is a test function with stupid name, so don't worry about it.
-    public void peasantSelected(){
-
-        imgBtn.setImageBitmap(Icon.returnImage6());
-
-        return;
+    // Update the button images in this asset image fragment
+    public void updateButtonImages(Integer[] buttonNumbers) {
+        Bitmap currentIcon;
+        ImageButton currentImage;
+        for (int buttonIndex = 0; buttonIndex < 5; buttonIndex++) {
+            currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
+            currentImage = getActivity().findViewById(images[buttonIndex]);
+            currentImage.setImageBitmap(currentIcon);
+        }
     }
-
-
-
-
 }
