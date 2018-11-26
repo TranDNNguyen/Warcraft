@@ -148,22 +148,29 @@ public class MainActivity_viewport extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
 
-        /*
         Handler handler = new Handler();
         handler.postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
-                text.setText(  "Tap on Unit to select\n"+
-                        "To move the map, drag the screen with two fingers\n"+
-                        "To hide/show minimap, tap the screen with three finger");
-                toast.setDuration(Toast.LENGTH_LONG);
-                toast.setView(layout);
-                toast.show();
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) findViewById(R.id.toast_layout_Info));
+                    ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
+                    image.setImageBitmap(null);
+                    TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
+                    text.setText(  "Single tap, to select unit\n\n"+
+                            "Two-finger-drag, to move the map\n\n"+
+                            "Three-finger-tap, to show/hide minimap");
+
+                    Toast toast = new Toast(getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
+                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
             }
         }, 2000);
-        */
+
     }
 
 
