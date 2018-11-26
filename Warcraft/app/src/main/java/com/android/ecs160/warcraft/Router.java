@@ -1,6 +1,8 @@
 package com.android.ecs160.warcraft;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 //NOTE: In the linux code this is called "RouterMap", and is in charge of pathfinding
@@ -12,6 +14,11 @@ public class Router {
     static final Integer SEARCH_STATUS_UNVISITED = -1;
     static final Integer SEARCH_STATUS_VISITED = -2;
     static final Integer SEARCH_STATUS_OCCUPIED = -3;
+
+
+    static final Integer S_STATUS_UNVISITED = 0;
+    static final Integer S_STATUS_QUEUED = 1;
+    static final Integer S_STATUS_VISITED = 2;
 
     static int DMapWidth;
     Asset.EDirection DIdealSearchDirection = Asset.EDirection.North;
@@ -33,6 +40,82 @@ public class Router {
             DMap.add(temp);
         }
     }
+
+    class SSearchTile{
+        public int DX;
+        public int DY;
+
+        SSearchTile(int x, int y){
+            DX = x;
+            DY = y;
+        }
+    }
+
+    CTilePosition FindNearestReachableTileType(CTilePosition pos, MapTiles.ETerrainTileType type){
+        LinkedList< SSearchTile > SearchQueue = new LinkedList<>();
+        SSearchTile CurrentSearch = new SSearchTile(0, 0), TempSearch = new SSearchTile(0, 0);
+        int MapWidth = MapTiles.getMapWidth();
+        int MapHeight = MapTiles.getMapHeight();
+        int SearchXOffsets[] = {0,1,0,-1};
+        int SearchYOffsets[] = {-1,0,1,0};
+
+        ArrayList<ArrayList<Integer>> DSearchMap = new ArrayList<>(DMap.size());
+        for(ArrayList i : DSearchMap){
+            i = new ArrayList(DMapWidth);
+        }
+
+        ArrayList<Integer> temp;
+        for (int i = 0; i < MapWidth + 2; i++) {
+            temp = new ArrayList<Integer>();
+            for (int j = 0; j < MapHeight + 2; j++) {
+                temp.add(0);
+            }
+            DSearchMap.add(temp);
+        }//initialize size
+
+        for(int Y = 0; Y < MapHeight; Y++){
+            for(int X = 0; X < MapWidth; X++){
+                DSearchMap.get(Y+1).set(X+1, S_STATUS_UNVISITED);
+            }
+        }
+        for(Asset asset : assetRenderer.assets){
+            CTilePosition pos2 = new CTilePosition(asset.x, asset.y);
+            if(pos2 != pos){
+                for(int Y = 0; Y < asset.assetData.size; Y++){
+                    for(int X = 0; X < asset.assetData.size; X++){
+                        DSearchMap.get(pos2.y+Y+1).set(pos2.x+X+1, S_STATUS_VISITED);
+                    }
+                }
+            }
+        }
+
+        CurrentSearch.DX = pos.x + 1;
+        CurrentSearch.DY = pos.y + 1;
+        SearchQueue.add(CurrentSearch);
+        while(SearchQueue.size() != 0){
+            CurrentSearch = SearchQueue.remove();
+            DSearchMap.get(CurrentSearch.DY).set(CurrentSearch.DX, S_STATUS_VISITED);
+            for(int Index = 0; Index < SearchXOffsets.length; Index++){
+                TempSearch.DX = CurrentSearch.DX + SearchXOffsets[Index];
+                TempSearch.DY = CurrentSearch.DY + SearchYOffsets[Index];
+                if(S_STATUS_UNVISITED == DSearchMap.get(TempSearch.DY).get(TempSearch.DX)){
+                    MapTiles mapTiles = MapTiles.getMapTilesInstance();
+                    MapTiles.ETerrainTileType CurTileType = mapTiles.getTileType(TempSearch.DX, TempSearch.DY);
+
+                    DSearchMap.get(TempSearch.DY).set(TempSearch.DX, S_STATUS_QUEUED);
+                    if(type == CurTileType){
+                        return new CTilePosition(TempSearch.DX - 1, TempSearch.DY - 1);
+                    }
+                    //if((ETileType::Grass == CurTileType)||(ETileType::Dirt == CurTileType)||(ETileType::Stump == CurTileType)||(ETileType::Rubble == CurTileType)||(ETileType::None == CurTileType)){
+                    if(MapTiles.isTraversable(CurTileType)){
+                        SearchQueue.push(TempSearch);
+                    }
+                }
+            }
+        }
+        return new CTilePosition(-1, -1);
+    }
+
 
     //takes in asset and it's new coordinates
     public static Asset.EDirection calcDirection(Asset asset, int destX, int destY) {
@@ -93,8 +176,8 @@ public class Router {
         int DTargetDistanceSquared;
         Asset.EDirection DInDirection;
     }
-
-    protected class CTilePosition {
+/*
+    public class CTilePosition {
         //TODO: should this be in the map classes? tiles?
         int x;
         int y;
@@ -111,7 +194,7 @@ public class Router {
             return DeltaX * DeltaX + DeltaY * DeltaY;
         }
     }
-
+*/
     boolean MovingAway(Asset.EDirection dir1, int dir2) {
         int Value;
         if ((0 > dir2) || (Asset.EDirection.Max.getIdx()) <= dir2) {
@@ -124,15 +207,45 @@ public class Router {
         return false;
     }
 
-    public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
-                                     Asset asset, int destX, int destY) {
-        //NOTE: below does works for now, but it ignores traversability.
-        //return calcDirection(asset, destX, destY);
+    private void resizeDMap(){
+        int MapWidth = MapTiles.getMapWidth();
+        int MapHeight = MapTiles.getMapHeight();
 
+        int LastYIndex = MapHeight + 1;
+        int LastXIndex = MapWidth + 1;
+        DMap.ensureCapacity(MapHeight + 2);
+        ArrayList temp = new ArrayList();
+        for (int i = 0; i < MapWidth; i++) {
+            DMap.get(i).add(0);
+            DMap.get(i).add(0, 0);
+        }
+        for (int i = 0; i < MapWidth + 2; i++) {
+            temp.add(0);
+        }
+        DMap.add(temp);
+        DMap.add(0, temp);
+
+        for (int Index = 0; Index < DMap.size(); Index++) {
+            DMap.get(Index).set(0, SEARCH_STATUS_VISITED);
+            DMap.get(Index).set(LastXIndex, SEARCH_STATUS_VISITED);
+        }
+        for (int Index = 0; Index < MapWidth; Index++) {
+            DMap.get(0).set(Index + 1, SEARCH_STATUS_VISITED);
+            DMap.get(LastYIndex).set(Index + 1, SEARCH_STATUS_VISITED);
+        }
+        DMapWidth = MapWidth + 2;
+    }
+
+    //public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
+    //                                 Asset asset, int destX, int destY) {
+    public Asset.EDirection FindPath(Vector<Vector<MapTiles.ETerrainTileType>> terrainMap,
+                Asset asset, CTilePosition pos) {
         int MapWidth = MapTiles.getMapWidth();
         int MapHeight = MapTiles.getMapHeight();
         int StartX = asset.x;
         int StartY = asset.y;
+        int destX = pos.x;
+        int destY = pos.y;
 
         SSearchTarget CurrentSearch = new SSearchTarget(),
                 BestSearch = new SSearchTarget(),
@@ -142,8 +255,15 @@ public class Router {
                 TempTile = new CTilePosition(0, 0);
 
         Asset.EDirection SearchDirecitons[] = {Asset.EDirection.North, Asset.EDirection.East, Asset.EDirection.South, Asset.EDirection.West};
+        //Asset.EDirection SearchDirecitons[] = {Asset.EDirection.North, Asset.EDirection.NorthEast,
+        //                                        Asset.EDirection.East, Asset.EDirection.SouthEast,
+        //                                        Asset.EDirection.South, Asset.EDirection.SouthWest,
+        //                                       Asset.EDirection.West, Asset.EDirection.NorthWest};
         int ResMapXOffsets[] = {0, 1, 0, -1};
         int ResMapYOffsets[] = {-1, 0, 1, 0};
+        //int ResMapXOffsets[] = {0, 1, 1, 1, 0, -1, -1, -1};
+        //int ResMapYOffsets[] = {-1, -1, 0, 1, 1, 1, 0, -1};
+
         int DiagCheckXOffset[] = {0, 1, 1, 1, 0, -1, -1, -1};
         int DiagCheckYOffset[] = {-1, -1, 0, 1, 1, 1, 0, -1};
         int SearchDirectionCount = SearchDirecitons.length; //TODO debug
@@ -153,29 +273,7 @@ public class Router {
 
         TargetTile = new CTilePosition(destX, destY);
         if ((DMap.size() != MapHeight + 2) || (DMap.get(0).size() != MapWidth + 2)) {
-            int LastYIndex = MapHeight + 1;
-            int LastXIndex = MapWidth + 1;
-            DMap.ensureCapacity(MapHeight + 2);
-            ArrayList temp = new ArrayList();
-            for (int i = 0; i < MapWidth; i++) {
-                DMap.get(i).add(0);
-                DMap.get(i).add(0, 0);
-            }
-            for (int i = 0; i < MapWidth + 2; i++) {
-                temp.add(0);
-            }
-            DMap.add(temp);
-            DMap.add(0, temp);
-
-            for (int Index = 0; Index < DMap.size(); Index++) {
-                DMap.get(Index).set(0, SEARCH_STATUS_VISITED);
-                DMap.get(Index).set(LastXIndex, SEARCH_STATUS_VISITED);
-            }
-            for (int Index = 0; Index < MapWidth; Index++) {
-                DMap.get(0).set(Index + 1, SEARCH_STATUS_VISITED);
-                DMap.get(LastYIndex).set(Index + 1, SEARCH_STATUS_VISITED);
-            }
-            DMapWidth = MapWidth + 2;
+            resizeDMap();
         }
 
         if (asset.x == destX && asset.y == destY) {
@@ -191,8 +289,8 @@ public class Router {
         for (Asset Res : assetRenderer.assets) {
             if (asset != Res) {
                 if (Asset.EAssetType.None != Res.type) {
-                    if ((Asset.EAssetAction.Walk != Res.action) || (asset.color != Res.color)) {
-                        if ((asset.color != Res.color) || ((Asset.EAssetAction.ConveyGold != Res.action) && (Asset.EAssetAction.ConveyLumber != Res.action) && (Asset.EAssetAction.MineGold != Res.action))) {
+                    if ((Asset.EAssetAction.Walk != Res.commands.peek()) || (asset.color != Res.color)) {
+                        if ((asset.color != Res.color) || ((Asset.EAssetAction.ConveyGold != Res.commands.peek()) && (Asset.EAssetAction.ConveyLumber != Res.commands.peek()) && (Asset.EAssetAction.MineGold != Res.commands.peek()))) {
                             for (int YOff = 0; YOff < Res.assetData.size; YOff++) {
                                 for (int XOff = 0; XOff < Res.assetData.size; XOff++) {
                                     DMap.get(Res.y + YOff + 1).set(Res.x + XOff + 1, SEARCH_STATUS_VISITED);
@@ -270,7 +368,9 @@ public class Router {
         }
 
         //TODO:DUBUG: figure out what the below chunk of code actually does
+
         if (DirectionBeforeLast != LastInDirection) {
+
             MapTiles.ETerrainTileType CurTileType = terrainMap.get(StartX + DiagCheckXOffset[DirectionBeforeLast.getIdx()]).get(StartY + DiagCheckYOffset[DirectionBeforeLast.getIdx()]);
             if (MapTiles.isTraversable(CurTileType)) {
                 int Sum = LastInDirection.getIdx() + DirectionBeforeLast.getIdx();
@@ -282,8 +382,7 @@ public class Router {
             }
         }
 
+
         return LastInDirection;
     }
 }
-
-

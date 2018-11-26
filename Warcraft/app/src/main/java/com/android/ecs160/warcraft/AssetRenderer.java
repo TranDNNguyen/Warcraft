@@ -22,20 +22,27 @@ public class AssetRenderer {
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
 
-    FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
 
 
     private Context mContext;
 
     public int tilePixelSize = 32;
 
+
+    //TODO: figure out better way to set size of asset bitmap
+    int screenWidth;// = 1000;//Resources.getSystem().getDisplayMetrics().widthPixels;
+    int screenHeight;// = 600;//Resources.getSystem().getDisplayMetrics().heightPixels;
+
     //@Override
     //protected void onCreate(Bundle savedInstanceState) {
     //super.onCreate(savedInstanceState);
     //setContentView(R.layout.activity_asset);
 
+    public AssetRenderer(Context context, Resources res, int width, int height) {
 
-    public AssetRenderer(Context context, Resources res) {
+        screenWidth = width;
+        screenHeight = height;
+
         //get initial assets from loader
         try {
             //AssetLoader.setBitmaps(getResources());
@@ -97,6 +104,7 @@ public class AssetRenderer {
     //xPos: the absolute coordinates on the screen
     //currX: the coorinates where you've touched the screen within the view
     //values[]: will be location of xy coordinate of the view relative to the layout
+
     public Asset selectAsset(int xPos, int yPos, int values[], int currX, int currY) {
         //public Asset selectAsset(int x, int y) {
 
@@ -110,7 +118,8 @@ public class AssetRenderer {
         int tileX = (currX + viewX) / tilePixelSize;
         int tileY = (currY + viewY) / tilePixelSize;
 
-        //tileIndicies = getTileIndex(x, y);
+
+        //tile Indicies = getTileIndex(x, y);
         lastSelectedAsset = selectedAsset;
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
@@ -122,11 +131,13 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
+            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
             actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
 
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
-                lastSelectedAsset.setAction(Asset.EAssetAction.Walk, tileX, tileY);
+                AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY);
+                //lastSelectedAsset.findCommand(tileX, tileY);
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
 
@@ -145,7 +156,9 @@ public class AssetRenderer {
                 else if(lastSelectedAsset.type == Asset.EAssetType.Footman){
 
                 }
-
+                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+                actionFragment.resetUIButtonImages();;
+                actionFragment = null;
 
             }//TODO
         }
@@ -168,9 +181,6 @@ public class AssetRenderer {
      * //TODO needs to be passed widths, heights, offsets from viewport/mapactivity instead of declaring them here
      */
     public Bitmap renderAssets(int widthOffset, int heightOffset) {
-        //TODO: figure out better way to set size of asset bitmap
-        int screenWidth = 1000;//Resources.getSystem().getDisplayMetrics().widthPixels;
-        int screenHeight = 600;//Resources.getSystem().getDisplayMetrics().heightPixels;
 
         //TODO: set/get offset that corresponds with what parts of the map are visible
         //int widthOffset = 0;
@@ -255,11 +265,22 @@ public class AssetRenderer {
             frameIndex = 0;
         }//TODO - add active/inactive states for buildings
         else if(asset.type == Asset.EAssetType.Peasant){
-            frameIndex = asset.direction.getIdx() * 5; //just for walking + direction
-            //TODO: consider action type
+            Asset.EAssetAction action = asset.commands.peek();
+            if(action == Asset.EAssetAction.Walk){
+                frameIndex = asset.direction.getIdx() * 5;
+                if(asset.lumber > 0){
+                    frameIndex += 120;
+                }
+                frameIndex += (asset.steps % 5);
+            }else if(action == Asset.EAssetAction.HarvestLumber){
+                frameIndex = 40 + asset.direction.getIdx() * 5;
+                frameIndex += (asset.steps % 5);
+            }//TODO: fix magic numbers?
+            //TODO: consider action type, switch statement?
         }//peasant
         else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){
             frameIndex = asset.direction.getIdx() * 5;
+            frameIndex += (asset.steps % 5);
         }//footman or archer
 
         assetLoader.setAssetBitmap(asset, frameIndex);

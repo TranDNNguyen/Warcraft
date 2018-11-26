@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 import java.util.HashMap;
 
@@ -14,13 +16,19 @@ public class Asset {
     EAssetType type;
     int x; //current x pos
     int y; //current y pos
-    int x2; //x coordinate the unit is headed to
-    int y2; //y coordinate the unit is headed to
+    //int x2; //x coordinate the unit is headed to
+    //Queue<Integer> xs;
+    //Queue<Integer> ys;
+    Queue<CTilePosition> positions;
+    //int y2; //y coordinate the unit is headed to
     //int direction; //TODO: use enum instead
     EDirection direction;
-    EAssetAction action;
+    //EAssetAction action;
+    Queue<EAssetAction> commands;
     PlayerColor color;
     AssetData assetData;
+    int steps;
+    int lumber;
 
     Vector<Integer> pixelCoordinates;
     //Bitmap assetImages;
@@ -235,8 +243,8 @@ public class Asset {
     private static final HashMap<String, Integer[]> assetActionMap;
     static {
         assetActionMap = new HashMap<String, Integer[]>();
-        Integer PeasantIconNumbers[] = new Integer[] {84, 86, 87, 88, 89};
-        Integer FootmanIconNumbers[] = new Integer[] {84, 86, 87, 170, 172};
+        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 87};  // Human "move", "stop", "attack" + "repair","mine","lowTierBuild"  // 88-AdvBuild, 89-ResourceConveyHuman  // -6 from DatFile line#
+        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172};
 
         assetActionMap.put("peasant", PeasantIconNumbers);
         assetActionMap.put("footman", FootmanIconNumbers);
@@ -287,14 +295,21 @@ public class Asset {
         }
     }
 
-
-    public void setAction(EAssetAction assetAction, int x, int y) {
-        if (assetAction == EAssetAction.Walk) {
-            action = assetAction;
-            x2 = x;
-            y2 = y;
-        }
+    public void removeCommand(){
+        commands.remove();
+        positions.remove();
     }
+
+    public void addCommand(EAssetAction assetAction, CTilePosition pos) {
+        //if (assetAction == EAssetAction.Walk) {
+            //action = assetAction;
+            commands.add(assetAction);
+            positions.add(pos);
+            //xs.add(x);
+            //ys.add(y);
+        //}
+    }
+
 
     /*
      * Assets draws itself on the canvas it is given
@@ -308,8 +323,35 @@ public class Asset {
         int assetSize = assetBitmap.getWidth();
         int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
         int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
-        Bitmap resizedAsetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
-        canvas.drawBitmap(resizedAsetBitmap, adjustX, adjustY, null);
+
+        //testing TODO:
+        if(commands.peek() == EAssetAction.Walk) {
+            switch (direction) {
+                case North:
+                case NorthWest:
+                case NorthEast:
+                    adjustY -= (steps % 5) * (TileSize / 5);
+                    break;
+                case South:
+                case SouthWest:
+                case SouthEast:
+                    adjustY += (steps % 5) * (TileSize / 5);
+            }
+            switch (direction) {
+                case West:
+                case SouthWest:
+                case NorthWest:
+                    adjustX -= (steps % 5) * (TileSize / 5);
+                    break;
+                case East:
+                case NorthEast:
+                case SouthEast:
+                    adjustX += (steps % 5) * (TileSize / 5);
+            }
+        }//
+
+        Bitmap resizedAssetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
+        canvas.drawBitmap(resizedAssetBitmap, adjustX, adjustY, null);
     }
 
 
@@ -326,8 +368,15 @@ public class Asset {
     }
 
     Asset(EAssetType t, int o, int x, int y) {
-        //
-
+        type = t;
+        owner = o;
+        this.x = x;
+        this.y = y;
+        direction = EDirection.South;
+        commands = new LinkedList<>();
+        positions = new LinkedList<>();
+        color = PlayerColor.Red;
+        assetData = AssetTypeData.getAssetData(type);
     }
 
     Asset(String input[]) {
@@ -336,7 +385,8 @@ public class Asset {
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
         direction = EDirection.North;
-        action = EAssetAction.None;
+        commands = new LinkedList<>();
+        positions = new LinkedList<>();
         color = PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
     }

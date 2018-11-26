@@ -16,6 +16,8 @@ public class AssetLoader {
     Resources resources;
     //private static Vector<Asset> assets;
 
+    ActionLoader actionLoader;
+
     public int tilePixelSize = 32;
 
     //public static Bitmap peasantImages;
@@ -45,7 +47,7 @@ public class AssetLoader {
         line = scanner.nextLine(); //skip the assets comment
 
         Vector<Asset> assets = new Vector<Asset>();
-
+        actionLoader = new ActionLoader("Footman", context);
         for (int i = 0; i < numAssets; i++) {
             line = scanner.nextLine();
             temp = line.split(" ");
@@ -53,7 +55,7 @@ public class AssetLoader {
             setAssetBitmap(newAsset, 0);
             assets.add(newAsset);
         }//make the specified assets
-
+        actionLoader.ActionLoaderParse("Footman", context);
         return assets;
     }
 
