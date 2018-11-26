@@ -17,14 +17,28 @@
             android:background="#000000"
             android:padding="0px"       />
 
+        <ImageView
+            android:id="@+id/minimapView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+
+            android:background="#0a581b"
+            android:padding="10px"
+
+            android:scaleType="centerInside"
+
+            />
+
         <fragment
             android:id="@+id/fragment3"
             android:name="com.android.ecs160.warcraft.FragmentThree"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/minimapView"
             android:layout_alignParentLeft="true"
             android:background="#00ffffff"
 

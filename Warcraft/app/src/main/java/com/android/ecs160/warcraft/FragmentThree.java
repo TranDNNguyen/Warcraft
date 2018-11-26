@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -16,7 +17,7 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     private final int MAX_BUTTONS = 9;
 
     private View v;
-    private IconLoader Icon;
+    private IconImage Icon;
     private ImageButton imgBtn;
 
     private Integer images[] = new Integer[] {
@@ -40,9 +41,9 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        v =inflater.inflate(R.layout.panel_ui, container, false);
+        v =inflater.inflate(R.layout.fragment_three, container, false);
 
-        Icon = new IconLoader(this.getContext());
+        Icon = new IconImage(this.getContext());
         imgBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
         imgBtn.setImageBitmap(Icon.returnTestImage());
         imgBtn.setOnClickListener(this);
@@ -56,7 +57,7 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     @Override
     public void onClick(View v) {
         Toast.makeText(this.getContext(), "Asset Image Clicked", Toast.LENGTH_SHORT).show();
-        //peasantSelected();
+
     }
 
     // Update the button images in this asset image fragment
