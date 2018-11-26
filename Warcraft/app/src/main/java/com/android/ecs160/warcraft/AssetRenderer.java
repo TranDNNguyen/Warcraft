@@ -22,7 +22,6 @@ public class AssetRenderer {
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
 
-    FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
 
 
     private Context mContext;
@@ -110,7 +109,7 @@ public class AssetRenderer {
         int tileX = (currX + viewX) / tilePixelSize;
         int tileY = (currY + viewY) / tilePixelSize;
 
-        //tileIndicies = getTileIndex(x, y);
+        //tile Indicies = getTileIndex(x, y);
         lastSelectedAsset = selectedAsset;
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
@@ -122,6 +121,7 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
+            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
             actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
 
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
