@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageButton;
 
-public class IconImage  {
+public class IconLoader {
     //REQUIRED // = loadMapTiles()
 
     Bitmap iconImage;
@@ -17,10 +17,10 @@ public class IconImage  {
     private Context mContext;  //  Check MapRenderer.java to how they set the variable.
 
 
-    IconImage(){
+    IconLoader(){
         mContext = null;
     }
-    IconImage(Context c){
+    IconLoader(Context c){
         mContext = c;
         generateTileSet();
     }

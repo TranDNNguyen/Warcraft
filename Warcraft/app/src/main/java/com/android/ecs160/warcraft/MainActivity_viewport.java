@@ -225,7 +225,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             //TESTING FUNCTION
             //NOTE: Displaying all the coordinates
             // - X,Y absolute coord, ImageView X,Y, Map X, Y
-            displayCoordinates(xPos, yPos, values, currX, currY);
+            //displayCoordinates(xPos, yPos, values, currX, currY);
 
 
             //NOTE: disable multitouch with 3+ fingers
@@ -275,7 +275,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                 case MotionEvent.ACTION_POINTER_DOWN: {
 
                     //Show/Hide minimap w/ 3 finger-tap
-                    if(ev.getPointerCount() >= 3){
+                    if(ev.getPointerCount() >= 3 || selectionType == 3){
                         selectionType = 3;
                         //Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
                         return true;
@@ -283,6 +283,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                     //  Panning Screen w/ 2 fingers
                     else if(ev.getPointerCount() == 2)
                         selectionType = 2;
+
                     break;
                 }
 
@@ -300,12 +301,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                         return true;
                     }
 
-                    //Drag - MultipleSelection
-                    if(selectionType == 1){
-                        mLastTouchX = x;
-                        mLastGestureY = y;
-                        return true;
-                    }
 
                     //Setting up TwoFinger Drag
                     if(selectionType == 2) {
@@ -329,6 +324,16 @@ public class MainActivity_viewport extends AppCompatActivity {
                     }
 
 
+
+
+                    //Drag - MultipleSelection
+                    if(selectionType == 1){
+                        mLastTouchX = x;
+                        mLastGestureY = y;
+                        return true;
+                    }
+
+
                     break;
                 }
 
@@ -341,6 +346,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mActivePointerId = ev.getPointerId(newPointerIndex);
+
                     break;
                 }
             }
