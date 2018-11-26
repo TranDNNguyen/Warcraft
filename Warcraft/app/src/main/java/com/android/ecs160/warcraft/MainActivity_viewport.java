@@ -81,7 +81,8 @@ public class MainActivity_viewport extends AppCompatActivity {
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
         //adjust map to size of screen
-
+        //TODO for Joon - ask Kirsten about the usage of this part
+/*
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int totalWidth = displaymetrics.widthPixels;
@@ -105,9 +106,16 @@ public class MainActivity_viewport extends AppCompatActivity {
         assetRenderer = new AssetRenderer(this, getResources(), viewportWidth, viewportHeight);
 
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
+*/
+
+        //Map Renderer
+        mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
+        assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
 
         //Initializations
         InitScreenSetup();
+
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
