@@ -60,7 +60,7 @@ public class IconImage  {
     }
 
     public Bitmap getIconImage(Integer iconNumber) {
-        return iconSet[iconNumber];
+        return Bitmap.createScaledBitmap(iconSet[iconNumber], 100, 100, false);
     }
 
 }

@@ -14,6 +14,8 @@ import android.util.Log;
 
 public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
 
+    private final int MAX_BUTTONS = 9;
+
     private View v;
     private IconImage Icon;
     private ImageButton imgBtn;
@@ -62,25 +64,10 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     public void updateButtonImages(Integer[] buttonNumbers) {
         Bitmap currentIcon;
         ImageButton currentImage;
-
-        /*for(Integer button : buttonNumbers) {
-            Log.d("testing", button.toString());
-        }
-
-        for ( Integer button : buttonNumbers) {
-            currentIcon = Icon.getIconImage(button);
-            currentImage = (ImageButton) getActivity().findViewById(images[button]);
+        for (int buttonIndex = 0; buttonIndex < 5; buttonIndex++) {
+            currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
+            currentImage = getActivity().findViewById(images[buttonIndex]);
             currentImage.setImageBitmap(currentIcon);
-        }*/
-
-        currentIcon = Icon.getIconImage(84);
-        currentImage = (ImageButton) getActivity().findViewById(images[0]);
-        currentImage.setImageBitmap(currentIcon);
+        }
     }
-
-
-
-
-
-
 }
