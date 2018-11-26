@@ -54,11 +54,14 @@ public class IconImage  {
     public Bitmap returnImage6(){
         return Bitmap.createScaledBitmap(iconSet[6], 100,100,false);
     }
+
     public void setIconImage6(ImageButton imgBtn6){
         imgBtn6.setImageBitmap(iconSet[6]);
     }
 
-
+    public Bitmap getIconImage(Integer iconNumber) {
+        return iconSet[iconNumber];
+    }
 
 }
 
