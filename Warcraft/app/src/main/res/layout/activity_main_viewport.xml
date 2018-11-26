@@ -7,8 +7,6 @@
     android:background="#000000"
     >
 
-
-
     <ImageView
         android:id="@+id/viewportView"
         android:layout_width="match_parent"

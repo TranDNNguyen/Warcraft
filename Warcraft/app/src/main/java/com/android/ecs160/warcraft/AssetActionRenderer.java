@@ -18,6 +18,9 @@ public class AssetActionRenderer {
 
     public void TimeStep(Vector<Asset> assets) {
         for (Asset asset : assets) {
+            if(asset == null){
+                continue;
+            }
             if(asset.commands.isEmpty()){
                 continue;
             }

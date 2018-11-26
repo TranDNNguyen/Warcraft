@@ -410,7 +410,7 @@ public class MapTiles {
         tileName += '-';
         tileName += hexIdx.charAt(0);
         //tileName += "F";
-        System.out.println("this is " + tileName);
+        //System.out.println("this is " + tileName);
         int max = nameToStrings.get(tileName).size();
         if (max > 1) {
             var = new Random().nextInt(max);

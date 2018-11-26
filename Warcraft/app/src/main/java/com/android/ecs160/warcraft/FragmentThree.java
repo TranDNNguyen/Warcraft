@@ -3,10 +3,12 @@ package com.android.ecs160.warcraft;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Bitmap;
@@ -18,7 +20,12 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
     private View v;
     private IconImage Icon;
-    private ImageButton imgBtn;
+    private ImageButton assetProfileBtn;
+
+    private Asset currentAsset;
+
+    //TODO - Implement Multiple Asset Selected Case
+    //private Asset[] selectedAssets;
 
     private Integer images[] = new Integer[] {
             R.id.actionBtn1,
@@ -44,44 +51,72 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         v =inflater.inflate(R.layout.fragment_three, container, false);
 
         Icon = new IconImage(this.getContext());
-        imgBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
-        imgBtn.setImageBitmap(Icon.returnTestImage());
-        imgBtn.setOnClickListener(this);
-        // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
-        // tv.setText("Can you read?");
+        assetProfileBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
+        assetProfileBtn.setVisibility(View.INVISIBLE);
+        assetProfileBtn.setOnClickListener(this);
+        currentAsset = null;
+       // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
+       // tv.setText("Can you read?");
 
         return v;
     }
 
 
+
     @Override
     public void onClick(View v) {
-        Toast.makeText(this.getContext(), "Asset Image Clicked", Toast.LENGTH_SHORT).show();
+
+        //Custom Toast View
+        //https://stackoverflow.com/questions/11288475/custom-toast-on-android-a-simple-example
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.assetinfo, (ViewGroup) v.findViewById(R.id.toast_layout_assetInfo));
+        ImageView image = (ImageView) layout.findViewById(R.id.assetInfo_image);
+        image.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(currentAsset.getAssetData_ResourceName())));
+        TextView text = (TextView) layout.findViewById(R.id.assetInfo_text);
+        text.setText(   currentAsset.getAssetData().resourceName + "\n" +
+                        "Health : " + currentAsset.getAssetData().hitPoints + "/"+Asset.AssetTypeData.getAssetData(currentAsset.type).hitPoints + "\n"+
+                        " Armor : " + currentAsset.getAssetData().armor + "\n" +
+                        "Damage : " + currentAsset.getAssetData().piercingDamage+
+                            "-"+ currentAsset.getAssetData().basicDamage + "\n" +
+                        " Range : " + currentAsset.getAssetData().range + "\n" +
+                        " Sight : " + currentAsset.getAssetData().sight + "\n" +
+                        " Speed : " + currentAsset.getAssetData().speed + "\n");
+
+        Toast toast = new Toast(getActivity().getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
+        toast.setGravity(Gravity.CENTER_VERTICAL, 10, 10);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+        currentAsset.getAssetData();
+
     }
-
-
 
     // Update the button images in this asset image fragment
     public void updateButtonImages(Asset selectedAsset) {
-        if(selectedAsset == null)
+        if(selectedAsset == null) {
+            currentAsset = null;
+            resetUIButtonImages();
             return;
+        }
+
+        currentAsset = selectedAsset;
 
         Bitmap currentIcon;
         ImageButton currentImageBtn;
         Integer[] buttonNumbers = Asset.getAssetActionIcons("Peasant");;  // Holding index numbers of Action Icons for selectedAsset
 
-        // Directly grabb the asset data  // In Asset.java - Implemented GetAssetData method, to grab the resource data(String value of resource type)
+        // Asset.java - Implemented GetAssetData method, to grab the resource data(String value of resource type)
         String assetType = selectedAsset.getAssetData_ResourceName();
         buttonNumbers = Asset.getAssetActionIcons(assetType);
 
         //Set images on ImageBtns  // Order: Asset Profile Image -> Action Icons
-        currentImageBtn = getActivity().findViewById(R.id.AssetImageBtn);
-        currentImageBtn.setVisibility(View.VISIBLE);
-        currentImageBtn.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(assetType)));
+        assetProfileBtn.setVisibility(View.VISIBLE);
+        assetProfileBtn.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(assetType)));
 
-
-        //Init. Action Buttons
+        //Initialize the visibility of Buttons
         int numberOfButtons = buttonNumbers.length;
+
         for (int buttonIndex = 0; buttonIndex < 9; buttonIndex++) {
             currentImageBtn = getActivity().findViewById(images[buttonIndex]);
             currentImageBtn.setVisibility(View.INVISIBLE);
@@ -90,7 +125,6 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
                 currentImageBtn.setVisibility(View.VISIBLE);
         }
 
-        //Action Button Setting
         if(selectedAsset != null){
             for (int buttonIndex = 0; buttonIndex < numberOfButtons; buttonIndex++) {
                 currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
@@ -137,7 +171,6 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     public void resetUIButtonImages(){
         Bitmap currentIcon;
         ImageButton currentImageBtn;
-
 
         //Initialize AssetProfile Image
         currentImageBtn = getActivity().findViewById(R.id.AssetImageBtn);

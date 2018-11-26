@@ -243,8 +243,8 @@ public class Asset {
     private static final HashMap<String, Integer[]> assetActionMap;
     static {
         assetActionMap = new HashMap<String, Integer[]>();
-        Integer PeasantIconNumbers[] = new Integer[] {84, 86, 87, 88, 89};
-        Integer FootmanIconNumbers[] = new Integer[] {84, 86, 87, 170, 172};
+        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 87};  // Human "move", "stop", "attack" + "repair","mine","lowTierBuild"  // 88-AdvBuild, 89-ResourceConveyHuman  // -6 from DatFile line#
+        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172};
 
         assetActionMap.put("peasant", PeasantIconNumbers);
         assetActionMap.put("footman", FootmanIconNumbers);

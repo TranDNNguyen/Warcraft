@@ -22,7 +22,6 @@ public class AssetRenderer {
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
 
-    FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
 
 
     private Context mContext;
@@ -119,7 +118,8 @@ public class AssetRenderer {
         int tileX = (currX + viewX) / tilePixelSize;
         int tileY = (currY + viewY) / tilePixelSize;
 
-        //tileIndicies = getToleIndex(x, y);
+
+        //tile Indicies = getTileIndex(x, y);
         lastSelectedAsset = selectedAsset;
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;

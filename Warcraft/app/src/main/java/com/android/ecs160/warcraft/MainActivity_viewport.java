@@ -13,7 +13,7 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,8 +87,9 @@ public class MainActivity_viewport extends AppCompatActivity {
         double viewportHeightScale = .9;
         viewportWidth = (int)(viewportWidthScale*totalWidth);
         viewportHeight = (int)(viewportHeightScale*totalHeight);
-        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(viewportWidth, viewportHeight);
-        viewport.setLayoutParams(parms);
+        //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(viewportWidth, viewportHeight);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(viewportWidth, viewportHeight);
+        viewport.setLayoutParams(params);
 
         //viewportWidth = viewport.getLayoutParams().width;//.getMeasuredWidth();
         //viewportHeight = viewport.getLayoutParams().height;//.getMeasuredHeight();
@@ -246,14 +247,7 @@ public class MainActivity_viewport extends AppCompatActivity {
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
-            //TESTING FUNCTION // DEBUGGING
-            //NOTE: Displaying all the coordinates
-            // - X,Y absolute coord, ImageView X,Y, Map X, Y
-            //displayCoordinates(xPos, yPos, values, currX, currY);
 
-
-            //NOTE: disable multitouch with 3+ fingers
-            //if(ev.getPointerCount() > 2) return true;
             if(xPos < 0 || yPos < 0) return true;
 
             switch (action & MotionEvent.ACTION_MASK) {
@@ -264,12 +258,11 @@ public class MainActivity_viewport extends AppCompatActivity {
                     mLastTouchX = x;
                     mLastTouchY = y;
 
-                    //NOTE: Save the Location of First-Finger (PointerID is used to distinguish the touchInputs for each finger, - 0 for 1st finger.)
-                    mActivePointerId = ev.getPointerId(0);  //  First Finger
-
                     //IF no multitouch used at all. -> select Asset.
                     if(selectionType == 1) {
+
                         Asset selectedAsset = assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
+                        //Asset[] selectedAssets = assetRenderer.selectAssets(mFirstTouchX, mFirstTouchY, xPos, yPos, values, currX, currY);
                         //TODO - do something with the asset
                     }
 
@@ -316,6 +309,8 @@ public class MainActivity_viewport extends AppCompatActivity {
                 case MotionEvent.ACTION_MOVE: {
                     //NOTE
                     //  Get the location of first finger that touched.
+                    if(mActivePointerId == INVALID_POINTER_ID)
+                        return true;
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
                     //3FingerTap - Show/Hide display
@@ -327,8 +322,10 @@ public class MainActivity_viewport extends AppCompatActivity {
 
                     //Drag - MultipleSelection
                     if(selectionType == 1){
-                        mLastTouchX = x;
-                        mLastGestureY = y;
+                        //mLastTouchX = x;
+                        //mLastGestureY = y;
+
+
                         return true;
                     }
 
@@ -369,8 +366,12 @@ public class MainActivity_viewport extends AppCompatActivity {
                     final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
                     final int pointerId = ev.getPointerId(pointerIndex);
 
-                    final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                    mActivePointerId = ev.getPointerId(newPointerIndex);
+
+
+                    //final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+                    //mActivePointerId = ev.getPointerId(newPointerIndex);
+                    mActivePointerId = INVALID_POINTER_ID;
+
                     break;
                 }
             }
@@ -378,6 +379,13 @@ public class MainActivity_viewport extends AppCompatActivity {
             return true;
         }
     };
+
+    public void drawSelection(){
+
+    }
+
+
+
 
     private void hideUI() {
         View decorView = getWindow().getDecorView();
@@ -390,6 +398,9 @@ public class MainActivity_viewport extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
+
+
 
 
 }
