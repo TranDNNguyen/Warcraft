@@ -145,7 +145,9 @@ public class AssetRenderer {
                 else if(lastSelectedAsset.type == Asset.EAssetType.Footman){
 
                 }
-
+                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+                actionFragment.resetUIButtonImages();;
+                actionFragment = null;
 
             }//TODO
         }
