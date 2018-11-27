@@ -201,42 +201,94 @@ public class Asset {
         }
     }
 
-
-
-
-    public AssetData getAssetData(){
+    public AssetData getAssetData() {
         return this.assetData;
     }
 
-    public String getAssetData_ResourceName(){
+    public String getAssetData_ResourceName() {
         return this.assetData.resourceName;
     }
 
-    // Map list of buttons to each asset on tap.
-    // TODO - Add more mappings for each asset
+    //todo: deal with "build-simple"
+    //todo: implement upgrades (affects blacksmith, barracks?, and unit buttons)
+    //action icons
     private static final HashMap<String, Integer[]> assetActionMap;
     static {
+        //"Icons.dat line number" - 6 = "icon number"
         assetActionMap = new HashMap<String, Integer[]>();
-        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 87};  // Human "move", "stop", "attack" + "repair","mine","lowTierBuild"  // 88-AdvBuild, 89-ResourceConveyHuman  // -6 from DatFile line#
-        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172};
+        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 89, 87}; //need upgrades
+        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172}; //need upgrades
+        Integer RangedUnitIconNumbers[] = new Integer[] {83, 164, 124, 170, 172}; //need upgrades
+        Integer BarracksIconNumbers[] = new Integer[] {2, 4}; //need upgrades?
+        Integer TownHallIconNumbers[] = new Integer[] {0, 66};
+        Integer BlacksmithIconNumbers[] = new Integer[] {}; //need upgrades
+        Integer CannonTowerIconNumbers[] = new Integer[] {};
+        Integer GuardTowerIconNumbers[] = new Integer[] {78};
+        Integer ScoutTowerIconNumbers[] = new Integer[] {75};
+        Integer KeepIconNumbers[] = new Integer[] {0, 68};
+        Integer CastleIconNumbers[] = new Integer[] {0};
+        Integer LumberMillIconNumbers[] = new Integer[] {};
+        Integer FarmIconNumbers[] = new Integer[] {};
+        Integer GoldMineIconNumbers[] = new Integer[] {};
+        //Integer BuildSimpleIconNumbers[] = new Integer[] {38, 42, 40, 44, 46, 60, 91};
 
         assetActionMap.put("peasant", PeasantIconNumbers);
         assetActionMap.put("footman", FootmanIconNumbers);
+        assetActionMap.put("archer", RangedUnitIconNumbers);
+        assetActionMap.put("ranger", RangedUnitIconNumbers);
+        assetActionMap.put("barracks", BarracksIconNumbers);
+        assetActionMap.put("town_hall", TownHallIconNumbers);
+        assetActionMap.put("blacksmith", BlacksmithIconNumbers);
+        assetActionMap.put("cannon_tower", CannonTowerIconNumbers);
+        assetActionMap.put("guard_tower", GuardTowerIconNumbers);
+        assetActionMap.put("scout_tower", ScoutTowerIconNumbers);
+        assetActionMap.put("keep", KeepIconNumbers);
+        assetActionMap.put("castle", CastleIconNumbers);
+        assetActionMap.put("lumber_mill", LumberMillIconNumbers);
+        assetActionMap.put("farm", FarmIconNumbers);
+        assetActionMap.put("gold_mine", GoldMineIconNumbers);
+        //assetActionMap.put("build-simple", FootmanIconNumbers); //there is no build-simple enum
     }
 
     public static Integer[] getAssetActionIcons(String assetName) {
         return assetActionMap.get(assetName);
     }
 
-
+    // Asset Icons
     private static final HashMap<String, Integer> assetImageMap;
     static {
         assetImageMap = new HashMap<String, Integer>();
         Integer PeasantImage = new Integer(0);
         Integer FootmanImage = new Integer(2);
+        Integer ArcherImage = new Integer(4);
+        Integer RangerImage = new Integer(6);
+        Integer BarracksImage = new Integer(42);
+        Integer TownHallImage = new Integer(40);
+        Integer BlacksmithImage = new Integer(46);
+        Integer CannonTowerImage = new Integer(76);
+        Integer GuardTowerImage = new Integer(75);
+        Integer ScoutTowerImage = new Integer(60);
+        Integer KeepImage = new Integer(66);
+        Integer CastleImage = new Integer(68);
+        Integer LumberMillImage = new Integer(44);
+        Integer FarmImage = new Integer(38);
+        Integer GoldMineImage = new Integer(74);
 
         assetImageMap.put("peasant", PeasantImage);
         assetImageMap.put("footman", FootmanImage);
+        assetImageMap.put("archer", ArcherImage);
+        assetImageMap.put("ranger", RangerImage);
+        assetImageMap.put("barracks", BarracksImage);
+        assetImageMap.put("town_hall", TownHallImage);
+        assetImageMap.put("blacksmith", BarracksImage);
+        assetImageMap.put("cannon_tower", CannonTowerImage);
+        assetImageMap.put("guard_tower", GuardTowerImage);
+        assetImageMap.put("scout_tower", ScoutTowerImage);
+        assetImageMap.put("keep", KeepImage);
+        assetImageMap.put("castle", CastleImage);
+        assetImageMap.put("lumber_mill", LumberMillImage);
+        assetImageMap.put("farm", FarmImage);
+        assetImageMap.put("gold_mine", GoldMineImage);
     }
 
     public static Integer getAssetImageIcons(String assetName) {

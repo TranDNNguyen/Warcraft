@@ -96,8 +96,10 @@ public class MainActivity_viewport extends AppCompatActivity {
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
 
+
         //Initializations
         InitScreenSetup();
+
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {

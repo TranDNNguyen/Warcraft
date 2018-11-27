@@ -126,11 +126,15 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
                 currentImageBtn.setVisibility(View.VISIBLE);
         }
 
+        ////int iconDetail[9];
+
         if(selectedAsset != null){
             for (int buttonIndex = 0; buttonIndex < numberOfButtons; buttonIndex++) {
                 currentIcon = Icon.getIconImage(buttonNumbers[buttonIndex]);
                 currentImageBtn = getActivity().findViewById(images[buttonIndex]);
                 currentImageBtn.setImageBitmap(currentIcon);
+
+                ////if(images[buttonIndex] == 87) iconDetail[buttonIndex] = "~~~" buildSImple
             }
 
         }
