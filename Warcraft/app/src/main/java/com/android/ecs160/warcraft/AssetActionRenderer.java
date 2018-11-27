@@ -22,6 +22,7 @@ public class AssetActionRenderer {
                 continue;
             }
             if(asset.commands.isEmpty()){
+                assetRenderer.updateAssetFrame(asset);
                 continue;
             }
             switch (asset.commands.peek()) {
@@ -32,10 +33,14 @@ public class AssetActionRenderer {
                     break;
                 case HarvestLumber:
                     HarvestLumber(asset);
+                    break;
+                case Build:
+                    Build(asset);
             }
             assetRenderer.updateAssetFrame(asset);
         }
     }
+
 
     public static void findCommand(Asset asset, int x, int y){
         //get tile type of (x,y)
@@ -54,10 +59,42 @@ public class AssetActionRenderer {
             if(asset.type ==  Asset.EAssetType.Peasant && tileType == MapTiles.ETerrainTileType.Forest){
                 asset.addCommand(Asset.EAssetAction.Walk, newpos); //will walk as close as it can to the rigth tile
                 asset.addCommand(Asset.EAssetAction.HarvestLumber, newpos);
-
             }
             //TODO: add other mining
         }
+    }//used when asset is selected and then given a command by touching elsewhere on the map
+    //either move, move and then harvest/mine, or move to attack enemy
+
+    void Build(Asset asset){
+        //by now the lumber/basic building has been placed, and asset has already moved to it.
+        if(asset.steps == 0){
+            asset.visible = false;
+        }//asset has just started building
+
+        asset.steps++;
+
+        //TODO: update HP continuously
+        //change checks to be based off HP (could be attacked while being built,
+        //so don't want to use steps alone.
+        //but: cant increment by totalHP/buildTime because some units might have
+        //buildTime > HP
+
+        if(asset.building == null){
+            System.exit(0);
+        }
+
+        if(asset.steps == asset.building.assetData.buildTime / 2){
+            asset.building.HP = asset.building.assetData.hitPoints /2;
+        }//halfway through building, adjust so display can too
+
+        //if(asset.building.HP >= asset.building.assetData.hitPoints){
+        if(asset.steps >= asset.building.assetData.buildTime){ //TODO: mod by update frequency?
+            asset.visible = true;
+            asset.removeCommand();
+            asset.steps = 0;
+            asset.building.HP = asset.building.assetData.hitPoints;
+            asset.building = null;
+        }//asset has finished building
     }
 
     void HarvestLumber(Asset asset){
@@ -85,7 +122,6 @@ public class AssetActionRenderer {
 
     void Walk(Asset asset) {
         Asset.EDirection travelDirection;
-        //travelDirection = router.FindPath(terrainMap, asset, asset.xs.peek(), asset.xs.peek());
         travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
 
         if(travelDirection == Asset.EDirection.Max){
@@ -100,7 +136,6 @@ public class AssetActionRenderer {
         }
 
         asset.direction = travelDirection;
-
         asset.steps++;
 
         //testing

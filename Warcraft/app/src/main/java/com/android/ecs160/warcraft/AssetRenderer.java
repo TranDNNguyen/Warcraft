@@ -21,13 +21,8 @@ public class AssetRenderer {
     int TileSize = MainActivity_viewport.getTileSize();
     Asset lastSelectedAsset;
     AssetLoader assetLoader;
-
-
-
     private Context mContext;
-
     public int tilePixelSize = 32;
-
 
     //TODO: figure out better way to set size of asset bitmap
     int screenWidth;// = 1000;//Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -69,6 +64,11 @@ public class AssetRenderer {
             }
         }
         return null;
+    }
+
+    public void addAsset(Asset asset){
+        assetLoader.setAssetBitmap(asset, 0);
+        assets.add(asset);
     }
 
     /*
@@ -193,6 +193,8 @@ public class AssetRenderer {
             if (asset == null) {
                 System.out.println("EMPTY ASSET\n");
                 continue;
+            }else if(asset.visible == false){
+                continue;
             }
 
             //TODO should this be in drawAsset()??
@@ -262,7 +264,17 @@ public class AssetRenderer {
         //calcDirection(asset, newX, newY);
 
         if(asset.isBuilding()){
-            frameIndex = 0;
+            if(asset.type == Asset.EAssetType.GoldMine){
+                frameIndex = 0;
+            }//TODO: consider whether peasants are inside
+            else if(asset.HP <= asset.assetData.hitPoints / 2){
+                frameIndex = 1;
+            }//TODO: difference between frame when being built/being destroyed?
+            else if(asset.HP > asset.assetData.hitPoints / 2){
+                frameIndex = 2;
+            }else {
+                frameIndex = 0;
+            }
         }//TODO - add active/inactive states for buildings
         else if(asset.type == Asset.EAssetType.Peasant){
             Asset.EAssetAction action = asset.commands.peek();

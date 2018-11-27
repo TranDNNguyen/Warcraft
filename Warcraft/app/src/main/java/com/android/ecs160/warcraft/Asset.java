@@ -14,29 +14,26 @@ import java.util.HashMap;
 public class Asset {
     int owner;
     EAssetType type;
+    boolean visible = true;
     int x; //current x pos
     int y; //current y pos
-    //int x2; //x coordinate the unit is headed to
-    //Queue<Integer> xs;
-    //Queue<Integer> ys;
-    Queue<CTilePosition> positions;
-    //int y2; //y coordinate the unit is headed to
-    //int direction; //TODO: use enum instead
     EDirection direction;
-    //EAssetAction action;
+    int HP;
+
     Queue<EAssetAction> commands;
-    PlayerColor color;
+    Queue<CTilePosition> positions;
+    Asset building;//for peasants who are executing build command
+
+    PlayerData.PlayerColor color;
     AssetData assetData;
     int steps;
     int lumber;
 
     Vector<Integer> pixelCoordinates;
-    //Bitmap assetImages;
     Bitmap assetBitmap;
     int assetWidth;
     int assetHeight;
     int TileSize = MainActivity_viewport.getTileSize();
-    //int size;
 
     boolean isSelected = false;
 
@@ -175,29 +172,6 @@ public class Asset {
         }
     }
 
-    enum PlayerColor{
-        Red(0),
-        Blue(1),
-        Green(2),
-        Purple(3),
-        Orange(4),
-        Yellow(5),
-        Black(6),
-        White(7),
-        None(8);
-
-        private int idx;
-
-        PlayerColor(int i) {
-            idx = i;
-        }
-
-        int getIdx() {
-            return idx;
-        }
-    }
-
-
     enum EAssetType {
         None(0),
         Peasant(1),
@@ -301,15 +275,9 @@ public class Asset {
     }
 
     public void addCommand(EAssetAction assetAction, CTilePosition pos) {
-        //if (assetAction == EAssetAction.Walk) {
-            //action = assetAction;
             commands.add(assetAction);
             positions.add(pos);
-            //xs.add(x);
-            //ys.add(y);
-        //}
     }
-
 
     /*
      * Assets draws itself on the canvas it is given
@@ -375,8 +343,10 @@ public class Asset {
         direction = EDirection.South;
         commands = new LinkedList<>();
         positions = new LinkedList<>();
-        color = PlayerColor.Red;
+        color = PlayerData.PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
+        building = null;
+        HP = 0; //if not made on game start (from map file), needs to be constructed
     }
 
     Asset(String input[]) {
@@ -384,10 +354,12 @@ public class Asset {
         owner = Integer.valueOf(input[1]);
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
-        direction = EDirection.North;
+        direction = EDirection.South;
         commands = new LinkedList<>();
         positions = new LinkedList<>();
-        color = PlayerColor.Red;
+        color = PlayerData.PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
+        building = null;
+        HP = assetData.hitPoints;
     }
 }

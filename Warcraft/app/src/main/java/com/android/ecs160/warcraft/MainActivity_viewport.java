@@ -1,5 +1,6 @@
 package com.android.ecs160.warcraft;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -20,8 +21,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 
 public class MainActivity_viewport extends AppCompatActivity {
@@ -46,6 +51,7 @@ public class MainActivity_viewport extends AppCompatActivity {
     TextView resultTV;
     String resultString;
 
+    Vector<PlayerData> players;
 
     public static int getTileSize() {
         return TILE_SIZE;
@@ -74,36 +80,20 @@ public class MainActivity_viewport extends AppCompatActivity {
         });
 
         new GameModel(updateFrequency);
-
+        try {
+            players = playerSetup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
         minimap = (ImageView) findViewById(R.id.minimapView);
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
-        //adjust map to size of screen
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int totalWidth = displaymetrics.widthPixels;
-        int totalHeight = displaymetrics.heightPixels;
-        double viewportWidthScale = 1;
-        double viewportHeightScale = .9;
-        viewportWidth = (int)(viewportWidthScale*totalWidth);
-        viewportHeight = (int)(viewportHeightScale*totalHeight);
-        //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(viewportWidth, viewportHeight);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(viewportWidth, viewportHeight);
-        viewport.setLayoutParams(params);
-
-        //viewportWidth = viewport.getLayoutParams().width;//.getMeasuredWidth();
-        //viewportHeight = viewport.getLayoutParams().height;//.getMeasuredHeight();
-
         //Map Renderer
-
-        //mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
-        //assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
-        assetRenderer = new AssetRenderer(this, getResources(), viewportWidth, viewportHeight);
-
+        mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
+        assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
 
         //Initializations
@@ -128,10 +118,57 @@ public class MainActivity_viewport extends AppCompatActivity {
         viewportHandler.obtainMessage(1).sendToTarget();
         viewport.setOnTouchListener(touchListener);
 
-
         displayTutorialMessage();
+
+
+        //TODO:remove below once building button callbacks are added
+        for(Asset a : assetRenderer.assets){
+            if(a.type == Asset.EAssetType.Peasant){
+                Asset townHall = new Asset(Asset.EAssetType.TownHall, 1, 16, 16);
+                assetRenderer.addAsset(townHall);
+
+                CTilePosition pos = new CTilePosition(15, 15);
+                a.addCommand(Asset.EAssetAction.Walk, pos);
+                a.addCommand(Asset.EAssetAction.Build, pos);
+                a.building = townHall;
+                break;
+            }
+        }
+
+
     }
 
+
+    public Vector<PlayerData> playerSetup() throws IOException {
+
+        Vector<PlayerData> players = new Vector<>();
+        InputStream is = getAssets().open("test.map");
+        Scanner scanner = new Scanner(is);
+        String line = scanner.nextLine();
+        String[] temp = new String[3];
+
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            if (line.equals("# Number of players")) {
+                line = scanner.nextLine();
+                break;
+            }
+        }
+        int numPlayers = Integer.valueOf(line);
+        line = scanner.nextLine(); //skip "Starting resources Player Gold Lumber"
+
+        for(int i=0; i < numPlayers; i++){
+            line = scanner.nextLine();
+            temp = line.split(" ");
+            int gold = Integer.valueOf(temp[1]);
+            int lumber = Integer.valueOf(temp[2]);
+            PlayerData.PlayerColor color = PlayerData.PlayerColor.Red;
+            PlayerData player = new PlayerData(color, gold, lumber);
+            players.add(player);
+        }
+
+        return players;
+    }
 
     public void displayTutorialMessage(){
         LayoutInflater inflater = getLayoutInflater();

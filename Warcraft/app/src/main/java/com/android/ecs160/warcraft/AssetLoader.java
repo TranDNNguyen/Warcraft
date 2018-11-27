@@ -68,6 +68,11 @@ public class AssetLoader {
         int imageWidth = allFrames.getWidth();
 
         //grab the current requested frame from the appropriate file
+
+        if(imageHeight * frame + imageHeight > allFrames.getHeight()){
+            int x = 1;
+        }
+
         a.assetBitmap = Bitmap.createBitmap(allFrames, 0, imageHeight * frame, imageWidth, imageHeight);
         a.assetWidth = imageWidth;
         a.assetHeight = imageHeight;
