@@ -1,5 +1,6 @@
 package com.android.ecs160.warcraft;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 public class AssetActionRenderer {
@@ -17,7 +18,9 @@ public class AssetActionRenderer {
     }
 
     public void TimeStep(Vector<Asset> assets) {
-        for (Asset asset : assets) {
+        Iterator<Asset> itr = assets.iterator();
+        while(itr.hasNext()){
+            Asset asset = itr.next();
             if(asset == null){
                 continue;
             }

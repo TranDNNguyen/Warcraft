@@ -122,6 +122,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
 
         //TODO:remove below once building button callbacks are added
+        /*
         for(Asset a : assetRenderer.assets){
             if(a.type == Asset.EAssetType.Peasant){
                 Asset townHall = new Asset(Asset.EAssetType.TownHall, 1, 16, 16);
@@ -134,6 +135,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                 break;
             }
         }
+        */
 
 
     }
