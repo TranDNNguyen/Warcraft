@@ -110,7 +110,10 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
         //Set images on ImageBtns  // Order: Asset Profile Image -> Action Icons
         assetProfileBtn.setVisibility(View.VISIBLE);
-        assetProfileBtn.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(assetType)));
+        Integer index = Asset.getAssetImageIcons(assetType);
+        if(index != null) {
+            assetProfileBtn.setImageBitmap(Icon.getIconImage(index));
+        }
 
         //Initialize the visibility of Buttons
         int numberOfButtons = buttonNumbers.length;

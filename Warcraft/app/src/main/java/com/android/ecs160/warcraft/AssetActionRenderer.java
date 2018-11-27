@@ -9,38 +9,43 @@ public class AssetActionRenderer {
     public static Router router;
     Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
     MapTiles mapTiles;
+    int updateFrequency;
 
-    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer){
+    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency){
         this.assetRenderer = assetRenderer;
         router = new Router(assetRenderer);
         terrainMap = mapRenderer.mapTiles.terrainMap;
         mapTiles = mapRenderer.mapTiles;
+        updateFrequency = frequency;
     }
 
     public void TimeStep(Vector<Asset> assets) {
-        Iterator<Asset> itr = assets.iterator();
-        while(itr.hasNext()){
-            Asset asset = itr.next();
-            if(asset == null){
-                continue;
-            }
-            if(asset.commands.isEmpty()){
-                assetRenderer.updateAssetFrame(asset);
-                continue;
-            }
-            switch (asset.commands.peek()) {
-                case None:
+        LockManager.assetLock.lock();
+        try {
+            for (Asset asset : assets) {
+                if (asset == null) {
                     continue;
-                case Walk:
-                    Walk(asset);
-                    break;
-                case HarvestLumber:
-                    HarvestLumber(asset);
-                    break;
-                case Build:
-                    Build(asset);
+                }
+                if (asset.commands.isEmpty()) {
+                    //assetRenderer.updateAssetFrame(asset);
+                    continue;
+                }
+                switch (asset.commands.peek()) {
+                    case None:
+                        continue;
+                    case Walk:
+                        Walk(asset);
+                        break;
+                    case HarvestLumber:
+                        HarvestLumber(asset);
+                        break;
+                    case Build:
+                        Build(asset);
+                }
+                assetRenderer.updateAssetFrame(asset);
             }
-            assetRenderer.updateAssetFrame(asset);
+        }finally {
+            LockManager.assetLock.unlock();
         }
     }
 
@@ -70,11 +75,10 @@ public class AssetActionRenderer {
 
     void Build(Asset asset){
         //by now the lumber/basic building has been placed, and asset has already moved to it.
-        if(asset.steps == 0){
-            asset.visible = false;
-        }//asset has just started building
 
-        asset.steps++;
+        if(asset.building == null){
+            System.exit(0);
+        }
 
         //TODO: update HP continuously
         //change checks to be based off HP (could be attacked while being built,
@@ -82,22 +86,24 @@ public class AssetActionRenderer {
         //but: cant increment by totalHP/buildTime because some units might have
         //buildTime > HP
 
-        if(asset.building == null){
-            System.exit(0);
-        }
-
-        if(asset.steps == asset.building.assetData.buildTime / 2){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }//asset has just started building
+        else if(asset.steps == asset.building.assetData.buildTime / 2){
             asset.building.HP = asset.building.assetData.hitPoints /2;
+            assetRenderer.updateAssetFrame(asset.building);
         }//halfway through building, adjust so display can too
-
-        //if(asset.building.HP >= asset.building.assetData.hitPoints){
-        if(asset.steps >= asset.building.assetData.buildTime){ //TODO: mod by update frequency?
+        else if(asset.steps >= asset.building.assetData.buildTime){ //TODO: mod by update frequency?
             asset.visible = true;
             asset.removeCommand();
             asset.steps = 0;
             asset.building.HP = asset.building.assetData.hitPoints;
+            assetRenderer.updateAssetFrame(asset.building);
             asset.building = null;
+            return;
         }//asset has finished building
+
+        asset.steps++;
     }
 
     void HarvestLumber(Asset asset){

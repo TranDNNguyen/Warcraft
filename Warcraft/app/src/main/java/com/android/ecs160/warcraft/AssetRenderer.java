@@ -67,8 +67,14 @@ public class AssetRenderer {
     }
 
     public void addAsset(Asset asset){
-        assetLoader.setAssetBitmap(asset, 0);
-        assets.add(asset);
+
+        LockManager.assetLock.lock();
+        try {
+            assetLoader.setAssetBitmap(asset, 0);
+            assets.add(asset);
+        }finally {
+            LockManager.assetLock.unlock();
+        }
     }
 
     /*
@@ -131,9 +137,10 @@ public class AssetRenderer {
 
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
-            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-            actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
-
+            if(!selectedAsset.isBuilding()) {
+                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+                actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
+            }
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY);
@@ -141,10 +148,7 @@ public class AssetRenderer {
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
 
-
                 if(lastSelectedAsset.type == Asset.EAssetType.Peasant){
-
-
                     //NOTE: UIFrag
                     //Fragment, changing image, based on the selection,
                     //TODO: 1. It is currently changing images after selecting units, so we may have to modify the onTouchListener in MainActivity

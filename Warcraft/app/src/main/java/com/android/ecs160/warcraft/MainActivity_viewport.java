@@ -94,7 +94,7 @@ public class MainActivity_viewport extends AppCompatActivity {
         //Map Renderer
         mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
 
         //Initializations
         InitScreenSetup();
@@ -122,10 +122,10 @@ public class MainActivity_viewport extends AppCompatActivity {
 
 
         //TODO:remove below once building button callbacks are added
-        /*
+
         for(Asset a : assetRenderer.assets){
             if(a.type == Asset.EAssetType.Peasant){
-                Asset townHall = new Asset(Asset.EAssetType.TownHall, 1, 16, 16);
+                Asset townHall = new Asset(Asset.EAssetType.Barracks, 1, 16, 16);
                 assetRenderer.addAsset(townHall);
 
                 CTilePosition pos = new CTilePosition(15, 15);
@@ -135,7 +135,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                 break;
             }
         }
-        */
+
 
 
     }
