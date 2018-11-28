@@ -124,7 +124,7 @@ public class MainActivity_viewport extends AppCompatActivity {
 
         Asset a = assetRenderer.getAsset(3, 7);
         CTilePosition pos = new CTilePosition(15, 15);
-        assetBuilder.Build(a, Asset.EAssetType.Barracks, pos);
+        assetBuilder.Build(a, Asset.EAssetType.TownHall, pos);
 
                 /*
                 //check if can be built

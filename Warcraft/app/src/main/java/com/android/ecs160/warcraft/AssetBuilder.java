@@ -19,13 +19,12 @@ public class AssetBuilder {
      * position: the location selected for the new asset (if a building)
      */
     public void Build(Asset builder, Asset.EAssetType newAssetType, CTilePosition position){
-
         int player = builder.owner;
         PlayerData currPlayerData = this.playerData.get(player - 1);
         Asset.AssetData newAssetData = Asset.AssetTypeData.getAssetData(newAssetType);
 
         //Check dependencies for the new asset
-        if(!DependenciesMet(newAssetType)){
+        if(!DependenciesMet(player, newAssetType)){
             return;
         }
 
@@ -42,12 +41,93 @@ public class AssetBuilder {
         BuildCommands(builder, newAsset, position);
     }
 
+
+    /*Dependencies
+        Peasant:    TownHall
+        Footman:    Barracks
+        Archer:     Barracks, LumberMill
+        Ranger:     Barracks, LumberMill
+        GoldMine: //Can these be built?
+        TownHall:   --
+        Keep:       TownHall
+        Castle:     Keep (TownHall)
+        Farm:       --
+        Barracks:   --
+        LumberMill: --
+        Blacksmith: --
+        ScoutTower: --
+        GuardTower: ScoutTower, LumberMill
+        CannonTower:ScoutTower, BlackSmith
+     */
+
     /*
      * This function determines whether the player has satisfied the prerequisites for
      * making the specified new asset. Returns false if they cannon yet make this asset.
      */
-    private boolean DependenciesMet(Asset.EAssetType newAssetType){
-        //TODO
+    private boolean DependenciesMet(int owner, Asset.EAssetType newAssetType){
+        Vector<Asset.EAssetType> dependencies = new Vector<>();
+
+        switch(newAssetType){
+            case TownHall:
+            case Farm:
+            case Barracks:
+            case LumberMill:
+            case Blacksmith:
+            case ScoutTower:
+                return true; //these buildings have no dependencies
+            case Peasant:
+            case Keep:
+                dependencies.add(Asset.EAssetType.TownHall);
+                break;
+            case Footman:
+                dependencies.add(Asset.EAssetType.Barracks);
+                break;
+            case Archer:
+            case Ranger:
+                dependencies.add(Asset.EAssetType.Barracks);
+                dependencies.add(Asset.EAssetType.LumberMill);
+                break;
+            case Castle:
+                dependencies.add(Asset.EAssetType.Keep);
+                dependencies.add(Asset.EAssetType.TownHall);
+                break;
+            case GuardTower:
+                dependencies.add(Asset.EAssetType.ScoutTower);
+                dependencies.add(Asset.EAssetType.LumberMill);
+                break;
+            case CannonTower:
+                dependencies.add(Asset.EAssetType.ScoutTower);
+                dependencies.add(Asset.EAssetType.Blacksmith);
+                break;
+            default:
+                return false;
+        }
+
+        return HasAssetTypes(owner, dependencies);
+    }
+
+
+    /*
+     * This function looks at all existing assets on the map that belong to the
+     * specified player, and makes sure they have at least one unit of all the types
+     * specified in dependencies.
+     */
+    private boolean HasAssetTypes(int owner, Vector<Asset.EAssetType> dependencies){
+        Vector<Asset.EAssetType> existingAssetTypes = new Vector<>();
+
+        //make list of existing asset types for that player
+        for(Asset a: assetRenderer.assets){
+            if(a.owner == owner && !existingAssetTypes.contains(a.type)){
+                existingAssetTypes.add(a.type);
+            }
+        }
+
+        //compare against dependencies
+        for(Asset.EAssetType type: dependencies){
+            if(!existingAssetTypes.contains(type)){
+                return false;
+            }//return if we are missing a dependency
+        }
 
         return true;
     }

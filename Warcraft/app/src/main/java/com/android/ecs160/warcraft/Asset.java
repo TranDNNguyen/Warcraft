@@ -403,7 +403,7 @@ public class Asset {
         //HP = assetData.hitPoints;
         if(isBuilding()){
             visible = false;
-        }
+        }//will only be visible when peasant starts building it
     }
 
     Asset(String input[]) {
