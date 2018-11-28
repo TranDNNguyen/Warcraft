@@ -236,26 +236,33 @@ public class Asset {
     }
 
     //todo: deal with "build-simple"
-    //todo: implement upgrades (affects blacksmith, barracks?, and unit buttons)
+    //todo: implement upgrades (affects blacksmith, barracks (ranger), and unit buttons)
+    //todo: implement dependency checks
     //action icons
     private static final HashMap<String, Integer[]> assetActionMap;
     static {
         //"Icons.dat line number" - 6 = "icon number"
+        /*
+         * INDICES FOR UPGRADES
+         * human-armor 164-166
+         * human-weapon 116-118
+         * human-arrow 124-126
+         */
         assetActionMap = new HashMap<String, Integer[]>();
-        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 89, 87}; //need upgrades
-        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172}; //need upgrades
-        Integer RangedUnitIconNumbers[] = new Integer[] {83, 164, 124, 170, 172}; //need upgrades
-        Integer BarracksIconNumbers[] = new Integer[] {2, 4}; //need upgrades?
-        Integer TownHallIconNumbers[] = new Integer[] {0, 66};
-        Integer BlacksmithIconNumbers[] = new Integer[] {}; //need upgrades
-        Integer CannonTowerIconNumbers[] = new Integer[] {};
-        Integer GuardTowerIconNumbers[] = new Integer[] {78};
-        Integer ScoutTowerIconNumbers[] = new Integer[] {75};
-        Integer KeepIconNumbers[] = new Integer[] {0, 68};
+        Integer PeasantIconNumbers[] = new Integer[] {83, 164, 116, 85, 86, 89, 87}; //need armor upgrades
+        Integer FootmanIconNumbers[] = new Integer[] {83, 164, 116, 170, 172}; //need armor and weapon upgrades
+        Integer RangedUnitIconNumbers[] = new Integer[] {83, 164, 124, 170, 172, 174}; //need armor and arrow upgrades
+        Integer BarracksIconNumbers[] = new Integer[] {2, 4}; //need archer -> ranger upgrade. dependency checks apply
+        Integer TownHallIconNumbers[] = new Integer[] {0, 66}; //dependency checks apply
+        Integer BlacksmithIconNumbers[] = new Integer[] {164, 116}; //need upgrades. dependency checks apply
+        Integer CannonTowerIconNumbers[] = new Integer[] {}; //requires no buttons
+        Integer GuardTowerIconNumbers[] = new Integer[] {}; //requires no buttons
+        Integer ScoutTowerIconNumbers[] = new Integer[] {75, 78}; //dependency checks apply
+        Integer KeepIconNumbers[] = new Integer[] {0, 68}; //dependency checks apply
         Integer CastleIconNumbers[] = new Integer[] {0};
-        Integer LumberMillIconNumbers[] = new Integer[] {};
-        Integer FarmIconNumbers[] = new Integer[] {};
-        Integer GoldMineIconNumbers[] = new Integer[] {};
+        Integer LumberMillIconNumbers[] = new Integer[] {124}; //dependency checks may apply (might need barracks for archer -> ranger)
+        Integer FarmIconNumbers[] = new Integer[] {}; //requires no buttons
+        Integer GoldMineIconNumbers[] = new Integer[] {}; //todo: run original game, see if gold mine has any buttons
         //Integer BuildSimpleIconNumbers[] = new Integer[] {38, 42, 40, 44, 46, 60, 91};
 
         assetActionMap.put("peasant", PeasantIconNumbers);
@@ -306,7 +313,7 @@ public class Asset {
         assetImageMap.put("ranger", RangerImage);
         assetImageMap.put("barracks", BarracksImage);
         assetImageMap.put("town_hall", TownHallImage);
-        assetImageMap.put("blacksmith", BarracksImage);
+        assetImageMap.put("blacksmith", BlacksmithImage);
         assetImageMap.put("cannon_tower", CannonTowerImage);
         assetImageMap.put("guard_tower", GuardTowerImage);
         assetImageMap.put("scout_tower", ScoutTowerImage);
@@ -320,7 +327,6 @@ public class Asset {
     public static Integer getAssetImageIcons(String assetName) {
         return assetImageMap.get(assetName);
     }
-
 
     public boolean isBuilding(){
         switch (type){
@@ -362,16 +368,10 @@ public class Asset {
         //}
     }
 
-
-    /*
-     * Assets draws itself on the canvas it is given
-     */
+    //Assets draws itself on the canvas it is given
     public void drawAsset(Canvas canvas, int xOffset, int yOffset) {
-
-        //NOTE
-        // - Displaying Correct Size for Asset / 11/04/18
-        // - Had to place the image without scaling in the middle of tile (72 px image on 32px tile, centered.)
-        //
+        // Displaying Correct Size for Asset as of 11/04/18
+        // Had to place the image without scaling in the middle of tile (72 px image on 32px tile, centered.)
         int assetSize = assetBitmap.getWidth();
         int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
         int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
@@ -400,12 +400,11 @@ public class Asset {
                 case SouthEast:
                     adjustX += (steps % 5) * (TileSize / 5);
             }
-        }//
+        }
 
         Bitmap resizedAssetBitmap = Bitmap.createScaledBitmap(assetBitmap, assetSize, assetSize, true);
         canvas.drawBitmap(resizedAssetBitmap, adjustX, adjustY, null);
     }
-
 
     public void drawAssetSelection(Canvas canvas, int xOffset, int yOffset) {
         if (this.isSelected) {
