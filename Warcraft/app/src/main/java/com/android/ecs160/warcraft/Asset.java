@@ -18,7 +18,7 @@ public class Asset {
     int x; //current x pos
     int y; //current y pos
     EDirection direction;
-    int HP;
+    double HP;
 
     Queue<EAssetAction> commands;
     Queue<CTilePosition> positions;

@@ -75,10 +75,12 @@ public class AssetActionRenderer {
 
     void Build(Asset asset){
         //by now the lumber/basic building has been placed, and asset has already moved to it.
-
         if(asset.building == null){
             System.exit(0);
         }
+
+        double hitPoints = (double)asset.building.assetData.hitPoints;
+        double buildTime = (double)asset.building.assetData.buildTime;
 
         //TODO: update HP continuously
         //change checks to be based off HP (could be attacked while being built,
@@ -90,17 +92,17 @@ public class AssetActionRenderer {
             asset.visible = false;
             asset.building.visible = true;
         }//asset has just started building
-        else if(asset.steps == asset.building.assetData.buildTime / 2){
-            asset.building.HP = asset.building.assetData.hitPoints /2;
-            assetRenderer.updateAssetFrame(asset.building);
-        }//halfway through building, adjust so display can too
-        else if(asset.steps >= asset.building.assetData.buildTime){ //TODO: mod by update frequency?
-            asset.visible = true;
-            asset.removeCommand();
-            asset.steps = 0;
+
+        asset.building.HP += hitPoints / buildTime;
+        assetRenderer.updateAssetFrame(asset.building);
+
+        if (asset.building.HP >= hitPoints) {
             asset.building.HP = asset.building.assetData.hitPoints;
-            assetRenderer.updateAssetFrame(asset.building);
+
+            asset.removeCommand();
             asset.building = null;
+            asset.visible = true;
+            asset.steps = 0;
             return;
         }//asset has finished building
 
