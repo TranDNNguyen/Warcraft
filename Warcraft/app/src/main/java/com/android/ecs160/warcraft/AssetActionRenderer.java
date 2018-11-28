@@ -88,6 +88,7 @@ public class AssetActionRenderer {
 
         if(asset.steps == 0){
             asset.visible = false;
+            asset.building.visible = true;
         }//asset has just started building
         else if(asset.steps == asset.building.assetData.buildTime / 2){
             asset.building.HP = asset.building.assetData.hitPoints /2;

@@ -24,7 +24,6 @@ public class PlayerData {
         playerColor = color;
     }
 
-
     enum PlayerColor{
         Red(0),
         Blue(1),
@@ -46,6 +45,7 @@ public class PlayerData {
             return idx;
         }
     }
+
 
 
 

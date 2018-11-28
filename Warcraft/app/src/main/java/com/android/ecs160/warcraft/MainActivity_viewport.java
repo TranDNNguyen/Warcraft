@@ -85,7 +85,7 @@ public class MainActivity_viewport extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
         minimap = (ImageView) findViewById(R.id.minimapView);
@@ -96,10 +96,8 @@ public class MainActivity_viewport extends AppCompatActivity {
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
 
-
         //Initializations
         InitScreenSetup();
-
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -127,9 +125,15 @@ public class MainActivity_viewport extends AppCompatActivity {
 
         for(Asset a : assetRenderer.assets){
             if(a.type == Asset.EAssetType.Peasant){
+
+                //check if can be built
+
+
+                //makes new asset
                 Asset townHall = new Asset(Asset.EAssetType.Barracks, 1, 16, 16);
                 assetRenderer.addAsset(townHall);
 
+                //adds actions for peasant
                 CTilePosition pos = new CTilePosition(15, 15);
                 a.addCommand(Asset.EAssetAction.Walk, pos);
                 a.addCommand(Asset.EAssetAction.Build, pos);
@@ -138,13 +142,42 @@ public class MainActivity_viewport extends AppCompatActivity {
             }
         }
 
-
-
+        //TODO: remove, just for testing
+        /*
+        Asset building = new Asset(Asset.EAssetType.Peasant, 1, 16, 20);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Footman, 1, 16, 24);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Archer, 1, 16, 28);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Ranger, 1, 16, 32);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.GoldMine, 1, 16, 36);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.TownHall, 1, 16, 40);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Keep, 1, 10, 20);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Castle, 1, 10, 24);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Farm, 1, 10, 28);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Barracks, 1, 10, 32);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.LumberMill, 1, 10, 36);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Blacksmith, 1, 10, 40);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.ScoutTower, 1, 10, 44);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.GuardTower, 1, 10, 48);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.CannonTower, 1, 10, 52);
+        assetRenderer.addAsset(building);
+        */
     }
 
-
     public Vector<PlayerData> playerSetup() throws IOException {
-
         Vector<PlayerData> players = new Vector<>();
         InputStream is = getAssets().open("test.map");
         Scanner scanner = new Scanner(is);
@@ -158,6 +191,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                 break;
             }
         }
+
         int numPlayers = Integer.valueOf(line);
         line = scanner.nextLine(); //skip "Starting resources Player Gold Lumber"
 

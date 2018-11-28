@@ -96,7 +96,6 @@ public class Asset {
         static AssetData scout_tower = new AssetData("scout_tower", 100, 20, 9, 0, 2, 0, 550, 200, 0, 120, 0, 0, 0, 0, 0);
         static AssetData town_hall = new AssetData("town_hall", 1200, 0, 4, 0, 4, 0, 800, 0, 60, 0, 0, 0, 0, 0, 0);
 
-
         public static AssetData getAssetData(EAssetType type){
             switch(type){
                 case Archer: return archer;
@@ -399,6 +398,10 @@ public class Asset {
         assetData = AssetTypeData.getAssetData(type);
         building = null;
         HP = 0; //if not made on game start (from map file), needs to be constructed
+        //HP = assetData.hitPoints;
+        if(isBuilding()){
+            visible = false;
+        }
     }
 
     Asset(String input[]) {

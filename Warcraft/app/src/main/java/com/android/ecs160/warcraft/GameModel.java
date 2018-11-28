@@ -42,4 +42,7 @@ public class GameModel {
         DStonePerQuarrying = 100;
         DGoldPerMining = 100;
     }
+
+
+
 }
