@@ -130,7 +130,8 @@ public class AssetRenderer {
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
         }
-        selectedAsset = getAsset(tileX, tileY);
+        //selectedAsset = getAsset(tileX, tileY);
+        selectedAsset = getAsset(tileX - 1, tileY - 1);
 
         //selection - drawing box
         //selectedAsset.isSelected = !selectedAsset.isSelected;

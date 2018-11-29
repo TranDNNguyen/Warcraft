@@ -343,8 +343,11 @@ public class Asset {
         // Displaying Correct Size for Asset as of 11/04/18
         // Had to place the image without scaling in the middle of tile (72 px image on 32px tile, centered.)
         int assetSize = assetBitmap.getWidth();
-        int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
-        int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
+        //int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
+        //int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
+
+        int adjustX = x*TileSize - xOffset - TileSize/2;// + assetSize/2;// + (TileSize/2 - assetSize/2);
+        int adjustY = y*TileSize - yOffset - TileSize/2;// + assetSize/2;// + (TileSize/2 - assetSize/2);
 
         //testing TODO:
         if(commands.peek() == EAssetAction.Walk) {
@@ -384,7 +387,12 @@ public class Asset {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
 
-            canvas.drawRect(x * TileSize - xOffset, y * TileSize - yOffset, x * TileSize - xOffset + TileSize, y * TileSize - yOffset + TileSize, paint);
+            int assetSize = assetData.size;
+            int adjustX = (x)*TileSize - xOffset;// + TileSize/2;// + (TileSize/2 - assetSize/2);
+            int adjustY = (y)*TileSize - yOffset;// + TileSize/2;// + (TileSize/2 - assetSize/2);
+
+            //canvas.drawRect(x * TileSize - xOffset, y * TileSize - yOffset, x * TileSize - xOffset + TileSize, y * TileSize - yOffset + TileSize, paint);
+            canvas.drawRect(adjustX, adjustY, adjustX + TileSize*assetSize, adjustY + TileSize*assetSize, paint);
         }
     }
 
