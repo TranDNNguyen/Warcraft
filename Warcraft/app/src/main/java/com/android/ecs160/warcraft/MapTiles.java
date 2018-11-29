@@ -197,8 +197,15 @@ public class MapTiles {
         return terrainMap;
     }
 
+
+    /*
     public ETerrainTileType getTileType(int x, int y){
         return terrainMap.get(x).get(y);
+    }
+    */
+
+    public ETerrainTileType getTileType(int x, int y){
+        return terrainMap.get(y).get(x);
     }
 
     public String skipCommentLines(Scanner scanner) {
