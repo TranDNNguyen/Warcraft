@@ -197,8 +197,15 @@ public class MapTiles {
         return terrainMap;
     }
 
+
+    /*
     public ETerrainTileType getTileType(int x, int y){
         return terrainMap.get(x).get(y);
+    }
+    */
+
+    public ETerrainTileType getTileType(int x, int y){
+        return terrainMap.get(y).get(x);
     }
 
     public String skipCommentLines(Scanner scanner) {
@@ -400,8 +407,8 @@ public class MapTiles {
 
         int indexBits = 0;
         if (UL == overallType) indexBits |= 0x1;
-        if (LL == overallType) indexBits |= 0x2;
-        if (UR == overallType) indexBits |= 0x4;
+        if (UR == overallType) indexBits |= 0x2;
+        if (LL == overallType) indexBits |= 0x4;
         if (LR == overallType) indexBits |= 0x8;
 
         String tileName = typeToName.get(overallType);

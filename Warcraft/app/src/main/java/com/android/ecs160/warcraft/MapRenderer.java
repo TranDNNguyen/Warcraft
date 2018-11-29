@@ -82,7 +82,7 @@ public class MapRenderer {
             int left = 0;
             for (int j = 0; j < tileW; j++) {
                 temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)], TileSize, TileSize, false);
-                canvas.drawBitmap(temp, top, left, null);
+                canvas.drawBitmap(temp, left, top, null);
                 left += TileSize;
             }
             top += TileSize;
@@ -107,7 +107,7 @@ public class MapRenderer {
             int left = 0;
             for (int j = 0; j < tileW; j++) {
                 temp = Bitmap.createScaledBitmap(tileSet[mapTiles.idxMap.get(i).get(j)],sampleMultiplier, sampleMultiplier, false);
-                canvas.drawBitmap(temp, top, left, null);
+                canvas.drawBitmap(temp, left, top, null);
                 left += sampleMultiplier;
             }
             top += sampleMultiplier;

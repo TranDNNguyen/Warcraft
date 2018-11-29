@@ -330,7 +330,7 @@ public class Router {
                         || MovingAway(SearchDirecitons[Index], SEARCH_STATUS_OCCUPIED - DMap.get(TempTile.y + 1).get(TempTile.x + 1)))) {
 
                     DMap.get(TempTile.y + 1).set(TempTile.x + 1, Index);
-                    MapTiles.ETerrainTileType CurTileType = terrainMap.get(TempTile.x).get(TempTile.y);
+                    MapTiles.ETerrainTileType CurTileType = terrainMap.get(TempTile.y).get(TempTile.x);
                     if (MapTiles.isTraversable(CurTileType)) {
                         TempSearch = new SSearchTarget();
                         TempSearch.DX = TempTile.x;
@@ -373,7 +373,7 @@ public class Router {
 
         if (DirectionBeforeLast != LastInDirection) {
 
-            MapTiles.ETerrainTileType CurTileType = terrainMap.get(StartX + DiagCheckXOffset[DirectionBeforeLast.getIdx()]).get(StartY + DiagCheckYOffset[DirectionBeforeLast.getIdx()]);
+            MapTiles.ETerrainTileType CurTileType = terrainMap.get(StartY + DiagCheckYOffset[DirectionBeforeLast.getIdx()]).get(StartX + DiagCheckXOffset[DirectionBeforeLast.getIdx()]);
             if (MapTiles.isTraversable(CurTileType)) {
                 int Sum = LastInDirection.getIdx() + DirectionBeforeLast.getIdx();
                 if ((6 == Sum) && ((Asset.EDirection.North == LastInDirection) || (Asset.EDirection.North == DirectionBeforeLast))) { // NW wrap around
