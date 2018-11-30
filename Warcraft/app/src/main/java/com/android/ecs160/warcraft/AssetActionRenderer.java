@@ -10,9 +10,11 @@ public class AssetActionRenderer {
     Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
     MapTiles mapTiles;
     int updateFrequency;
+    Vector<PlayerData> players;
 
-    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency){
+    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency, Vector<PlayerData> players){
         this.assetRenderer = assetRenderer;
+        this.players = players;
         router = new Router(assetRenderer);
         terrainMap = mapRenderer.mapTiles.terrainMap;
         mapTiles = mapRenderer.mapTiles;
@@ -55,6 +57,13 @@ public class AssetActionRenderer {
                         break;
                     case Attack:
                         Attack(asset);
+                        break;
+                    case ConveyGold:
+                        ConveyGold(asset);
+                        break;
+                    case ConveyLumber:
+                        ConveyLumber(asset);
+                        break;
                 }
                 assetRenderer.updateAssetFrame(asset);
             }
@@ -70,12 +79,12 @@ public class AssetActionRenderer {
 
         if(destAsset != null){
             if(destAsset.type == Asset.EAssetType.GoldMine){
-                //TODO: add gold mining
                 asset.addCommand(Asset.EAssetAction.Walk, pos);
                 asset.addCommand(Asset.EAssetAction.MineGold, pos);
+                asset.building = destAsset;
             }
             else if(destAsset.owner != asset.owner){
-                //TODO:add attacking
+                //TODO:refine attacking
                 asset.addCommand(Asset.EAssetAction.Walk, pos);
                 asset.addCommand(Asset.EAssetAction.Attack, pos);
             }//enemy...ATTACK!!!
@@ -154,9 +163,33 @@ public class AssetActionRenderer {
             asset.removeCommand();
             asset.steps = 0;
 
-            //TODO: remove, testing only
-            CTilePosition pos = new CTilePosition(15, 15);
+            Asset townHall = assetRenderer.getNearestTownHall(asset);
+            if(townHall != null){
+                CTilePosition pos = new CTilePosition(townHall.x, townHall.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.ConveyLumber, pos);
+                asset.building = townHall;
+            }
+        }else{
+            asset.steps++;
+        }
+    }
+
+    void ConveyLumber(Asset asset){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }
+        if(asset.steps >= GameModel.DConveySteps){
+            players.get(asset.owner-1).DLumber += asset.lumber;
+            asset.lumber = 0;
+            asset.removeCommand();
+            asset.steps = 0;
+            asset.visible = true;
+
+            CTilePosition pos = new CTilePosition(asset.x, asset.y);
+            pos = router.FindNearestReachableTileType(pos, MapTiles.ETerrainTileType.Forest);
             asset.addCommand(Asset.EAssetAction.Walk, pos);
+            asset.addCommand(Asset.EAssetAction.HarvestLumber, pos);
         }else{
             asset.steps++;
         }
@@ -175,9 +208,34 @@ public class AssetActionRenderer {
             asset.removeCommand();
             asset.steps = 0;
 
-            //TODO: remove, testing only
-            CTilePosition pos = new CTilePosition(15, 15);
-            asset.addCommand(Asset.EAssetAction.Walk, pos);
+            Asset townHall = assetRenderer.getNearestTownHall(asset);
+            if(townHall != null){
+                CTilePosition pos = new CTilePosition(townHall.x, townHall.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.ConveyGold, pos);
+                //asset.building = townHall;
+            }
+        }
+    }
+
+    void ConveyGold(Asset asset){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }
+        if(asset.steps >= GameModel.DConveySteps){
+            players.get(asset.owner-1).DGold += asset.gold;
+            asset.gold = 0;
+            asset.removeCommand();
+            asset.steps = 0;
+            asset.visible = true;
+
+            if(asset.building != null) {
+                CTilePosition pos = new CTilePosition(asset.building.x, asset.building.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.MineGold, pos);
+            }
+        }else{
+            asset.steps++;
         }
     }
 

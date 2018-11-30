@@ -92,7 +92,7 @@ public class MainActivity_viewport extends AppCompatActivity {
         //Map Renderer
         mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency, players);
         assetBuilder = new AssetBuilder(assetRenderer, players);
 
         //UI Fragment Setting
