@@ -69,6 +69,24 @@ public class AssetRenderer {
         return null;
     }
 
+    public Asset getNearbyEnemyAsset(Asset asset){
+        int sight = asset.assetData.sight;
+        int owner = asset.owner;
+        int x = asset.x;
+        int y = asset.y;
+
+        for (Asset a : assets) {
+            if(asset.owner == a.owner){
+                continue;
+            }//don't attack your friends, that's not nice
+            if (a.x > x - sight && a.x < x + sight
+                    && a.y > y - sight && a.y < y + sight){
+                return a;
+            }
+        }
+        return null;
+    }
+
     public void addAsset(Asset asset){
 
         LockManager.assetLock.lock();
@@ -79,32 +97,6 @@ public class AssetRenderer {
             LockManager.assetLock.unlock();
         }
     }
-
-    /*
-    //x y: map coordinate offset in pixel
-    public void selectAssetOnLocation(int tileX, int tileY, int x, int y) {
-        Asset selected = null;
-        for (Asset asset : assets) {
-            if (asset == null) {
-                System.out.println("EMPTY ASSET\n");
-                continue;
-            }
-            Log.i("assetRenderer", "assetType=" + asset.type + " (" + asset.x + "," + asset.y + ")");
-            if (asset.x == tileX && asset.y == tileY) {
-                asset.isSelected = true;//!asset.isSelected;
-                selected = asset;
-                Log.i("assetRenderer", "assetType=" + asset.type + " = " + asset.isSelected);
-
-                break;
-            }
-        }
-        if (selected != null) {
-            renderAssets(x, y);
-        }
-    }
-    */
-
-
 
     /*
      * Takes in pixel coordinates and returns asset at that location if there is one
@@ -140,16 +132,23 @@ public class AssetRenderer {
         //selection - drawing box
         //selectedAsset.isSelected = !selectedAsset.isSelected;
 
+        //TODO: should only be able to select asset the player owns/neutral assets.
+
         if (selectedAsset != null) { //an asset was selected
             selectedAsset.isSelected = true;
-            //if(!selectedAsset.isBuilding()) {
-                FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-                actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
-            //}
+            if(selectedAsset.type == Asset.EAssetType.GoldMine){
+                if(lastSelectedAsset != null && lastSelectedAsset.type == Asset.EAssetType.Peasant){
+                    AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, selectedAsset);
+                }
+            }else if(lastSelectedAsset != null && selectedAsset.owner != lastSelectedAsset.owner){
+                AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, selectedAsset);
+            }
+
+            FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+            actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
-                AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY);
-                //lastSelectedAsset.findCommand(tileX, tileY);
+                AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, getAsset(tileX, tileY));
                 updateAssetFrame(lastSelectedAsset); //, tileX, tileY);
                 lastSelectedAsset.isSelected = false;
 
@@ -174,15 +173,6 @@ public class AssetRenderer {
 
         return selectedAsset;
     }
-
-    /*
-     * Takes in pixel coordinates and returns the coresponding tile index
-
-    public int[] getTileIndex(int x, int y) {
-
-        return null;
-    }
-    */
 
 
     /*
@@ -291,9 +281,11 @@ public class AssetRenderer {
                 frameIndex = asset.direction.getIdx() * 5;
                 if(asset.lumber > 0){
                     frameIndex += 120;
+                }else if(asset.gold > 0){
+                    frameIndex += 80;
                 }
                 frameIndex += (asset.steps % 5);
-            }else if(action == Asset.EAssetAction.HarvestLumber){
+            }else if(action == Asset.EAssetAction.HarvestLumber || action == Asset.EAssetAction.Attack){
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
             }//TODO: fix magic numbers?
@@ -307,70 +299,6 @@ public class AssetRenderer {
         assetLoader.setAssetBitmap(asset, frameIndex);
     }
 
-    //takes in asset and it's new coordinates
-    /*
-    public void calcDirection(Asset asset, int destX, int destY) {
-        int assetX = asset.x;
-        int assetY = asset.y;
-        //int currentDir = 0; // = asset.direction;
-        Asset.EDirection currentDir = Asset.EDirection.Max;
-        int deltaX, deltaY;
-        boolean right = false;
-        boolean left = false;
-        boolean up = false;
-        boolean down = false;
-        asset.x2 = destX;
-        asset.y2 = destY;
-
-        deltaX = destX - assetX;
-        deltaY = assetY - destY;
-        //calc left or right
-        if(deltaX < 0) {
-            left = true;
-        }
-        else if(deltaX > 0) {
-            right = true;
-        }
-        //calc up or down
-        if (deltaY < 0) {
-            down = true;
-        }
-        else if(deltaY > 0) {
-            up = true;
-        }
-        //change global direction variable accordingly
-        if(right == true) {
-            if (up == true){
-                currentDir = Asset.EDirection.NorthEast;
-            }
-            else if (down = true) {
-                currentDir = Asset.EDirection.SouthEast;
-            }
-            else {
-                currentDir = Asset.EDirection.East;
-            }
-        }
-        else if(left == true) {
-            if(up == true){
-                currentDir = Asset.EDirection.NorthWest;
-            }
-            else if(down = true) {
-                currentDir = Asset.EDirection.SouthWest;
-            }
-            else {
-                currentDir = Asset.EDirection.West;
-            }
-        }
-        else if (up == true){
-            currentDir = Asset.EDirection.North;
-        }
-        else if (down = true) {
-            currentDir = Asset.EDirection.South;
-        }
-
-        asset.direction = currentDir;
-    }
-    */
 
 
 }

@@ -28,6 +28,7 @@ public class Asset {
     AssetData assetData;
     int steps;
     int lumber;
+    int gold;
 
     Vector<Integer> pixelCoordinates;
     Bitmap assetBitmap;
