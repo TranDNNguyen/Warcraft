@@ -3,6 +3,8 @@ package com.android.ecs160.warcraft;
 import java.util.Iterator;
 import java.util.Vector;
 
+import static com.android.ecs160.warcraft.Asset.EDirection.NorthWest;
+
 public class AssetActionRenderer {
 
     AssetRenderer assetRenderer;
@@ -240,28 +242,20 @@ public class AssetActionRenderer {
     }
 
     void Walk(Asset asset) {
-        Asset.EDirection travelDirection;
-        travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
-
-        if(travelDirection == Asset.EDirection.Max){
-            asset.removeCommand();
-            asset.steps = 0;
-            return;
-        }//asset cannot move further, as pathfinding is no longer giving useful directions
-        else if (Arrived(asset)) {
-            asset.removeCommand();
-            asset.steps = 0;
+        if(asset.steps == 0){
+            Asset.EDirection travelDirection;
+            travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
+            asset.direction = travelDirection;
+            asset.steps++;
             return;
         }
 
-        asset.direction = travelDirection;
         asset.steps++;
-
-        //testing
         if(asset.steps % 5 != 0){
             return;
         }
 
+        Asset.EDirection travelDirection = asset.direction;
         switch (travelDirection) {
             case North:
             case NorthWest:
@@ -284,6 +278,22 @@ public class AssetActionRenderer {
             case SouthEast:
                 asset.x++;
         }
+
+        if (Arrived(asset)) {
+            asset.removeCommand();
+            asset.steps = 0;
+            return;
+        }
+        
+        travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
+
+        if(travelDirection == Asset.EDirection.Max){
+            asset.removeCommand();
+            asset.steps = 0;
+            return;
+        }//asset cannot move further, as pathfinding is no longer giving useful directions
+
+        asset.direction = travelDirection;
     }
 
     public boolean Arrived(Asset asset){

@@ -108,8 +108,8 @@ public class MainActivity_viewport extends AppCompatActivity {
             @Override
             public void run() {
                 //updateViewport();
-                viewportHandler.obtainMessage(1).sendToTarget();
                 assetActionRenderer.TimeStep(assetRenderer.assets);
+                viewportHandler.obtainMessage(1).sendToTarget();
             }
         }, 0, updateFrequency);
 
