@@ -95,8 +95,13 @@ public class MainActivity_viewport extends AppCompatActivity {
         assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
         assetBuilder = new AssetBuilder(assetRenderer, players);
 
+        //UI Fragment Setting
+        fragManager = getSupportFragmentManager();
+
         //Initializations
         InitScreenSetup();
+        FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+        actionFragment.Setup(assetBuilder);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -109,9 +114,6 @@ public class MainActivity_viewport extends AppCompatActivity {
         }, 0, updateFrequency);
 
         dx = dy = 0;
-
-        //UI Fragment Setting
-        fragManager = getSupportFragmentManager();
 
         //updateViewport();
         viewportHandler.obtainMessage(1).sendToTarget();

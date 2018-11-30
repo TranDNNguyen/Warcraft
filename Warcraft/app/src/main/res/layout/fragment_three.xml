@@ -14,83 +14,114 @@
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="300px"
-        android:layout_height="300px"
-        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="#00ffffff"
 
-        android:columnCount="3"
+        android:columnCount="9"
         android:rowCount="3"
         android:visibility="visible">
 
         <ImageButton
             android:id="@+id/actionBtn1"
+            android:layout_width="100px"
+            android:layout_height="100px"
             android:layout_column="0"
             android:layout_row="0"
-            android:layout_width="100px"
-            android:layout_height="100px"
             android:background="@null"
-            android:text="1"
-            />
+            android:text="1" />
+
         <ImageButton
             android:id="@+id/actionBtn2"
-            android:layout_column="1"
-            android:layout_row="0"
             android:layout_width="100px"
             android:layout_height="100px"
-            android:background="@null"
-            android:text="2"
-            />
-        <ImageButton android:layout_column="2"
+            android:layout_column="1"
             android:layout_row="0"
+            android:background="@null"
+            android:text="2" />
+
+        <ImageButton
             android:id="@+id/actionBtn3"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_column="2"
+            android:layout_row="0"
             android:background="@null"
-            android:text="3"/>
-        <ImageButton android:layout_column="0"
-            android:layout_row="1"
+            android:text="3" />
+
+        <ImageButton
             android:id="@+id/actionBtn4"
             android:layout_width="100px"
             android:layout_height="100px"
-            android:background="@null"
-            android:text="4"/>
-        <ImageButton android:layout_column="1"
+            android:layout_column="0"
             android:layout_row="1"
+            android:background="@null"
+            android:text="4" />
+
+        <ImageButton
             android:id="@+id/actionBtn5"
             android:layout_width="100px"
             android:layout_height="100px"
-            android:background="@null"
-            android:text="5"/>
-        <ImageButton android:layout_column="2"
+            android:layout_column="1"
             android:layout_row="1"
+            android:background="@null"
+            android:text="5" />
+
+        <ImageButton
             android:id="@+id/actionBtn6"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_column="2"
+            android:layout_row="1"
             android:background="@null"
-            android:text="6"/>
-        <ImageButton android:layout_column="0"
-            android:layout_row="2"
+            android:text="6" />
+
+        <ImageButton
             android:id="@+id/actionBtn7"
             android:layout_width="100px"
             android:layout_height="100px"
-            android:background="@null"
-            android:text="7"/>
-        <ImageButton android:layout_column="1"
+            android:layout_column="0"
             android:layout_row="2"
+            android:background="@null"
+            android:text="7" />
+
+        <ImageButton
             android:id="@+id/actionBtn8"
             android:layout_width="100px"
             android:layout_height="100px"
-            android:background="@null"
-            android:text="8"/>
-        <ImageButton android:layout_column="2"
+            android:layout_column="1"
             android:layout_row="2"
+            android:background="@null"
+            android:text="8" />
+
+        <ImageButton
             android:id="@+id/actionBtn9"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_column="2"
+            android:layout_row="2"
             android:background="@null"
-            android:text="9"/>
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/town_hall"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="3"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/farm"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="4"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
 
     </GridLayout>
+
 </LinearLayout>
 

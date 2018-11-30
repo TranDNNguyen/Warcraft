@@ -144,7 +144,7 @@ public class AssetRenderer {
             }
 
             FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
-            actionFragment.updateButtonImages(selectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
+            actionFragment.updateButtonImages(selectedAsset, lastSelectedAsset);  //  New Asset UI Update Method - 181126 Joon from "newdesign" branch
         } else if (lastSelectedAsset != null) {  // Move Command - Finger Tap
             if (lastSelectedAsset.type == Asset.EAssetType.Peasant || lastSelectedAsset.type == Asset.EAssetType.Footman) {
                 AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, getAsset(tileX, tileY));
