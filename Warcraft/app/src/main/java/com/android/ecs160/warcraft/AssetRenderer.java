@@ -61,7 +61,10 @@ public class AssetRenderer {
             if ((asset.x == x) && asset.y == y) {
                 //if coordinates match return assets
                 return asset;
-            }
+            }else if(x > asset.x && x <= asset.x + asset.assetData.size - 1 &&
+                    y > asset.y && y <= asset.y + asset.assetData.size - 1){
+                return asset;
+            }//for larger assets
         }
         return null;
     }
@@ -130,7 +133,9 @@ public class AssetRenderer {
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
         }
-        selectedAsset = getAsset(tileX, tileY);
+
+        //selectedAsset = getAsset(tileX, tileY);
+        selectedAsset = getAsset(tileX - 1, tileY - 1);
 
         //selection - drawing box
         //selectedAsset.isSelected = !selectedAsset.isSelected;
