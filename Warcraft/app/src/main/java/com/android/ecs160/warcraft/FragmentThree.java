@@ -25,8 +25,6 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     private ImageButton assetProfileBtn;
     private Vector<ImageButton> imageButtons;
     private Vector<ImageButton> buildingButtons;
-    Asset selectedAsset;
-    Asset lastSelectedAsset;
     AssetBuilder assetBuilder;
     /*
     private ImageButton imageButton1;
@@ -130,14 +128,21 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     //Display Asset Info.  //  Invoked when Asset Image was being clicked.
     @Override
     public void onClick(View v) {
+        //TODO:fix so that these get mapped correctly for diff assets
+
         if(v.getId() == R.id.AssetImageBtn){
             ActionButton(v);
+        }else if(v.getId() == R.id.actionBtn1){
+            if(currentAsset.type == Asset.EAssetType.TownHall){
+                BuildAsset(v);
+            }
+            AttackButton(v);
         }else if(v.getId() == R.id.actionBtn3){
             AttackButton(v);
         }else if(v.getId() == R.id.actionBtn7){
             BuildOptionsButton(v);
         }else if(buildingButtons.contains(v)){
-            BuildButton(v);
+            BuildBuilding(v);
         }
     }
 
@@ -155,42 +160,51 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
     }
 
-    public void BuildButton(View v){
+    public void BuildAsset(View v){
+        CTilePosition pos = new CTilePosition(currentAsset.x, currentAsset.y);
+
+        if(currentAsset.type == Asset.EAssetType.TownHall){
+            assetBuilder.Build(currentAsset, Asset.EAssetType.Peasant, pos);
+        }
+
+    }
+
+    public void BuildBuilding(View v){
         //hide buttons
         resetUIButtonImages();
         //call Build
-        CTilePosition pos = new CTilePosition(selectedAsset.x, selectedAsset.y);
+        CTilePosition pos = new CTilePosition(currentAsset.x, currentAsset.y);
 
         //TODO:let user select where to build building. for now: builds wherever the peasant is.
         //TODO:make sure to check that building isn't built on top of other buildings or units.
 
         switch (v.getId()){
             case R.id.barracks:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.Barracks, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Barracks, pos);
                 break;
             case R.id.blacksmith:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.Blacksmith, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Blacksmith, pos);
                 break;
             case R.id.cannon_tower:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.CannonTower, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.CannonTower, pos);
                 break;
             case R.id.farm:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.Farm, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Farm, pos);
                 break;
             case R.id.guard_tower:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.GuardTower, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.GuardTower, pos);
                 break;
             case R.id.keep:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.Keep, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Keep, pos);
                 break;
             case R.id.lumber_mill:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.LumberMill, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.LumberMill, pos);
                 break;
             case R.id.scout_tower:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.ScoutTower, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.ScoutTower, pos);
                 break;
             case R.id.town_hall:
-                assetBuilder.Build(selectedAsset, Asset.EAssetType.TownHall, pos);
+                assetBuilder.Build(currentAsset, Asset.EAssetType.TownHall, pos);
                 break;
         }
     }
@@ -226,10 +240,7 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
 
     // Update the button images in this asset image fragment
-    public void updateButtonImages(Asset selectedAsset, Asset lastSelectedAsset) {
-        this.selectedAsset = selectedAsset;
-        this.lastSelectedAsset = lastSelectedAsset;
-
+    public void updateButtonImages(Asset selectedAsset) {
         if(selectedAsset == null) {
             currentAsset = null;
             resetUIButtonImages();

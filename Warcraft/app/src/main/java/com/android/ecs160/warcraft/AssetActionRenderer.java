@@ -102,16 +102,10 @@ public class AssetActionRenderer {
         double hitPoints = (double)asset.building.assetData.hitPoints;
         double buildTime = (double)asset.building.assetData.buildTime;
 
-        //TODO: update HP continuously
-        //change checks to be based off HP (could be attacked while being built,
-        //so don't want to use steps alone.
-        //but: cant increment by totalHP/buildTime because some units might have
-        //buildTime > HP
-
-        if(asset.steps == 0){
+        if(asset.steps == 0 && asset.type == Asset.EAssetType.Peasant){
             asset.visible = false;
             asset.building.visible = true;
-        }//asset has just started building
+        }//peasant has just started building
 
         asset.building.HP += hitPoints / buildTime;
         assetRenderer.updateAssetFrame(asset.building);
@@ -120,6 +114,7 @@ public class AssetActionRenderer {
             asset.building.HP = asset.building.assetData.hitPoints;
 
             asset.removeCommand();
+            asset.building.visible = true;
             asset.building = null;
             asset.visible = true;
             asset.steps = 0;
