@@ -28,6 +28,7 @@ public class Asset {
     AssetData assetData;
     int steps;
     int lumber;
+    int gold;
 
     Vector<Integer> pixelCoordinates;
     Bitmap assetBitmap;
@@ -346,8 +347,8 @@ public class Asset {
         //int adjustX = x*TileSize - xOffset + (TileSize/2 - assetSize/2);
         //int adjustY = y*TileSize - yOffset + (TileSize/2 - assetSize/2);
 
-        int adjustX = x*TileSize - xOffset - TileSize/2;// + assetSize/2;// + (TileSize/2 - assetSize/2);
-        int adjustY = y*TileSize - yOffset - TileSize/2;// + assetSize/2;// + (TileSize/2 - assetSize/2);
+        int adjustX = x*TileSize - xOffset;// + (TileSize/2 - assetSize/2);
+        int adjustY = y*TileSize - yOffset;// + (TileSize/2 - assetSize/2);
 
         //testing TODO:
         if(commands.peek() == EAssetAction.Walk) {
@@ -387,12 +388,14 @@ public class Asset {
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(1);
 
-            int assetSize = assetData.size;
-            int adjustX = (x)*TileSize - xOffset;// + TileSize/2;// + (TileSize/2 - assetSize/2);
-            int adjustY = (y)*TileSize - yOffset;// + TileSize/2;// + (TileSize/2 - assetSize/2);
+            int assetSize = assetData.size;//assetBitmap.getWidth();
+            int adjustX = x*TileSize - xOffset + TileSize/2;
+            int adjustY = y*TileSize - yOffset + TileSize/2;
+            //int offset = (TileSize/2 - assetSize/2);
 
             //canvas.drawRect(x * TileSize - xOffset, y * TileSize - yOffset, x * TileSize - xOffset + TileSize, y * TileSize - yOffset + TileSize, paint);
             canvas.drawRect(adjustX, adjustY, adjustX + TileSize*assetSize, adjustY + TileSize*assetSize, paint);
+
         }
     }
 

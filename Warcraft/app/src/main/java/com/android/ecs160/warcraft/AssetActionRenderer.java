@@ -22,10 +22,18 @@ public class AssetActionRenderer {
     public void TimeStep(Vector<Asset> assets) {
         LockManager.assetLock.lock();
         try {
-            for (Asset asset : assets) {
+            Iterator<Asset> it = assets.iterator();
+            Asset asset;
+            //for (Asset asset : assets) {
+            while(it.hasNext()){
+                asset = it.next();
                 if (asset == null) {
                     continue;
                 }
+                if(asset.HP <= 0){
+                    it.remove();
+                    //TODO: replace with corpse
+                }//asset has died.
                 if (asset.commands.isEmpty()) {
                     //assetRenderer.updateAssetFrame(asset);
                     continue;
@@ -41,6 +49,12 @@ public class AssetActionRenderer {
                         break;
                     case Build:
                         Build(asset);
+                        break;
+                    case MineGold:
+                        MineGold(asset);
+                        break;
+                    case Attack:
+                        Attack(asset);
                 }
                 assetRenderer.updateAssetFrame(asset);
             }
@@ -48,28 +62,34 @@ public class AssetActionRenderer {
             LockManager.assetLock.unlock();
         }
     }
-
-
-    public static void findCommand(Asset asset, int x, int y){
+    public static void findCommand(Asset asset, int x, int y, Asset destAsset){
         //get tile type of (x,y)
         MapTiles mapTiles = MapTiles.getMapTilesInstance();
         MapTiles.ETerrainTileType tileType = mapTiles.getTileType(x, y);
         CTilePosition pos = new CTilePosition(x, y);
 
-        //see if traversable
-        if(mapTiles.isTraversable(tileType)){
+        if(destAsset != null){
+            if(destAsset.type == Asset.EAssetType.GoldMine){
+                //TODO: add gold mining
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.MineGold, pos);
+            }
+            else if(destAsset.owner != asset.owner){
+                //TODO:add attacking
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.Attack, pos);
+            }//enemy...ATTACK!!!
+        }//
+        else if(mapTiles.isTraversable(tileType)){
             //set to walk
             asset.addCommand(Asset.EAssetAction.Walk, pos);
-        }else{
+        }//
+        else if (asset.type ==  Asset.EAssetType.Peasant && tileType == MapTiles.ETerrainTileType.Forest){
             //find closest forest tile
             CTilePosition newpos = router.FindNearestReachableTileType(pos, MapTiles.ETerrainTileType.Forest);
-
-            if(asset.type ==  Asset.EAssetType.Peasant && tileType == MapTiles.ETerrainTileType.Forest){
-                asset.addCommand(Asset.EAssetAction.Walk, newpos); //will walk as close as it can to the rigth tile
-                asset.addCommand(Asset.EAssetAction.HarvestLumber, newpos);
-            }
-            //TODO: add other mining
-        }
+            asset.addCommand(Asset.EAssetAction.Walk, newpos); //will walk as close as it can to the rigth tile
+            asset.addCommand(Asset.EAssetAction.HarvestLumber, newpos);
+        }//
     }//used when asset is selected and then given a command by touching elsewhere on the map
     //either move, move and then harvest/mine, or move to attack enemy
 
@@ -109,15 +129,31 @@ public class AssetActionRenderer {
         asset.steps++;
     }
 
+    void Attack(Asset asset){
+        CTilePosition pos = new CTilePosition(asset.x, asset.y);
+        Asset enemy = assetRenderer.getNearbyEnemyAsset(asset);
+
+        //TODO: update asset to face the asset it is attacking
+
+        if(enemy == null){
+            asset.steps = 0;
+            asset.removeCommand();
+            return;
+        }//no enemies within view. stop attacking
+
+        double distance = Math.hypot(asset.x-enemy.x, asset.y-enemy.y);
+        if(distance > asset.assetData.range){
+
+        }//TODO: move close to enemy if within sight but out of range
+
+        if(asset.steps % asset.assetData.attackSteps == 0){
+            enemy.HP -= asset.assetData.basicDamage;
+        }//hit the
+
+        asset.steps++;
+    }
+
     void HarvestLumber(Asset asset){
-        //
-        /*if(asset.steps == 0){
-            Walk(asset);
-            if (Arrived(asset)) {
-                asset.steps++;
-            }
-        }//have not reached lumber yet
-        */
         if(asset.steps >= GameModel.DHarvestSteps){
             asset.lumber = (GameModel.DLumberPerHarvest);
             asset.removeCommand();
@@ -126,9 +162,27 @@ public class AssetActionRenderer {
             //TODO: remove, testing only
             CTilePosition pos = new CTilePosition(15, 15);
             asset.addCommand(Asset.EAssetAction.Walk, pos);
-
         }else{
             asset.steps++;
+        }
+    }
+
+    void MineGold(Asset asset){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }//asset has just started building
+
+        asset.steps++;
+
+        if(asset.steps >= GameModel.DMineSteps){
+            asset.visible = true;
+            asset.gold = (GameModel.DGoldPerMining);
+            asset.removeCommand();
+            asset.steps = 0;
+
+            //TODO: remove, testing only
+            CTilePosition pos = new CTilePosition(15, 15);
+            asset.addCommand(Asset.EAssetAction.Walk, pos);
         }
     }
 
@@ -228,78 +282,4 @@ public class AssetActionRenderer {
 
         return new CTilePosition(tempx, tempy);
     }
-
-
-
 }
-
-
-
-
-/*
-
-    void CGameModel::THarvestLumber(std::shared_ptr < CPlayerAsset > Asset, std::vector < SGameEvent > & CurrentEvents){
-
-        SGameEvent TempEvent;
-        SAssetCommand Command = Asset->CurrentCommand();
-        CTilePosition TilePosition = Command.DAssetTarget->TilePosition();
-        EDirection HarvestDirection = Asset->TilePosition().AdjacentTileDirection(TilePosition);
-
-        if(CTerrainMap::ETileType::Forest != DActualMap->TileType(TilePosition)){
-            HarvestDirection = EDirection::Max;
-            TilePosition = Asset->TilePosition();
-        }
-
-        //if front tile is not a forest tile
-        if(EDirection::Max == HarvestDirection){
-            if(TilePosition == Asset->TilePosition()){
-                CTilePosition TilePosition = DPlayers[to_underlying(Asset->Color())]->PlayerMap()->FindNearestReachableTileType(Asset->TilePosition(), CTerrainMap::ETileType::Forest);
-                // Find new lumber
-                Asset->PopCommand();
-                if(0 <= TilePosition.X()){
-                    CPixelPosition NewPosition;
-                    NewPosition.SetFromTile(TilePosition);
-                    Command.DAssetTarget = DPlayers[to_underlying(Asset->Color())]->CreateMarker(NewPosition, false);
-                    Asset->PushCommand(Command);
-                    Command.DAction = EAssetAction::Walk;
-                    Asset->PushCommand(Command);
-                    Asset->ResetStep();
-                }
-            }
-            else{
-                SAssetCommand NewCommand = Command;
-
-                NewCommand.DAction = EAssetAction::Walk;
-                Asset->PushCommand(NewCommand);
-                Asset->ResetStep();
-            }
-        }
-        else{ //is a forest tile
-            TempEvent.DType = EEventType::Harvest;
-            TempEvent.DAsset = Asset;
-            CurrentEvents.push_back(TempEvent);
-            Asset->Direction(HarvestDirection);
-            Asset->IncrementStep();
-            if(DHarvestSteps <= Asset->Step()){
-                std::weak_ptr< CPlayerAsset > NearestRepository = DPlayers[to_underlying(Asset->Color())]->FindNearestOwnedAsset(Asset->Position(), {EAssetType::TownHall, EAssetType::Keep, EAssetType::Castle, EAssetType::LumberMill});
-
-                DActualMap->RemoveLumber(TilePosition, Asset->TilePosition(), DLumberPerHarvest);
-
-                if(!NearestRepository.expired()){
-                    Command.DAction = EAssetAction::ConveyLumber;
-                    Command.DAssetTarget = NearestRepository.lock();
-                    Asset->PushCommand(Command);
-                    Command.DAction = EAssetAction::Walk;
-                    Asset->PushCommand(Command);
-                    Asset->Lumber(DLumberPerHarvest);
-                    Asset->ResetStep();
-                }
-                else{
-                    Asset->PopCommand();
-                    Asset->Lumber(DLumberPerHarvest);
-                    Asset->ResetStep();
-                }
-            }
-        }
-    }
- */
