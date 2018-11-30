@@ -123,11 +123,11 @@ public class MainActivity_viewport extends AppCompatActivity {
 
 
         //TODO:remove below once building button callbacks are added
-
+/*
         Asset a = assetRenderer.getAsset(3, 7);
         CTilePosition pos = new CTilePosition(14, 14);
         assetBuilder.Build(a, Asset.EAssetType.TownHall, pos);
-
+*/
                 /*
                 //check if can be built
                 //makes new asset

@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:background="#00ffffff"
 
-        android:columnCount="9"
-        android:rowCount="3"
+        android:columnCount="13"
+        android:rowCount="4"
         android:visibility="visible">
 
         <ImageButton
@@ -104,7 +104,7 @@
             android:text="9" />
 
         <ImageButton
-            android:id="@+id/town_hall"
+            android:id="@+id/barracks"
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_column="3"
@@ -113,10 +113,80 @@
             android:text="9" />
 
         <ImageButton
-            android:id="@+id/farm"
+            android:id="@+id/blacksmith"
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_column="4"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+        <ImageButton
+            android:id="@+id/cannon_tower"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="5"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+        <ImageButton
+            android:id="@+id/castle"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="6"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/farm"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="7"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/guard_tower"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="8"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/keep"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="9"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/lumber_mill"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="10"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/scout_tower"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="11"
+            android:layout_row="2"
+            android:background="@null"
+            android:text="9" />
+
+        <ImageButton
+            android:id="@+id/town_hall"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_column="12"
             android:layout_row="2"
             android:background="@null"
             android:text="9" />

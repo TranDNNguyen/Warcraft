@@ -287,6 +287,8 @@ public class AssetRenderer {
             }else if(action == Asset.EAssetAction.HarvestLumber || action == Asset.EAssetAction.Attack){
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
+            }else{
+                frameIndex = asset.direction.getIdx() * 5;
             }//TODO: fix magic numbers?
             //TODO: consider action type, switch statement?
         }//peasant
@@ -299,6 +301,8 @@ public class AssetRenderer {
             }else if(action == Asset.EAssetAction.Attack) {
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
+            }else{
+                frameIndex = asset.direction.getIdx() * 5;
             }
         }//footman or archer
 

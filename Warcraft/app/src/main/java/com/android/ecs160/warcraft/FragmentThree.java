@@ -58,12 +58,28 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     };
 
     private Integer buildings[] = new Integer[]{
-            R.id.town_hall,
+            R.id.barracks,
+            R.id.blacksmith,
+            R.id.cannon_tower,
+            R.id.castle,
             R.id.farm,
+            R.id.guard_tower,
+            R.id.keep,
+            R.id.lumber_mill,
+            R.id.scout_tower,
+            R.id.town_hall,
     };
     private String building_names[] = new String[]{
-            "town_hall",
+            "barracks",
+            "blacksmith",
+            "cannon_tower",
+            "castle",
             "farm",
+            "guard_tower",
+            "keep",
+            "lumber_mill",
+            "scout_tower",
+            "town_hall",
     };
 
     public FragmentThree(){
@@ -127,6 +143,7 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
 
     public void BuildOptionsButton(View v){
         if(buildingButtons.get(0).getVisibility() == View.VISIBLE){
+            //TODO: only display buildings that can be built rn
             for(int i = 0; i < buildingButtons.size(); i++){
                 buildingButtons.get(i).setVisibility(View.INVISIBLE);
             }
@@ -143,13 +160,38 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         resetUIButtonImages();
         //call Build
         CTilePosition pos = new CTilePosition(selectedAsset.x, selectedAsset.y);
-        if(v.getId() == R.id.town_hall) {
-            //TODO:let user select where to build building. for now: builds wherever the peasant is.
-            //TODO:make sure to check that building isn't built on top of other buildings or units.
 
-            assetBuilder.Build(selectedAsset, Asset.EAssetType.TownHall, pos);
-        }else if(v.getId() == R.id.farm) {
-            assetBuilder.Build(selectedAsset, Asset.EAssetType.Farm, pos);
+        //TODO:let user select where to build building. for now: builds wherever the peasant is.
+        //TODO:make sure to check that building isn't built on top of other buildings or units.
+
+        switch (v.getId()){
+            case R.id.barracks:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.Barracks, pos);
+                break;
+            case R.id.blacksmith:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.Blacksmith, pos);
+                break;
+            case R.id.cannon_tower:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.CannonTower, pos);
+                break;
+            case R.id.farm:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.Farm, pos);
+                break;
+            case R.id.guard_tower:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.GuardTower, pos);
+                break;
+            case R.id.keep:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.Keep, pos);
+                break;
+            case R.id.lumber_mill:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.LumberMill, pos);
+                break;
+            case R.id.scout_tower:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.ScoutTower, pos);
+                break;
+            case R.id.town_hall:
+                assetBuilder.Build(selectedAsset, Asset.EAssetType.TownHall, pos);
+                break;
         }
     }
 
