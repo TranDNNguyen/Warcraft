@@ -1,17 +1,5 @@
 # ECS160Android
-## Welcome to the resources branch! 
-On this branch we are currently working on adding the ability to gather 
-resources!
-
-## New Features
-- New pathplanning functions to support peasant travel to untraversable tile
-types. When forest is selected, the peasant now travels to the nearest
-traversable are with access to a forest tile. 
-- Added display of lumber gathering frame in the correct direction when peasant
-approaches a forest tile. 
-- Added ability to create new assets
-- Added resource management to the process of building creation
-- Connected UI buttons to building asset callbacks (the user can now use
-  buttons to make peasants build buildings and the town hall build peasants)
-- Added ability to mine for gold
-- Peasants now take mined resources to town hall
+## Master 
+This is "master" branch where we push the current stable production build of
+the Android Team's work. Note that the most up-to-date development version can
+be found on the "dev" branch, albeit with potential bugs and tests-in-progress.
