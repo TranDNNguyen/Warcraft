@@ -293,11 +293,13 @@ public class Router {
                         if ((asset.color != Res.color) || ((Asset.EAssetAction.ConveyGold != Res.commands.peek()) && (Asset.EAssetAction.ConveyLumber != Res.commands.peek()) && (Asset.EAssetAction.MineGold != Res.commands.peek()))) {
                             for (int YOff = 0; YOff < Res.assetData.size; YOff++) {
                                 for (int XOff = 0; XOff < Res.assetData.size; XOff++) {
+                                    //DMap.get(Res.y + YOff + 1).set(Res.x + XOff + 1, SEARCH_STATUS_VISITED);
                                     DMap.get(Res.y + YOff + 1).set(Res.x + XOff + 1, SEARCH_STATUS_VISITED);
                                 }
                             }
                         }
                     } else {
+                        //DMap.get(Res.y + 1).set(Res.x + 1, SEARCH_STATUS_OCCUPIED);
                         DMap.get(Res.y + 1).set(Res.x + 1, SEARCH_STATUS_OCCUPIED);
                     }
                 }

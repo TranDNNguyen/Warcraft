@@ -34,6 +34,11 @@ public class AssetBuilder {
         }
 
         //Makes new asset
+
+        if(builder.isBuilding()){
+            position.x += 4;
+            position.y += 4;
+        }//TODO: find empty spot for new asset if building is making a unit.
         Asset newAsset = new Asset(newAssetType, player, position.x, position.y);
         assetRenderer.addAsset(newAsset);
 
@@ -162,6 +167,8 @@ public class AssetBuilder {
     private void BuildCommands(Asset builder, Asset newAsset, CTilePosition position){
         if(builder.isBuilding()){
             //TODO
+            builder.addCommand(Asset.EAssetAction.Build, position);
+            builder.building = newAsset;
         }else if(builder.type == Asset.EAssetType.Peasant){
             builder.addCommand(Asset.EAssetAction.Walk, position);
             builder.addCommand(Asset.EAssetAction.Build, position);

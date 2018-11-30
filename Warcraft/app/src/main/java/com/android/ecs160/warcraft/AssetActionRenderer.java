@@ -3,6 +3,8 @@ package com.android.ecs160.warcraft;
 import java.util.Iterator;
 import java.util.Vector;
 
+import static com.android.ecs160.warcraft.Asset.EDirection.NorthWest;
+
 public class AssetActionRenderer {
 
     AssetRenderer assetRenderer;
@@ -10,9 +12,11 @@ public class AssetActionRenderer {
     Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
     MapTiles mapTiles;
     int updateFrequency;
+    Vector<PlayerData> players;
 
-    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency){
+    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency, Vector<PlayerData> players){
         this.assetRenderer = assetRenderer;
+        this.players = players;
         router = new Router(assetRenderer);
         terrainMap = mapRenderer.mapTiles.terrainMap;
         mapTiles = mapRenderer.mapTiles;
@@ -55,6 +59,13 @@ public class AssetActionRenderer {
                         break;
                     case Attack:
                         Attack(asset);
+                        break;
+                    case ConveyGold:
+                        ConveyGold(asset);
+                        break;
+                    case ConveyLumber:
+                        ConveyLumber(asset);
+                        break;
                 }
                 assetRenderer.updateAssetFrame(asset);
             }
@@ -70,12 +81,12 @@ public class AssetActionRenderer {
 
         if(destAsset != null){
             if(destAsset.type == Asset.EAssetType.GoldMine){
-                //TODO: add gold mining
                 asset.addCommand(Asset.EAssetAction.Walk, pos);
                 asset.addCommand(Asset.EAssetAction.MineGold, pos);
+                asset.building = destAsset;
             }
             else if(destAsset.owner != asset.owner){
-                //TODO:add attacking
+                //TODO:refine attacking
                 asset.addCommand(Asset.EAssetAction.Walk, pos);
                 asset.addCommand(Asset.EAssetAction.Attack, pos);
             }//enemy...ATTACK!!!
@@ -102,16 +113,10 @@ public class AssetActionRenderer {
         double hitPoints = (double)asset.building.assetData.hitPoints;
         double buildTime = (double)asset.building.assetData.buildTime;
 
-        //TODO: update HP continuously
-        //change checks to be based off HP (could be attacked while being built,
-        //so don't want to use steps alone.
-        //but: cant increment by totalHP/buildTime because some units might have
-        //buildTime > HP
-
-        if(asset.steps == 0){
+        if(asset.steps == 0 && asset.type == Asset.EAssetType.Peasant){
             asset.visible = false;
             asset.building.visible = true;
-        }//asset has just started building
+        }//peasant has just started building
 
         asset.building.HP += hitPoints / buildTime;
         assetRenderer.updateAssetFrame(asset.building);
@@ -120,6 +125,7 @@ public class AssetActionRenderer {
             asset.building.HP = asset.building.assetData.hitPoints;
 
             asset.removeCommand();
+            asset.building.visible = true;
             asset.building = null;
             asset.visible = true;
             asset.steps = 0;
@@ -159,9 +165,33 @@ public class AssetActionRenderer {
             asset.removeCommand();
             asset.steps = 0;
 
-            //TODO: remove, testing only
-            CTilePosition pos = new CTilePosition(15, 15);
+            Asset townHall = assetRenderer.getNearestTownHall(asset);
+            if(townHall != null){
+                CTilePosition pos = new CTilePosition(townHall.x, townHall.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.ConveyLumber, pos);
+                asset.building = townHall;
+            }
+        }else{
+            asset.steps++;
+        }
+    }
+
+    void ConveyLumber(Asset asset){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }
+        if(asset.steps >= GameModel.DConveySteps){
+            players.get(asset.owner-1).DLumber += asset.lumber;
+            asset.lumber = 0;
+            asset.removeCommand();
+            asset.steps = 0;
+            asset.visible = true;
+
+            CTilePosition pos = new CTilePosition(asset.x, asset.y);
+            pos = router.FindNearestReachableTileType(pos, MapTiles.ETerrainTileType.Forest);
             asset.addCommand(Asset.EAssetAction.Walk, pos);
+            asset.addCommand(Asset.EAssetAction.HarvestLumber, pos);
         }else{
             asset.steps++;
         }
@@ -180,35 +210,52 @@ public class AssetActionRenderer {
             asset.removeCommand();
             asset.steps = 0;
 
-            //TODO: remove, testing only
-            CTilePosition pos = new CTilePosition(15, 15);
-            asset.addCommand(Asset.EAssetAction.Walk, pos);
+            Asset townHall = assetRenderer.getNearestTownHall(asset);
+            if(townHall != null){
+                CTilePosition pos = new CTilePosition(townHall.x, townHall.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.ConveyGold, pos);
+                //asset.building = townHall;
+            }
+        }
+    }
+
+    void ConveyGold(Asset asset){
+        if(asset.steps == 0){
+            asset.visible = false;
+        }
+        if(asset.steps >= GameModel.DConveySteps){
+            players.get(asset.owner-1).DGold += asset.gold;
+            asset.gold = 0;
+            asset.removeCommand();
+            asset.steps = 0;
+            asset.visible = true;
+
+            if(asset.building != null) {
+                CTilePosition pos = new CTilePosition(asset.building.x, asset.building.y);
+                asset.addCommand(Asset.EAssetAction.Walk, pos);
+                asset.addCommand(Asset.EAssetAction.MineGold, pos);
+            }
+        }else{
+            asset.steps++;
         }
     }
 
     void Walk(Asset asset) {
-        Asset.EDirection travelDirection;
-        travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
-
-        if(travelDirection == Asset.EDirection.Max){
-            asset.removeCommand();
-            asset.steps = 0;
-            return;
-        }//asset cannot move further, as pathfinding is no longer giving useful directions
-        else if (Arrived(asset)) {
-            asset.removeCommand();
-            asset.steps = 0;
+        if(asset.steps == 0){
+            Asset.EDirection travelDirection;
+            travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
+            asset.direction = travelDirection;
+            asset.steps++;
             return;
         }
 
-        asset.direction = travelDirection;
         asset.steps++;
-
-        //testing
         if(asset.steps % 5 != 0){
             return;
         }
 
+        Asset.EDirection travelDirection = asset.direction;
         switch (travelDirection) {
             case North:
             case NorthWest:
@@ -231,6 +278,22 @@ public class AssetActionRenderer {
             case SouthEast:
                 asset.x++;
         }
+
+        if (Arrived(asset)) {
+            asset.removeCommand();
+            asset.steps = 0;
+            return;
+        }
+        
+        travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
+
+        if(travelDirection == Asset.EDirection.Max){
+            asset.removeCommand();
+            asset.steps = 0;
+            return;
+        }//asset cannot move further, as pathfinding is no longer giving useful directions
+
+        asset.direction = travelDirection;
     }
 
     public boolean Arrived(Asset asset){

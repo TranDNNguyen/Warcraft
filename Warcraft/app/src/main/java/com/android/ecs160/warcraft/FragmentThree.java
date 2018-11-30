@@ -1,5 +1,6 @@
 package com.android.ecs160.warcraft;
 
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 
+import java.util.Vector;
+
 public class FragmentThree extends Fragment implements View.OnClickListener{   //https://stackoverflow.com/questions/27964611/how-to-set-onclick-listener-for-a-button-in-a-fragment-in-android
 
     private final int MAX_BUTTONS = 9;
@@ -20,6 +23,20 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
     private View v;
     private IconImage Icon;
     private ImageButton assetProfileBtn;
+    private Vector<ImageButton> imageButtons;
+    private Vector<ImageButton> buildingButtons;
+    AssetBuilder assetBuilder;
+    /*
+    private ImageButton imageButton1;
+    private ImageButton imageButton2;
+    private ImageButton imageButton3;
+    private ImageButton imageButton4;
+    private ImageButton imageButton5;
+    private ImageButton imageButton6;
+    private ImageButton imageButton7;
+    private ImageButton imageButton8;
+    private ImageButton imageButton9;
+    */
 
     private Asset currentAsset;
 
@@ -38,6 +55,31 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
             R.id.actionBtn9,
     };
 
+    private Integer buildings[] = new Integer[]{
+            R.id.barracks,
+            R.id.blacksmith,
+            R.id.cannon_tower,
+            R.id.castle,
+            R.id.farm,
+            R.id.guard_tower,
+            R.id.keep,
+            R.id.lumber_mill,
+            R.id.scout_tower,
+            R.id.town_hall,
+    };
+    private String building_names[] = new String[]{
+            "barracks",
+            "blacksmith",
+            "cannon_tower",
+            "castle",
+            "farm",
+            "guard_tower",
+            "keep",
+            "lumber_mill",
+            "scout_tower",
+            "town_hall",
+    };
+
     public FragmentThree(){
 
     }
@@ -53,6 +95,25 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         assetProfileBtn = (ImageButton) v.findViewById(R.id.AssetImageBtn);
         assetProfileBtn.setVisibility(View.INVISIBLE);
         assetProfileBtn.setOnClickListener(this);
+
+        ImageButton imageButton;
+        imageButtons = new Vector<>();
+        buildingButtons = new Vector<>();
+        for(int i = 0; i < 9; i++){
+            imageButton = (ImageButton) v.findViewById(images[i]);
+            imageButton.setVisibility(View.INVISIBLE);
+            imageButton.setOnClickListener(this);
+            imageButtons.add(imageButton);
+        }
+        for(int i = 0; i < buildings.length; i++){
+            imageButton = (ImageButton) v.findViewById(buildings[i]);
+            Integer index = Asset.getAssetImageIcons(building_names[i]);
+            imageButton.setImageBitmap(Icon.getIconImage(index));
+            imageButton.setVisibility(View.INVISIBLE);
+            imageButton.setOnClickListener(this);
+            buildingButtons.add(imageButton);
+        }
+
         currentAsset = null;
        // TextView tv = (TextView) v.findViewById(R.id.rightTextview);
        // tv.setText("Can you read?");
@@ -60,11 +121,99 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         return v;
     }
 
+    public void Setup(AssetBuilder assetBuilder){
+        this.assetBuilder = assetBuilder;
+    }
 
     //Display Asset Info.  //  Invoked when Asset Image was being clicked.
     @Override
     public void onClick(View v) {
+        //TODO:fix so that these get mapped correctly for diff assets
 
+        if(v.getId() == R.id.AssetImageBtn){
+            ActionButton(v);
+        }else if(v.getId() == R.id.actionBtn1){
+            if(currentAsset.type == Asset.EAssetType.TownHall){
+                BuildAsset(v);
+            }
+            AttackButton(v);
+        }else if(v.getId() == R.id.actionBtn3){
+            AttackButton(v);
+        }else if(v.getId() == R.id.actionBtn7){
+            BuildOptionsButton(v);
+        }else if(buildingButtons.contains(v)){
+            BuildBuilding(v);
+        }
+    }
+
+    public void BuildOptionsButton(View v){
+        if(buildingButtons.get(0).getVisibility() == View.VISIBLE){
+            //TODO: only display buildings that can be built rn
+            for(int i = 0; i < buildingButtons.size(); i++){
+                buildingButtons.get(i).setVisibility(View.INVISIBLE);
+            }
+        }else{
+            for(int i = 0; i < buildingButtons.size(); i++){
+                buildingButtons.get(i).setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
+
+    public void BuildAsset(View v){
+        CTilePosition pos = new CTilePosition(currentAsset.x, currentAsset.y);
+
+        if(currentAsset.type == Asset.EAssetType.TownHall){
+            assetBuilder.Build(currentAsset, Asset.EAssetType.Peasant, pos);
+        }
+
+    }
+
+    public void BuildBuilding(View v){
+        //hide buttons
+        resetUIButtonImages();
+        //call Build
+        CTilePosition pos = new CTilePosition(currentAsset.x, currentAsset.y);
+
+        //TODO:let user select where to build building. for now: builds wherever the peasant is.
+        //TODO:make sure to check that building isn't built on top of other buildings or units.
+
+        switch (v.getId()){
+            case R.id.barracks:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Barracks, pos);
+                break;
+            case R.id.blacksmith:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Blacksmith, pos);
+                break;
+            case R.id.cannon_tower:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.CannonTower, pos);
+                break;
+            case R.id.farm:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Farm, pos);
+                break;
+            case R.id.guard_tower:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.GuardTower, pos);
+                break;
+            case R.id.keep:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.Keep, pos);
+                break;
+            case R.id.lumber_mill:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.LumberMill, pos);
+                break;
+            case R.id.scout_tower:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.ScoutTower, pos);
+                break;
+            case R.id.town_hall:
+                assetBuilder.Build(currentAsset, Asset.EAssetType.TownHall, pos);
+                break;
+        }
+    }
+
+    public void AttackButton(View v) {
+
+    }
+
+    public void ActionButton(View v){
         //Custom Toast View
         //https://stackoverflow.com/questions/11288475/custom-toast-on-android-a-simple-example
         LayoutInflater inflater = getLayoutInflater();
@@ -73,13 +222,13 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         image.setImageBitmap(Icon.getIconImage(Asset.getAssetImageIcons(currentAsset.getAssetData_ResourceName())));
         TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
         text.setText(   currentAsset.getAssetData().resourceName + "\n" +
-                        "Health : " + currentAsset.getAssetData().hitPoints + "/"+Asset.AssetTypeData.getAssetData(currentAsset.type).hitPoints + "\n"+
-                        " Armor : " + currentAsset.getAssetData().armor + "\n" +
-                        "Damage : " + currentAsset.getAssetData().piercingDamage+
-                            "-"+ currentAsset.getAssetData().basicDamage + "\n" +
-                        " Range : " + currentAsset.getAssetData().range + "\n" +
-                        " Sight : " + currentAsset.getAssetData().sight + "\n" +
-                        " Speed : " + currentAsset.getAssetData().speed + "\n");
+                "Health : " + currentAsset.getAssetData().hitPoints + "/"+Asset.AssetTypeData.getAssetData(currentAsset.type).hitPoints + "\n"+
+                " Armor : " + currentAsset.getAssetData().armor + "\n" +
+                "Damage : " + currentAsset.getAssetData().piercingDamage+
+                "-"+ currentAsset.getAssetData().basicDamage + "\n" +
+                " Range : " + currentAsset.getAssetData().range + "\n" +
+                " Sight : " + currentAsset.getAssetData().sight + "\n" +
+                " Speed : " + currentAsset.getAssetData().speed + "\n");
 
         Toast toast = new Toast(getActivity().getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
         toast.setGravity(Gravity.CENTER_VERTICAL, 10, 10);
@@ -185,6 +334,10 @@ public class FragmentThree extends Fragment implements View.OnClickListener{   /
         for (int buttonIndex = 0; buttonIndex < 9; buttonIndex++) {
             currentImageBtn = getActivity().findViewById(images[buttonIndex]);
             currentImageBtn.setVisibility(View.INVISIBLE);
+        }
+
+        for(int i = 0; i < buildingButtons.size(); i++){
+            buildingButtons.get(i).setVisibility(View.INVISIBLE);
         }
 
         currentIcon = null;

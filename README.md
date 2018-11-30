@@ -11,3 +11,7 @@ traversable are with access to a forest tile.
 approaches a forest tile. 
 - Added ability to create new assets
 - Added resource management to the process of building creation
+- Connected UI buttons to building asset callbacks (the user can now use
+  buttons to make peasants build buildings and the town hall build peasants)
+- Added ability to mine for gold
+- Peasants now take mined resources to town hall

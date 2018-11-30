@@ -87,6 +87,26 @@ public class AssetRenderer {
         return null;
     }
 
+    public Asset getNearestTownHall(Asset asset){
+        //need to check for all town halls, save if closer
+        Asset closestTownHall = null;
+
+        Double distance;// = Math.hypot(x1-x2, y1-y2);
+        Double bestDistance = Double.MAX_VALUE;
+
+        for(Asset a : assets){
+            if(a.owner == asset.owner && a.type == Asset.EAssetType.TownHall){
+                distance = Math.hypot(a.x-asset.x, a.y-asset.y);
+                if(distance < bestDistance){
+                    bestDistance = distance;
+                    closestTownHall = a;
+                }//closer
+            }//one of our town halls
+        }//look at all the assets
+
+        return closestTownHall;
+    }
+
     public void addAsset(Asset asset){
 
         LockManager.assetLock.lock();
@@ -125,7 +145,6 @@ public class AssetRenderer {
         if (lastSelectedAsset != null) {
             lastSelectedAsset.isSelected = false;
         }
-
         //selectedAsset = getAsset(tileX, tileY);
         selectedAsset = getAsset(tileX - 1, tileY - 1);
 
@@ -140,7 +159,7 @@ public class AssetRenderer {
                 if(lastSelectedAsset != null && lastSelectedAsset.type == Asset.EAssetType.Peasant){
                     AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, selectedAsset);
                 }
-            }else if(lastSelectedAsset != null && selectedAsset.owner != lastSelectedAsset.owner){
+            }else if(lastSelectedAsset != null && !lastSelectedAsset.isBuilding() && selectedAsset.owner != lastSelectedAsset.owner){
                 AssetActionRenderer.findCommand(lastSelectedAsset, tileX, tileY, selectedAsset);
             }
 
@@ -288,6 +307,8 @@ public class AssetRenderer {
             }else if(action == Asset.EAssetAction.HarvestLumber || action == Asset.EAssetAction.Attack){
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
+            }else{
+                frameIndex = asset.direction.getIdx() * 5;
             }//TODO: fix magic numbers?
             //TODO: consider action type, switch statement?
         }//peasant
@@ -300,6 +321,8 @@ public class AssetRenderer {
             }else if(action == Asset.EAssetAction.Attack) {
                 frameIndex = 40 + asset.direction.getIdx() * 5;
                 frameIndex += (asset.steps % 5);
+            }else{
+                frameIndex = asset.direction.getIdx() * 5;
             }
         }//footman or archer
 

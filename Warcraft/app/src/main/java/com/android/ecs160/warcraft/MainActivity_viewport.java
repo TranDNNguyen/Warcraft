@@ -92,26 +92,28 @@ public class MainActivity_viewport extends AppCompatActivity {
         //Map Renderer
         mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency, players);
         assetBuilder = new AssetBuilder(assetRenderer, players);
+
+        //UI Fragment Setting
+        fragManager = getSupportFragmentManager();
 
         //Initializations
         InitScreenSetup();
+        FragmentThree actionFragment = (FragmentThree) MainActivity_viewport.fragManager.findFragmentById(R.id.fragment3);
+        actionFragment.Setup(assetBuilder);
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 //updateViewport();
-                viewportHandler.obtainMessage(1).sendToTarget();
                 assetActionRenderer.TimeStep(assetRenderer.assets);
+                viewportHandler.obtainMessage(1).sendToTarget();
             }
         }, 0, updateFrequency);
 
         dx = dy = 0;
-
-        //UI Fragment Setting
-        fragManager = getSupportFragmentManager();
 
         //updateViewport();
         viewportHandler.obtainMessage(1).sendToTarget();
@@ -121,11 +123,11 @@ public class MainActivity_viewport extends AppCompatActivity {
 
 
         //TODO:remove below once building button callbacks are added
-
+/*
         Asset a = assetRenderer.getAsset(3, 7);
-        CTilePosition pos = new CTilePosition(15, 15);
+        CTilePosition pos = new CTilePosition(14, 14);
         assetBuilder.Build(a, Asset.EAssetType.TownHall, pos);
-
+*/
                 /*
                 //check if can be built
                 //makes new asset

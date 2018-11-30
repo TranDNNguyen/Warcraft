@@ -410,7 +410,7 @@ public class Asset {
         color = PlayerData.PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
         building = null;
-        HP = 0; //if not made on game start (from map file), needs to be constructed
+        HP = 1; //if not made on game start (from map file), needs to be constructed
         //HP = assetData.hitPoints;
         if(isBuilding()){
             visible = false;
