@@ -292,8 +292,15 @@ public class AssetRenderer {
             //TODO: consider action type, switch statement?
         }//peasant
         else if(asset.type == Asset.EAssetType.Footman || asset.type == Asset.EAssetType.Archer){
-            frameIndex = asset.direction.getIdx() * 5;
-            frameIndex += (asset.steps % 5);
+
+            Asset.EAssetAction action = asset.commands.peek();
+            if(action == Asset.EAssetAction.Walk) {
+                frameIndex = asset.direction.getIdx() * 5;
+                frameIndex += (asset.steps % 5);
+            }else if(action == Asset.EAssetAction.Attack) {
+                frameIndex = 40 + asset.direction.getIdx() * 5;
+                frameIndex += (asset.steps % 5);
+            }
         }//footman or archer
 
         assetLoader.setAssetBitmap(asset, frameIndex);
