@@ -12,6 +12,24 @@ import java.util.Vector;
 
 public class MapTiles {
 
+    public class CTilePosition {
+        //TODO: should this be in the map classes? tiles?
+        int x;
+        int y;
+
+        public CTilePosition(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        int DistanceSquared(CTilePosition pos) {
+            int DeltaX = pos.x - x;
+            int DeltaY = pos.y - y;
+
+            return DeltaX * DeltaX + DeltaY * DeltaY;
+        }
+    }
+
     enum ETerrainTileType {
         None(0),
         DarkGrass(1),
@@ -86,8 +104,14 @@ public class MapTiles {
     private static int mapWidth;
     private static int mapHeight;
 
+    private static MapTiles myMapTiles = null;
 
     public MapTiles(String mapFileName, Context context) {
+
+        if(myMapTiles != null){
+            //todo: throw error
+        }
+        myMapTiles = this;
         fileName = mapFileName;
 
         terrainMap = new Vector<Vector<ETerrainTileType>>();
@@ -97,11 +121,20 @@ public class MapTiles {
         typeToName = new HashMap<ETerrainTileType, String>();
         nameToStrings = new HashMap<String, Vector<String>>();
 
-
         try {
             mapParse(fileName, context);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static MapTiles getMapTilesInstance(){
+        if(myMapTiles != null){
+            return myMapTiles;
+        }
+        else{
+            return null;
+            //TODO: throw error?
         }
     }
 
@@ -160,6 +193,20 @@ public class MapTiles {
         }
     }
 
+    public Vector<Vector<ETerrainTileType>> getCurrentTerrain(){
+        return terrainMap;
+    }
+
+
+    /*
+    public ETerrainTileType getTileType(int x, int y){
+        return terrainMap.get(x).get(y);
+    }
+    */
+
+    public ETerrainTileType getTileType(int x, int y){
+        return terrainMap.get(y).get(x);
+    }
 
     public String skipCommentLines(Scanner scanner) {
         while (scanner.hasNextLine()) {
@@ -360,8 +407,8 @@ public class MapTiles {
 
         int indexBits = 0;
         if (UL == overallType) indexBits |= 0x1;
-        if (LL == overallType) indexBits |= 0x2;
-        if (UR == overallType) indexBits |= 0x4;
+        if (UR == overallType) indexBits |= 0x2;
+        if (LL == overallType) indexBits |= 0x4;
         if (LR == overallType) indexBits |= 0x8;
 
         String tileName = typeToName.get(overallType);
@@ -370,7 +417,7 @@ public class MapTiles {
         tileName += '-';
         tileName += hexIdx.charAt(0);
         //tileName += "F";
-        System.out.println("this is " + tileName);
+        //System.out.println("this is " + tileName);
         int max = nameToStrings.get(tileName).size();
         if (max > 1) {
             var = new Random().nextInt(max);
