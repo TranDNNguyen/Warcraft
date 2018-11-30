@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,12 +15,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 
 public class MainActivity_viewport extends AppCompatActivity {
@@ -42,10 +44,12 @@ public class MainActivity_viewport extends AppCompatActivity {
     MapRenderer mapRenderer; //,map1; // for Pokemon Map
     AssetRenderer assetRenderer;
     AssetActionRenderer assetActionRenderer;
+    AssetBuilder assetBuilder;
 
     TextView resultTV;
     String resultString;
 
+    Vector<PlayerData> players;
 
     public static int getTileSize() {
         return TILE_SIZE;
@@ -74,48 +78,25 @@ public class MainActivity_viewport extends AppCompatActivity {
         });
 
         new GameModel(updateFrequency);
+        try {
+            players = playerSetup();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Views - viewport and TextSection
         viewport = (ImageView) findViewById(R.id.viewportView);
         minimap = (ImageView) findViewById(R.id.minimapView);
         resultTV = (TextView) findViewById(R.id.xyTextView);
 
-        //adjust map to size of screen
-        //TODO for Joon - ask Kirsten about the usage of this part
-/*
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int totalWidth = displaymetrics.widthPixels;
-        int totalHeight = displaymetrics.heightPixels;
-        double viewportWidthScale = 1;
-        double viewportHeightScale = .9;
-        viewportWidth = (int)(viewportWidthScale*totalWidth);
-        viewportHeight = (int)(viewportHeightScale*totalHeight);
-        //LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(viewportWidth, viewportHeight);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(viewportWidth, viewportHeight);
-        viewport.setLayoutParams(params);
-
-        //viewportWidth = viewport.getLayoutParams().width;//.getMeasuredWidth();
-        //viewportHeight = viewport.getLayoutParams().height;//.getMeasuredHeight();
-
-        //Map Renderer
-
-        //mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
-        //assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        mapRenderer = new MapRenderer(this, viewportWidth, viewportHeight);
-        assetRenderer = new AssetRenderer(this, getResources(), viewportWidth, viewportHeight);
-
-        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
-*/
-
         //Map Renderer
         mapRenderer = new MapRenderer(this, ConstLayoutWidth, ConstLayoutHeight);
         assetRenderer = new AssetRenderer(this, getResources(), ConstLayoutWidth, ConstLayoutHeight);
-        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer);
+        assetActionRenderer = new AssetActionRenderer(assetRenderer, mapRenderer, updateFrequency);
+        assetBuilder = new AssetBuilder(assetRenderer, players);
 
         //Initializations
         InitScreenSetup();
-
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -136,19 +117,104 @@ public class MainActivity_viewport extends AppCompatActivity {
         viewportHandler.obtainMessage(1).sendToTarget();
         viewport.setOnTouchListener(touchListener);
 
-
         displayTutorialMessage();
+
+
+        //TODO:remove below once building button callbacks are added
+
+        Asset a = assetRenderer.getAsset(3, 7);
+        CTilePosition pos = new CTilePosition(15, 15);
+        assetBuilder.Build(a, Asset.EAssetType.TownHall, pos);
+
+                /*
+                //check if can be built
+                //makes new asset
+                Asset townHall = new Asset(Asset.EAssetType.Barracks, 1, 16, 16);
+                assetRenderer.addAsset(townHall);
+
+                //adds actions for peasant
+                CTilePosition pos = new CTilePosition(15, 15);
+                a.addCommand(Asset.EAssetAction.Walk, pos);
+                a.addCommand(Asset.EAssetAction.Build, pos);
+                a.building = townHall;
+                break;
+                */
+
+
+        //TODO: remove, just for testing
+        /*
+        Asset building = new Asset(Asset.EAssetType.Peasant, 1, 16, 20);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Footman, 1, 16, 24);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Archer, 1, 16, 28);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Ranger, 1, 16, 32);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.GoldMine, 1, 16, 36);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.TownHall, 1, 16, 40);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Keep, 1, 10, 20);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Castle, 1, 10, 24);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Farm, 1, 10, 28);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Barracks, 1, 10, 32);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.LumberMill, 1, 10, 36);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.Blacksmith, 1, 10, 40);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.ScoutTower, 1, 10, 44);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.GuardTower, 1, 10, 48);
+        assetRenderer.addAsset(building);
+        building = new Asset(Asset.EAssetType.CannonTower, 1, 10, 52);
+        assetRenderer.addAsset(building);
+        */
     }
 
+    public Vector<PlayerData> playerSetup() throws IOException {
+        Vector<PlayerData> players = new Vector<>();
+        InputStream is = getAssets().open("test.map");
+        Scanner scanner = new Scanner(is);
+        String line = scanner.nextLine();
+        String[] temp = new String[3];
 
-    public void displayTutorialMessage(){
+        while (scanner.hasNextLine()) {
+            line = scanner.nextLine();
+            if (line.equals("# Number of players")) {
+                line = scanner.nextLine();
+                break;
+            }
+        }
+
+        int numPlayers = Integer.valueOf(line);
+        line = scanner.nextLine(); //skip "Starting resources Player Gold Lumber"
+
+        for (int i = 0; i < numPlayers; i++) {
+            line = scanner.nextLine();
+            temp = line.split(" ");
+            int gold = Integer.valueOf(temp[1]);
+            int lumber = Integer.valueOf(temp[2]);
+            PlayerData.PlayerColor color = PlayerData.PlayerColor.Red;
+            PlayerData player = new PlayerData(color, gold, lumber);
+            players.add(player);
+        }
+
+        return players;
+    }
+
+    public void displayTutorialMessage() {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) findViewById(R.id.toast_layout_Info));
         ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
         image.setImageBitmap(null);
         TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
-        text.setText(  "This is Tutorial Message for you!\n" +
-                        "Welcome to WC2 Android Developer version");
+        text.setText("This is Tutorial Message for you!\n" +
+                "Welcome to WC2 Android Developer version");
 
         Toast toast = new Toast(getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
         toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
@@ -157,31 +223,27 @@ public class MainActivity_viewport extends AppCompatActivity {
         toast.show();
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
+        handler.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
-                    LayoutInflater inflater = getLayoutInflater();
-                    View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) findViewById(R.id.toast_layout_Info));
-                    ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
-                    image.setImageBitmap(null);
-                    TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
-                    text.setText(  "Single tap, to select unit\n\n"+
-                            "Two-finger-drag, to move the map\n\n"+
-                            "Three-finger-tap, to show/hide minimap");
+            public void run() {
+                LayoutInflater inflater = getLayoutInflater();
+                View layout = inflater.inflate(R.layout.customlayout_toast, (ViewGroup) findViewById(R.id.toast_layout_Info));
+                ImageView image = (ImageView) layout.findViewById(R.id.toast_info_image);
+                image.setImageBitmap(null);
+                TextView text = (TextView) layout.findViewById(R.id.toast_info_text);
+                text.setText("Single tap, to select unit\n\n" +
+                        "Two-finger-drag, to move the map\n\n" +
+                        "Three-finger-tap, to show/hide minimap");
 
-                    Toast toast = new Toast(getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
-                    toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                    toast.setDuration(Toast.LENGTH_LONG);
-                    toast.setView(layout);
-                    toast.show();
+                Toast toast = new Toast(getApplicationContext()); // https://stackoverflow.com/questions/25329275/the-method-getapplicationcontext-is-undefined-fragment-issues
+                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
             }
         }, 2000);
 
     }
-
-
 
 
     public Handler uiHandler = new Handler() {
@@ -204,9 +266,9 @@ public class MainActivity_viewport extends AppCompatActivity {
             Bitmap result = Bitmap.createBitmap(ConstLayoutWidth, ConstLayoutHeight, Bitmap.Config.ARGB_8888);
 
             Canvas canvas = new Canvas(result);
-            if(!(currX > MapRenderer.bitmapWidth - ConstLayoutWidth
+            if (!(currX > MapRenderer.bitmapWidth - ConstLayoutWidth
                     || currY > MapRenderer.bitmapHeight - ConstLayoutHeight
-                    || currX < 0 || currY < 0)){//boundary check
+                    || currX < 0 || currY < 0)) {//boundary check
                 Bitmap temp = mapRenderer.drawTerrain(currX, currY);
                 if (temp != null) {
                     canvas.drawBitmap(temp, 0, 0, null);  //  Draw Map
@@ -229,24 +291,23 @@ public class MainActivity_viewport extends AppCompatActivity {
     };
 
 
-
     //Set Screen Boundary wrt Zooming Factor things
-    public void InitScreenSetup(){
+    public void InitScreenSetup() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
-        screenWidth  = size.x;
+        screenWidth = size.x;
         screenHeight = size.y;
 
         //TODO current ScreenRatio is 10:6, in rare case, it is possible, some phone with larger width might have problems due to this part.
         viewportHeight = screenHeight;
-        viewportWidth  = screenHeight * 10 / 6;
+        viewportWidth = screenHeight * 10 / 6;
 
         screenLeftBound = (screenWidth - viewportWidth) / 2; // == empty margin on left side
         screenRightBound = screenWidth + screenLeftBound;  // == starting point of right empty margin
 
-        screenZoomFactor = ((float)screenHeight) / 600f;  // ConstScreenZoomFactor = 0.6 = 1000/600  //  We keep the ratio of the screen
+        screenZoomFactor = ((float) screenHeight) / 600f;  // ConstScreenZoomFactor = 0.6 = 1000/600  //  We keep the ratio of the screen
     }
 
 
@@ -256,7 +317,7 @@ public class MainActivity_viewport extends AppCompatActivity {
     //currX: the coorinates where you've touched the screen within the view
     //values[]: will be location of xy coordinate of the view relative to the layout
     public void displayCoordinates(double xPos, double yPos, int values[], int currX, int currY) {
-        resultString = " Viewport = (" + (int)(xPos - values[0]) + "," + (int)(yPos - values[1]);
+        resultString = " Viewport = (" + (int) (xPos - values[0]) + "," + (int) (yPos - values[1]);
         resultString += ") / Map<top&left corner> = (" + (currX) + "," + (currY);
 
         //XY in Viewport
@@ -266,8 +327,8 @@ public class MainActivity_viewport extends AppCompatActivity {
         if (viewY < 0) viewY = 0;
 
         //XY in Tile
-        int tileX = (int)(viewX) / TILE_SIZE;
-        int tileY = (int)(viewY) / TILE_SIZE;
+        int tileX = (int) (viewX) / TILE_SIZE;
+        int tileY = (int) (viewY) / TILE_SIZE;
 
         resultString += ") / Tile = (" + tileX + "," + tileY + ")";
         //if(map1.checkBoundary(xPos-values[0], yPos-values[1]))
@@ -297,15 +358,15 @@ public class MainActivity_viewport extends AppCompatActivity {
 
             float x = ev.getX(0) - screenLeftBound;
             float y = ev.getY(0);
-            int xPos = (int) (x / screenZoomFactor );
-            int yPos = (int) (y / screenZoomFactor );
+            int xPos = (int) (x / screenZoomFactor);
+            int yPos = (int) (y / screenZoomFactor);
 
             // Get location of View in the screen.
             int values[] = new int[2];
             v.getLocationOnScreen(values);
 
 
-            if(xPos < 0 || yPos < 0) return true;
+            if (xPos < 0 || yPos < 0) return true;
 
             switch (action & MotionEvent.ACTION_MASK) {
 
@@ -316,7 +377,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                     mLastTouchY = y;
 
                     //IF no multitouch used at all. -> select Asset.
-                    if(selectionType == 1) {
+                    if (selectionType == 1) {
 
                         Asset selectedAsset = assetRenderer.selectAsset(xPos, yPos, values, currX, currY);
                         //Asset[] selectedAssets = assetRenderer.selectAssets(mFirstTouchX, mFirstTouchY, xPos, yPos, values, currX, currY);
@@ -324,8 +385,8 @@ public class MainActivity_viewport extends AppCompatActivity {
                     }
 
                     // 3 Finger-tap -> Show/Hide Minimap
-                    else if(selectionType == 3){
-                        minimap.setVisibility(minimap.getVisibility()==View.INVISIBLE ? View.VISIBLE : View.INVISIBLE );
+                    else if (selectionType == 3) {
+                        minimap.setVisibility(minimap.getVisibility() == View.INVISIBLE ? View.VISIBLE : View.INVISIBLE);
                     }
 
                     //Update
@@ -350,13 +411,13 @@ public class MainActivity_viewport extends AppCompatActivity {
                 case MotionEvent.ACTION_POINTER_DOWN: {
 
                     //Show/Hide minimap w/ 3 finger-tap
-                    if(ev.getPointerCount() >= 3){
+                    if (ev.getPointerCount() >= 3) {
                         selectionType = 3;
                         //Toast.makeText(getApplicationContext(), "MultiTouch " + ev.getPointerCount(), Toast.LENGTH_SHORT).show();
                         return true;
                     }
                     //  Panning Screen w/ 2 fingers
-                    else if(ev.getPointerCount() == 2)
+                    else if (ev.getPointerCount() == 2)
                         selectionType = 2;
                     break;
                 }
@@ -366,19 +427,19 @@ public class MainActivity_viewport extends AppCompatActivity {
                 case MotionEvent.ACTION_MOVE: {
                     //NOTE
                     //  Get the location of first finger that touched.
-                    if(mActivePointerId == INVALID_POINTER_ID)
+                    if (mActivePointerId == INVALID_POINTER_ID)
                         return true;
                     final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
                     //3FingerTap - Show/Hide display
-                    if(selectionType == 3) return true;
-                    if(ev.getPointerCount() >= 3){
+                    if (selectionType == 3) return true;
+                    if (ev.getPointerCount() >= 3) {
                         selectionType = 3;
                         return true;
                     }
 
                     //Drag - MultipleSelection
-                    if(selectionType == 1){
+                    if (selectionType == 1) {
                         //mLastTouchX = x;
                         //mLastGestureY = y;
 
@@ -387,7 +448,7 @@ public class MainActivity_viewport extends AppCompatActivity {
                     }
 
                     //Setting up TwoFinger Drag
-                    if(selectionType == 2) {
+                    if (selectionType == 2) {
                         dx = (int) x - (int) mLastTouchX;
                         dy = (int) y - (int) mLastTouchY;
 /*
@@ -424,7 +485,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                     final int pointerId = ev.getPointerId(pointerIndex);
 
 
-
                     //final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     //mActivePointerId = ev.getPointerId(newPointerIndex);
                     mActivePointerId = INVALID_POINTER_ID;
@@ -437,11 +497,9 @@ public class MainActivity_viewport extends AppCompatActivity {
         }
     };
 
-    public void drawSelection(){
+    public void drawSelection() {
 
     }
-
-
 
 
     private void hideUI() {
@@ -455,9 +513,6 @@ public class MainActivity_viewport extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE;
         decorView.setSystemUiVisibility(uiOptions);
     }
-
-
-
 
 
 }

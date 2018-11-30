@@ -14,29 +14,26 @@ import java.util.HashMap;
 public class Asset {
     int owner;
     EAssetType type;
+    boolean visible = true;
     int x; //current x pos
     int y; //current y pos
-    //int x2; //x coordinate the unit is headed to
-    //Queue<Integer> xs;
-    //Queue<Integer> ys;
-    Queue<CTilePosition> positions;
-    //int y2; //y coordinate the unit is headed to
-    //int direction; //TODO: use enum instead
     EDirection direction;
-    //EAssetAction action;
+    double HP;
+
     Queue<EAssetAction> commands;
-    PlayerColor color;
+    Queue<CTilePosition> positions;
+    Asset building;//for peasants who are executing build command
+
+    PlayerData.PlayerColor color;
     AssetData assetData;
     int steps;
     int lumber;
 
     Vector<Integer> pixelCoordinates;
-    //Bitmap assetImages;
     Bitmap assetBitmap;
     int assetWidth;
     int assetHeight;
     int TileSize = MainActivity_viewport.getTileSize();
-    //int size;
 
     boolean isSelected = false;
 
@@ -83,22 +80,21 @@ public class Asset {
     }
 
     static class AssetTypeData{
-        static AssetData archer = new AssetData("archer", 60, 2, 4, 0, 1, 10, 500, 50, 1, 70, 10, 0, 3, 6, 4);
+        static AssetData archer = new AssetData("archer", 40, 2, 5, 0, 1, 10, 500, 50, 1, 70, 10, 10, 3, 6, 4);
         static AssetData barracks = new AssetData("barracks", 800, 20, 3, 0, 3, 0, 700, 400, 0, 200, 0, 0, 0, 0, 0);
         static AssetData blacksmith = new AssetData("blacksmith", 775, 20, 3, 0, 3, 0, 800, 450, 0, 200, 0, 0, 0, 0, 0);
         static AssetData cannon_tower = new AssetData("cannon_tower", 160, 20, 9, 9, 2, 0, 500, 150, 0, 190, 1, 20, 50, 0, 7);
-        static AssetData castle = new AssetData("castle", 1600, 0, 9, 6, 4, 0, 2500, 1200, 60, 0, 0, 0, 0, 0, 0);
-        static AssetData farm = new AssetData("farm", 400, 0, 3, 0, 2, 0, 500, 250, 100, 0, 0, 0, 0, 0, 0);
+        static AssetData castle = new AssetData("castle", 1600, 0, 9, 6, 4, 0, 2500, 1200, -5, 60, 1, 120, 2, 6, 9);
+        static AssetData farm = new AssetData("farm", 400, 0, 3, 0, 2, 0, 500, 250, -4, 100, 0, 0, 0, 0, 0);
         static AssetData footman = new AssetData("footman", 60, 2, 4, 0, 1, 10, 600, 0, 1, 60, 10, 0, 6, 3, 1);
-        static AssetData gold_mine = new AssetData("gold_mine", 25500, 0, 1, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+        static AssetData gold_mine = new AssetData("gold_mine", 25500, 0, 1, 0, 3, 0, 0, 200, 0, 120, 0, 0, 0, 0, 0);
         static AssetData guard_tower = new AssetData("guard_tower", 130, 20, 9, 9, 2, 0, 500, 150, 0, 140, 1, 20, 4, 12, 6);
-        static AssetData keep = new AssetData("keep", 1400, 0, 6, 4, 4, 0, 2000, 1000, 60, 0, 0, 0, 0, 0, 0);
+        static AssetData keep = new AssetData("keep", 1400, 0, 6, 4, 4, 0, 2000, 1000, -5, 60, 1, 120, 2, 6, 6);
         static AssetData lumber_mill = new AssetData("lumber_mill", 600, 20, 3, 0, 3, 0, 600, 450, 0, 150, 0, 0, 0, 0, 0);
-        static AssetData peasant = new AssetData("peasant", 30, 0, 4, 0, 1, 10, 400, 0, 1, 45, 10, 0, 3, 2, 1);
+        static AssetData peasant = new AssetData("peasant", 30, 0, 4, 0, 1, 50, 400, 0, 1, 1, 10, 0, 3, 2, 1);
         static AssetData ranger = new AssetData("ranger", 50, 2, 5, 0, 1, 10, 500, 50, 1, 70, 10, 10, 3, 6, 4);
         static AssetData scout_tower = new AssetData("scout_tower", 100, 20, 9, 0, 2, 0, 550, 200, 0, 120, 0, 0, 0, 0, 0);
-        static AssetData town_hall = new AssetData("town_hall", 1200, 0, 4, 0, 4, 0, 800, 0, 60, 0, 0, 0, 0, 0, 0);
-
+        static AssetData town_hall = new AssetData("town_hall", 1200, 0, 4, 0, 4, 0, 800, 0, -5, 60, 0, 120, 2, 6, 4);
 
         public static AssetData getAssetData(EAssetType type){
             switch(type){
@@ -174,29 +170,6 @@ public class Asset {
             return idx;
         }
     }
-
-    enum PlayerColor{
-        Red(0),
-        Blue(1),
-        Green(2),
-        Purple(3),
-        Orange(4),
-        Yellow(5),
-        Black(6),
-        White(7),
-        None(8);
-
-        private int idx;
-
-        PlayerColor(int i) {
-            idx = i;
-        }
-
-        int getIdx() {
-            return idx;
-        }
-    }
-
 
     enum EAssetType {
         None(0),
@@ -359,16 +332,13 @@ public class Asset {
     }
 
     public void addCommand(EAssetAction assetAction, CTilePosition pos) {
-        //if (assetAction == EAssetAction.Walk) {
-            //action = assetAction;
             commands.add(assetAction);
             positions.add(pos);
-            //xs.add(x);
-            //ys.add(y);
-        //}
     }
 
-    //Assets draws itself on the canvas it is given
+    /*
+     * Assets draws itself on the canvas it is given
+     */
     public void drawAsset(Canvas canvas, int xOffset, int yOffset) {
         // Displaying Correct Size for Asset as of 11/04/18
         // Had to place the image without scaling in the middle of tile (72 px image on 32px tile, centered.)
@@ -426,8 +396,14 @@ public class Asset {
         direction = EDirection.South;
         commands = new LinkedList<>();
         positions = new LinkedList<>();
-        color = PlayerColor.Red;
+        color = PlayerData.PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
+        building = null;
+        HP = 0; //if not made on game start (from map file), needs to be constructed
+        //HP = assetData.hitPoints;
+        if(isBuilding()){
+            visible = false;
+        }//will only be visible when peasant starts building it
     }
 
     Asset(String input[]) {
@@ -435,10 +411,12 @@ public class Asset {
         owner = Integer.valueOf(input[1]);
         x = Integer.valueOf(input[2]);
         y = Integer.valueOf(input[3]);
-        direction = EDirection.North;
+        direction = EDirection.South;
         commands = new LinkedList<>();
         positions = new LinkedList<>();
-        color = PlayerColor.Red;
+        color = PlayerData.PlayerColor.Red;
         assetData = AssetTypeData.getAssetData(type);
+        building = null;
+        HP = assetData.hitPoints;
     }
 }

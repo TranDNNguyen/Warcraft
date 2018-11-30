@@ -1,5 +1,6 @@
 package com.android.ecs160.warcraft;
 
+import java.util.Iterator;
 import java.util.Vector;
 
 public class AssetActionRenderer {
@@ -8,34 +9,46 @@ public class AssetActionRenderer {
     public static Router router;
     Vector<Vector<MapTiles.ETerrainTileType>> terrainMap;
     MapTiles mapTiles;
+    int updateFrequency;
 
-    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer){
+    public AssetActionRenderer(AssetRenderer assetRenderer, MapRenderer mapRenderer, int frequency){
         this.assetRenderer = assetRenderer;
         router = new Router(assetRenderer);
         terrainMap = mapRenderer.mapTiles.terrainMap;
         mapTiles = mapRenderer.mapTiles;
+        updateFrequency = frequency;
     }
 
     public void TimeStep(Vector<Asset> assets) {
-        for (Asset asset : assets) {
-            if(asset == null){
-                continue;
-            }
-            if(asset.commands.isEmpty()){
-                continue;
-            }
-            switch (asset.commands.peek()) {
-                case None:
+        LockManager.assetLock.lock();
+        try {
+            for (Asset asset : assets) {
+                if (asset == null) {
                     continue;
-                case Walk:
-                    Walk(asset);
-                    break;
-                case HarvestLumber:
-                    HarvestLumber(asset);
+                }
+                if (asset.commands.isEmpty()) {
+                    //assetRenderer.updateAssetFrame(asset);
+                    continue;
+                }
+                switch (asset.commands.peek()) {
+                    case None:
+                        continue;
+                    case Walk:
+                        Walk(asset);
+                        break;
+                    case HarvestLumber:
+                        HarvestLumber(asset);
+                        break;
+                    case Build:
+                        Build(asset);
+                }
+                assetRenderer.updateAssetFrame(asset);
             }
-            assetRenderer.updateAssetFrame(asset);
+        }finally {
+            LockManager.assetLock.unlock();
         }
     }
+
 
     public static void findCommand(Asset asset, int x, int y){
         //get tile type of (x,y)
@@ -54,10 +67,46 @@ public class AssetActionRenderer {
             if(asset.type ==  Asset.EAssetType.Peasant && tileType == MapTiles.ETerrainTileType.Forest){
                 asset.addCommand(Asset.EAssetAction.Walk, newpos); //will walk as close as it can to the rigth tile
                 asset.addCommand(Asset.EAssetAction.HarvestLumber, newpos);
-
             }
             //TODO: add other mining
         }
+    }//used when asset is selected and then given a command by touching elsewhere on the map
+    //either move, move and then harvest/mine, or move to attack enemy
+
+    void Build(Asset asset){
+        //by now the lumber/basic building has been placed, and asset has already moved to it.
+        if(asset.building == null){
+            System.exit(0);
+        }
+
+        double hitPoints = (double)asset.building.assetData.hitPoints;
+        double buildTime = (double)asset.building.assetData.buildTime;
+
+        //TODO: update HP continuously
+        //change checks to be based off HP (could be attacked while being built,
+        //so don't want to use steps alone.
+        //but: cant increment by totalHP/buildTime because some units might have
+        //buildTime > HP
+
+        if(asset.steps == 0){
+            asset.visible = false;
+            asset.building.visible = true;
+        }//asset has just started building
+
+        asset.building.HP += hitPoints / buildTime;
+        assetRenderer.updateAssetFrame(asset.building);
+
+        if (asset.building.HP >= hitPoints) {
+            asset.building.HP = asset.building.assetData.hitPoints;
+
+            asset.removeCommand();
+            asset.building = null;
+            asset.visible = true;
+            asset.steps = 0;
+            return;
+        }//asset has finished building
+
+        asset.steps++;
     }
 
     void HarvestLumber(Asset asset){
@@ -85,7 +134,6 @@ public class AssetActionRenderer {
 
     void Walk(Asset asset) {
         Asset.EDirection travelDirection;
-        //travelDirection = router.FindPath(terrainMap, asset, asset.xs.peek(), asset.xs.peek());
         travelDirection = router.FindPath(terrainMap, asset, asset.positions.peek());
 
         if(travelDirection == Asset.EDirection.Max){
@@ -100,7 +148,6 @@ public class AssetActionRenderer {
         }
 
         asset.direction = travelDirection;
-
         asset.steps++;
 
         //testing
